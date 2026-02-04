@@ -13,8 +13,8 @@ import { Amplify } from 'aws-amplify'
 Amplify.configure({
     Auth: {
         Cognito: {
-            userPoolId: 'eu-south-2_YwFE10s2r',
-            userPoolClientId: '6qg5sc7cnpquhj9hioe130sfju',
+            userPoolId: import.meta.env.VITE_USER_POOL_ID,
+            userPoolClientId: import.meta.env.VITE_USER_POOL_CLIENT_ID,
             loginWith: {
                 email: true,
             }

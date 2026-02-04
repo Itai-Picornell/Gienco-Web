@@ -1,11 +1,8 @@
-# 🎸 Gienco Band Web
+# 🎸 Gienco Web
 Una aplicación web oficial para la banda Gienco construida con Vue 3, Vite y servicios serverless de AWS.
 
 ## Autores
 *   **Itai Picornell Cortés**
-*   **Adrián Riera Granada**
-*   **Raúl González Alguacil**
-*   **Isaac Cabrera Remacho**
 
 ## Descripción General
 Este proyecto es una aplicación web SPA (Single Page Application) moderna que sirve como plataforma oficial para la banda de rock Gienco. Demuestra la integración de un frontend reactivo de alto rendimiento con servicios en la nube de AWS para la gestión segura de identidad. La aplicación cuenta con un reproductor de audio personalizado, tienda de merchandising con gestión de estado global y un panel de administración protegido.
@@ -14,7 +11,6 @@ Este proyecto es una aplicación web SPA (Single Page Application) moderna que s
 *   **Autenticación Administrativa Completa**: Gestión segura de acceso al panel de administración mediante AWS Cognito.
 *   **Reproductor de Audio SPA**: Reproducción continua de música sin cortes durante la navegación gracias a la arquitectura Single Page Application.
 *   **Tienda de Merchandising**: Carrito de compras persistente con gestión de estado compleja (Pinia).
-*   **Interfaz Reactiva Moderna**: Diseño "Dark Rock" totalmente responsive con animaciones fluidas.
 *   **Arquitectura Serverless**: Frontend desacoplado que escala automáticamente sin gestión de servidores.
 
 ## Stack Tecnológico
@@ -53,8 +49,8 @@ graph TD
         IAM[AWS IAM]
     end
     
-    Amplify -->|Auth Request (SRP)| Cognito
-    Cognito -->|JWT Tokens| Amplify
+    Amplify -- "Auth Request (SRP)" --> Cognito
+    Cognito -- "JWT Tokens" --> Amplify
 ```
 
 ## ☁️ Decisiones de Arquitectura Cloud
@@ -115,9 +111,13 @@ Los archivos se generarán en la carpeta `dist/`.
 
 ### AWS Cognito (Auth)
 *   **Región**: `eu-south-2` (España)
-*   **User Pool ID**: `eu-south-2_YwFE10s2r`
-*   **Client ID**: `7sno8kqj68vs3so9sbvfennadm`
+*   **Configuración**: Las credenciales (User Pool ID, Client ID) se deben configurar en un archivo `.env` localmente.
 *   **Flujo**: Autenticación directa mediante Amplify SDK (sin redirecciones externas visibles para mantener la experiencia de usuario).
 
----
-© 2026 Gienco Band. Todos los derechos reservados.
+### Configuración de Variables de Entorno (.env)
+Crea un archivo `.env` en la raíz del proyecto con el siguiente contenido:
+```env
+VITE_USER_POOL_ID=tu_user_pool_id
+VITE_USER_POOL_CLIENT_ID=tu_client_id
+```
+
