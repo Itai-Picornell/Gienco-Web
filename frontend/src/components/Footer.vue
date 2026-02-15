@@ -14,7 +14,7 @@
         <div class="flex gap-6">
           <!-- Instagram -->
           <a 
-            class="size-10 rounded-full bg-surface-dark hover:bg-primary text-white flex items-center justify-center transition-colors" 
+            class="size-10 rounded-full bg-surface-dark hover:bg-[#E1306C] text-white flex items-center justify-center transition-colors" 
             href="https://www.instagram.com/gienco_band/"
             target="_blank"
             rel="noopener noreferrer"

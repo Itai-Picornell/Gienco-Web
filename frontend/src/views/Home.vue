@@ -107,6 +107,12 @@ onUnmounted(() => {
   if (idIntervalo) {
     clearInterval(idIntervalo)
   }
+  // Detener y limpiar el audio al salir de la página
+  if (audioActual) {
+    audioActual.pause()
+    audioActual.currentTime = 0
+    audioActual = null
+  }
 })
 
 const pistas = ref([

@@ -1,123 +1,98 @@
-# 🎸 Gienco Web
-Una aplicación web oficial para la banda Gienco construida con Vue 3, Vite y servicios serverless de AWS.
+# Gienco Web - Proyecto Intermodular
 
-## Autores
-*   **Itai Picornell Cortés**
+## Introduccion
+Este proyecto consiste en el desarrollo de una aplicacion web oficial para la banda de rock Gienco. El objetivo principal es proporcionar una plataforma digital moderna y robusta que permita a los seguidores de la banda interactuar con su musica, adquirir productos de merchandising y mantenerse informados sobre las ultimas novedades.
 
-## Descripción General
-Este proyecto es una aplicación web SPA (Single Page Application) moderna que sirve como plataforma oficial para la banda de rock Gienco. Demuestra la integración de un frontend reactivo de alto rendimiento con servicios en la nube de AWS para la gestión segura de identidad. La aplicación cuenta con un reproductor de audio personalizado, tienda de merchandising con gestión de estado global y un panel de administración protegido.
+Desde una perspectiva tecnica, este proyecto sirve como demostracion de una arquitectura "Serverless" (sin servidor) moderna, utilizando tecnologias de vanguardia en el desarrollo frontend (Vue.js) integradas con servicios en la nube de Amazon Web Services (AWS) para garantizar la seguridad y escalabilidad sin la necesidad de administrar infraestructura compleja.
 
-## Características
-*   **Autenticación Administrativa Completa**: Gestión segura de acceso al panel de administración mediante AWS Cognito.
-*   **Reproductor de Audio SPA**: Reproducción continua de música sin cortes durante la navegación gracias a la arquitectura Single Page Application.
-*   **Tienda de Merchandising**: Carrito de compras persistente con gestión de estado compleja (Pinia).
-*   **Arquitectura Serverless**: Frontend desacoplado que escala automáticamente sin gestión de servidores.
+## Descripcion de la Aplicacion
 
-## Stack Tecnológico
+La aplicacion es una "Single Page Application" (SPA). Esto significa que funciona como una aplicacion de escritorio: no necesita recargar la pagina cada vez que el usuario navega a una nueva seccion. Esto es crucial para la funcionalidad principal del sitio: el reproductor de musica. Gracias a esta arquitectura, la musica continua reproduciéndose sin interrupciones mientras el usuario visita la tienda, lee sobre la banda o navega por el sitio.
 
-### Frontend
-*   **Framework**: Vue 3 (Composition API & Script Setup)
-*   **Herramienta de Build**: Vite (Builds optimizados y HMR instantáneo)
-*   **Enrutamiento**: Vue Router 4
-*   **Gestión de Estado**: Pinia (Store modular para Auth y Carrito)
-*   **Estilos**: Tailwind CSS 3
-*   **Autenticación**: AWS Amplify Auth SDK (integración con Cognito)
+### Flujo de la Aplicacion
 
-### Backend & Cloud (AWS)
-*   **Gestión de Identidad**: AWS Cognito User Pools (Región `eu-south-2`)
-*   **Seguridad**: IAM (Identity and Access Management) para roles y políticas
-*   **Despliegue**: Preparado para AWS S3 + CloudFront
+1.  **Experiencia del Usuario Publico (Fans)**:
+    *   Al ingresar, el usuario es recibido con una interfaz visual moderna que refleja la identidad de la banda.
+    *   Puede iniciar la reproduccion de canciones inmediatamente a traves del reproductor integrado.
+    *   Puede navegar a la seccion de "Tienda" para ver productos (camisetas, discos, accesorios).
+    *   Los productos pueden añadirse a un carrito de compras que guarda la seleccion incluso si se cierra el navegador y se vuelve a abrir mas tarde.
+    *   El sitio adapta su diseño automaticamente a telefonos moviles, tabletas y ordenadores de escritorio.
 
-## Arquitectura
+2.  **Experiencia del Administrador (Gestion)**:
+    *   Existe un area restringida accesible solo para personal autorizado.
+    *   Para acceder, el administrador debe autenticarse mediante un sistema seguro proporcionado por AWS Cognito.
+    *   Este sistema de seguridad protege la informacion y asegura que solo las personas con credenciales validas puedan acceder al panel de control.
 
-```mermaid
-graph TD
-    User[Navegador del Usuario] -->|HTTPS| CloudFront[AWS CloudFront CDN]
-    CloudFront -->|Serves Static Files| S3[AWS S3 Bucket]
-    
-    subgraph "Frontend App (Vue.js)"
-        Router[Vue Router]
-        Pinia[Pinia Store]
-        Amplify[Amplify SDK]
-    end
-    
-    User -->|Interacciones| Router
-    Router -->|Gestión de Vistas| Pinia
-    
-    subgraph "AWS Cloud Services"
-        Cognito[AWS Cognito User Pool]
-        IAM[AWS IAM]
-    end
-    
-    Amplify -- "Auth Request (SRP)" --> Cognito
-    Cognito -- "JWT Tokens" --> Amplify
-```
+## Funcionalidades Principales
 
-## ☁️ Decisiones de Arquitectura Cloud
-### ¿Por qué AWS Cognito?
-Para la gestión de identidades en el panel de administración, hemos optado por AWS Cognito frente a soluciones tradicionales de base de datos SQL/NoSQL por las siguientes razones críticas:
+### Reproduccion Continua de Audio
+A diferencia de los sitios web tradicionales donde el audio se detiene al cambiar de pagina, esta aplicacion mantiene el reproductor activo en todo momento. Esto crea una experiencia de usuario inmersiva similar a usar aplicaciones como Spotify o Apple Music.
 
-1.  **Seguridad Gestionada**: AWS se encarga de la seguridad de las contraseñas, encriptación en reposo y tránsito, y protección contra ataques comunes (fuerza bruta, etc). No almacenamos credenciales en nuestra base de datos, reduciendo drásticamente la superficie de ataque.
-2.  **Protocolo SRP (Secure Remote Password)**: La autenticación se realiza mediante SRP, lo que significa que la contraseña nunca viaja por la red, ni siquiera encriptada. Es un estándar de seguridad superior al envío de hashes.
-3.  **Tokens JWT Estándar**: Cognito devuelve tokens JWT (Access, ID, Refresh) estándar de la industria, lo que facilita la integración futura con otras APIs o servicios (como API Gateway) sin reescribir la lógica de autorización.
-4.  **Escalabilidad sin Mantenimiento**: Al ser un servicio serverless y gestionado, no requiere mantenimiento de servidores de autenticación y escala desde 1 a millones de usuarios automáticamente.
+### Sistema de Tienda y Carrito Persistente
+La aplicacion incluye una logica de negocio para gestionar un carrito de compras. El estado del carrito (productos seleccionados, cantidades) se guarda en la memoria local del dispositivo del usuario. Esto permite que el usuario pueda salir de la pagina y, al regresar, encontrar su compra tal como la dejo.
+
+### Seguridad y Gestion de Usuarios
+La seguridad es un pilar fundamental de este proyecto. En lugar de construir un sistema de seguridad desde cero (lo cual es propenso a errores), se ha integrado **AWS Cognito**.
+*   **Autenticacion Segura**: Las contraseñas nunca se almacenan en la aplicacion, sino que son gestionadas por AWS bajo estandares de seguridad de la industria.
+*   **Proteccion de Datos**: El intercambio de informacion utiliza protocolos seguros que impiden que atacantes puedan interceptar las credenciales.
+
+## Arquitectura Tecnica
+
+El proyecto sigue una arquitectura de **Monorepo** dividida en dos capas logicas:
+
+### 1. Frontend (La Interfaz)
+Desarrollado con **Vue 3**, un framework progresivo de JavaScript. Se ha priorizado la modularidad y el rendimiento.
+*   **Vite**: Utilizado para el empaquetado y optimizacion de la aplicacion, asegurando tiempos de carga minimos.
+*   **Tailwind CSS**: Framework de diseño que permite una interfaz totalmente personalizada y adaptativa.
+*   **Pinia**: Gestor de estado que maneja la logica global de la aplicacion, como el estado del usuario o el contenido del carrito de compras.
+
+### 2. Backend y Cloud (La Infraestructura)
+El proyecto utiliza un enfoque **Serverless** sobre AWS. No existen servidores fisicos o virtuales que administrar. Los servicios utilizados son:
+*   **Amazon Cognito**: Provee el directorio de usuarios y los servicios de autenticacion. Permite una escalabilidad de millones de usuarios sin configuracion adicional.
+*   **AWS IAM (Identity and Access Management)**: Gestiona los permisos y roles de seguridad en la nube.
+
+Esta arquitectura garantiza que la aplicacion sea:
+*   **Escalable**: Puede soportar picos de tráfico sin caerse.
+*   **Segura**: Delega la seguridad critica a expertos (Amazon).
+*   **Eficiente**: Al no tener servidores encendidos las 24 horas, reduce costes y complejidad de mantenimiento.
 
 ## Estructura del Proyecto
 
-```
-Gienco_Web/
-├── src/
-│   ├── assets/              # Recursos estáticos (imágenes, fuentes)
-│   ├── components/          # Componentes Vue reutilizables (Navbar, Footer, Player)
-│   ├── router/              # Configuración de rutas (Vue Router)
-│   ├── stores/              # Stores de Pinia (auth.js, cart.js)
-│   ├── views/               # Vistas principales (Home, Products, AdminLogin)
-│   ├── App.vue              # Componente raíz
-│   └── main.js              # Punto de entrada (Configuración Amplify y Vue)
-├── public/                  # Archivos públicos estáticos
-├── index.html               # Punto de entrada HTML
-├── package.json             # Dependencias del proyecto
-├── vite.config.js           # Configuración de Vite
-└── README.md                # Documentación
-```
+El codigo fuente esta organizado profesionalmente para facilitar su mantenimiento y escalabilidad futura:
 
-## Configuración para Desarrollo Local
+*   **frontend/**: Contiene todo el codigo fuente de la interfaz de usuario, configuraciones de diseño y logica de presentacion.
+*   **backend/**: Estructura preparada para futuras ampliaciones de logica de servidor, manteniendo la separacion de responsabilidades.
 
-### 1. Clonar el repositorio
-```bash
-git clone <url-del-repositorio>
-cd Gienco_Web
-```
+## Guia de Instalacion y Despliegue
 
-### 2. Instalar dependencias
-```bash
-npm install
-```
+### Requisitos Previos
+*   Node.js instalado en el sistema.
+*   Acceso a internet para descargar dependencias.
 
-### 3. Ejecutar servidor de desarrollo
-```bash
-npm run dev
-```
-La aplicación estará disponible en `http://localhost:5173/`
+### Pasos para Ejecutar Localmente
 
-### 4. Build de Producción
-Para generar los archivos optimizados para despliegue:
+1.  Acceder a la carpeta del frontend:
+    ```bash
+    cd frontend
+    ```
+
+2.  Instalar las dependencias del proyecto:
+    ```bash
+    npm install
+    ```
+
+3.  Configurar las variables de entorno:
+    Crear un archivo `.env` en la carpeta `frontend` con las credenciales de AWS proporcionadas (User Pool ID y Client ID).
+
+4.  Iniciar el servidor de desarrollo:
+    ```bash
+    npm run dev
+    ```
+    La aplicacion estara accesible en `http://localhost:3000`.
+
+### Generacion para Produccion
+Para preparar la aplicacion para un entorno real de produccion:
 ```bash
 npm run build
 ```
-Los archivos se generarán en la carpeta `dist/`.
-
-## Endpoints y Servicios Externos
-
-### AWS Cognito (Auth)
-*   **Región**: `eu-south-2` (España)
-*   **Configuración**: Las credenciales (User Pool ID, Client ID) se deben configurar en un archivo `.env` localmente.
-*   **Flujo**: Autenticación directa mediante Amplify SDK (sin redirecciones externas visibles para mantener la experiencia de usuario).
-
-### Configuración de Variables de Entorno (.env)
-Crea un archivo `.env` en la raíz del proyecto con el siguiente contenido:
-```env
-VITE_USER_POOL_ID=tu_user_pool_id
-VITE_USER_POOL_CLIENT_ID=tu_client_id
-```
-
+Esto generara una carpeta `dist` con los archivos optimizados listos para ser desplegados en cualquier servidor web o servicio de almacenamiento estatico como AWS S3.
