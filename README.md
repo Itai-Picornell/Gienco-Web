@@ -82,3 +82,16 @@ Para preparar la aplicación para despliegue:
 npm run build
 ```
 Esto generará una carpeta `dist` con los archivos optimizados listos para subir a **AWS S3**.
+
+## Automatización (CI/CD)
+
+El proyecto incluye un flujo de trabajo de **GitHub Actions** (`.github/workflows/deploy.yml`) que despliega automáticamente a S3 cada vez que haces `push` a la rama `main`.
+
+### Configuración Requerida en GitHub
+
+Debes añadir los siguientes **Secretos** en tu repositorio (Settings > Secrets and variables > Actions):
+
+1.  `AWS_ACCESS_KEY_ID`: Tu clave de acceso de AWS.
+2.  `AWS_SECRET_ACCESS_KEY`: Tu clave secreta de AWS.
+3.  `AWS_REGION`: Tu región (ej. `eu-south-2`).
+4.  `AWS_S3_BUCKET`: El nombre de tu bucket (ej. `gienco-web-frontend`).
