@@ -7,7 +7,7 @@
         <!-- Información de la banda -->
         <div class="flex flex-col items-center md:items-start gap-2">
           <h2 class="text-white text-2xl font-bold uppercase tracking-tight">Gienco Band</h2>
-          <p class="text-gray-500 text-sm">© 2026 Gienco. Todos los derechos reservados.</p>
+          <p class="text-gray-400 text-sm">© 2026 Gienco. Todos los derechos reservados.</p>
         </div>
         
         <!-- Enlaces a redes sociales -->

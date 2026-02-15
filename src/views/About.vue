@@ -7,8 +7,9 @@
           <div class="w-full">
             <div 
               class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center p-4 relative" 
-              style='background-image: linear-gradient(rgba(24, 17, 17, 0.3) 0%, rgba(24, 17, 17, 1) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuD212PjsUxbiL-1GpfXG_Rpr8bblx2vqCZaZj8pDHgrzX4WMnFx_10bJwg1qsyrJrFFCdbp_rNmtNSOtxtsQaVYdaHO47ExslWtawNyjswbgsea2rr09r4h5hw5woHuqBT07aDFLz3vngWhwHto0WKuUWeTcZKjyo9X2PtnCCbQNCuKo_4TImzFzpriXMnEo6PGjckqsMyeWhJGrFwhJMU1dQrLP5-wTZWvS9b5oldUICNkJrXHR3alDZHNVgrw0RBUmREfyOUmExo");'
+              style='background-image: linear-gradient(rgba(24, 17, 17, 0.3) 0%, rgba(24, 17, 17, 1) 100%), url("/images/backgrounds/About_Hero.webp");'
             >
+
               <div class="flex flex-col gap-2 text-center max-w-[800px] z-10">
                 <h1 class="text-white text-5xl md:text-7xl leading-tight tracking-wide" style="font-family: 'Cinzel Decorative', serif; font-weight: 700;">
                   Somos Gienco

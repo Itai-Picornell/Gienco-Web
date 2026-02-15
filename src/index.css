@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #000000;
+  --color-background-light: #f8f6f6;
+  --color-background-dark: #000000;
+  --color-surface-dark: #000000;
+  --color-card-dark: #1a1a1a;
+  --color-border-dark: #333333;
+  --color-text-muted: #cccccc;
+
+  --font-display: "Space Grotesk", sans-serif;
+
+  --radius-default: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-full: 9999px;
+}
+
+/* Custom Styles */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555555;
+}
+
+body {
+  background-color: #000000;
+  color: #ffffff;
+}

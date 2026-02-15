@@ -2,6 +2,7 @@
   <main class="flex-grow">
     <!-- Sección Hero a pantalla completa -->
     <section class="relative w-full h-screen flex items-center justify-center overflow-hidden">
+      <h1 class="sr-only">Gienco Band - Banda Oficial de Música</h1>
       <!-- Carrusel de fondo -->
       <div class="absolute inset-0 z-0">
         <div 
@@ -53,6 +54,8 @@ Estamos muy contentos de anunciaros nuestro primer álbum "Manifiesto" el cual s
                     <img 
                       :src="pista.imagen" 
                       :alt="pista.titulo"
+                      width="64"
+                      height="64"
                       class="w-full h-full object-cover"
                     />
                     <div 
@@ -65,8 +68,8 @@ Estamos muy contentos de anunciaros nuestro primer álbum "Manifiesto" el cual s
                     </div>
                   </div>
                   <div class="flex-1 min-w-0">
-                    <h4 class="text-white font-bold truncate group-hover:text-black transition-colors">{{ pista.titulo }}</h4>
-                    <p class="text-gray-500 text-sm">Gienco • {{ pista.duracion }}</p>
+                    <h3 class="text-white font-bold truncate group-hover:text-black transition-colors">{{ pista.titulo }}</h3>
+                    <p class="text-gray-400 text-sm">Gienco • {{ pista.duracion }}</p>
                   </div>
                 </div>
               </div>
@@ -87,20 +90,21 @@ import Footer from '../components/Footer.vue'
 
 // Imágenes del carrusel de fondo
 const imagenesFondo = ref([
-  '/images/backgrounds/Background1.jpg',
-  '/images/backgrounds/Background2.jpg',
-  '/images/backgrounds/Background3.jpeg'
+  '/images/backgrounds/Background3.webp'
 ])
 
 const indiceImagenActual = ref(0)
 let idIntervalo = null
 
-// Rota automáticamente cada 5 segundos
+// Rota automáticamente cada 5 segundos (deshabilitado si solo hay 1 imagen)
 onMounted(() => {
-  idIntervalo = setInterval(() => {
-    indiceImagenActual.value = (indiceImagenActual.value + 1) % imagenesFondo.value.length
-  }, 5000)
+  if (imagenesFondo.value.length > 1) {
+    idIntervalo = setInterval(() => {
+      indiceImagenActual.value = (indiceImagenActual.value + 1) % imagenesFondo.value.length
+    }, 5000)
+  }
 })
+
 
 // Limpia el intervalo al desmontar
 onUnmounted(() => {
@@ -119,13 +123,13 @@ const pistas = ref([
   {
     titulo: 'Florecer',
     duracion: '3:34',
-    imagen: '/images/songs/Florecer_Fondo.png',
+    imagen: '/images/songs/Florecer_Fondo.webp',
     audio: '/audio/Florecer.wav'
   },
   {
     titulo: '¡Menudo Porvenir!',
     duracion: '2:46',
-    imagen: '/images/songs/Menudo_Porvenir_Fondo.jpg',
+    imagen: '/images/songs/Menudo_Porvenir_Fondo.webp',
     audio: '/audio/Menudo_Porvenir.wav'
   },
 ])

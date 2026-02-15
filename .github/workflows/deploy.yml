@@ -35,5 +35,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy to S3
-        run: aws s3 sync dist/ s3://${{ secrets.AWS_S3_BUCKET }} --delete --region ${{ secrets.AWS_REGION }}
+      - name: Deploy to S3 (Assets with long cache)
+        run: |
+          aws s3 sync dist/assets/ s3://${{ secrets.AWS_S3_BUCKET }}/assets/ --delete --region ${{ secrets.AWS_REGION }} \
+            --cache-control "public, max-age=31536000, immutable"
+
+      - name: Deploy to S3 (Root files with no-cache)
+        run: |
+          aws s3 sync dist/ s3://${{ secrets.AWS_S3_BUCKET }}/ --delete --region ${{ secrets.AWS_REGION }} \
+            --exclude "assets/*" \
+            --cache-control "public, max-age=0, must-revalidate"
+
+      - name: CloudFront Invalidation
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.AWS_CLOUDFRONT_DIST_ID }} \
+            --paths "/*" \
+            --region ${{ secrets.AWS_REGION }}

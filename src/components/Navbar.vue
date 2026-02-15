@@ -5,7 +5,14 @@
       <!-- Logo de la banda (a la izquierda) -->
       <div class="flex items-center text-white mr-8">
         <div class="h-10 flex items-center justify-center">
-          <img src="/images/logos/Logo.png" alt="Gienco Band Logo" class="h-full w-auto" />
+          <img 
+            src="/images/logos/Logo_1x.webp" 
+            alt="Gienco Band Logo" 
+            width="219" 
+            height="70" 
+            fetchpriority="high"
+            class="h-full w-auto" 
+          />
         </div>
       </div>
       

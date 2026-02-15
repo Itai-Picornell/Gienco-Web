@@ -33,6 +33,8 @@
               <img 
                 :src="producto.image" 
                 :alt="producto.name"
+                width="400"
+                height="400"
                 class="w-full h-full object-contain p-8 group-hover:scale-105 transition-transform duration-500"
               />
               <div class="absolute top-4 right-4 bg-primary px-3 py-1 rounded-full">
@@ -131,7 +133,7 @@ const productos = ref([
     name: 'Gienco',
     description: 'BÁSICA',
     price: 15,
-    image: '/images/merch/1.png',
+    image: '/images/merch/1.webp',
     sizes: ['S', 'M', 'L', 'XL']
   },
   {
@@ -139,7 +141,7 @@ const productos = ref([
     name: 'Nada bajo control',
     description: 'VERSIÓN LILA',
     price: 25,
-    image: '/images/merch/2.png',
+    image: '/images/merch/2.webp',
     sizes: ['S', 'M', 'L', 'XL']
   },
   {
@@ -147,7 +149,7 @@ const productos = ref([
     name: 'Nada bajo control',
     description: 'VERSIÓN VERDE',
     price: 25,
-    image: '/images/merch/3.png',
+    image: '/images/merch/3.webp',
     sizes: ['S', 'M', 'L', 'XL']
   }
 ])
