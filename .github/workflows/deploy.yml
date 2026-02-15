@@ -47,8 +47,11 @@ jobs:
             --cache-control "public, max-age=0, must-revalidate"
 
       - name: CloudFront Invalidation
+        if: env.AWS_CLOUDFRONT_DIST_ID != ''
         run: |
           aws cloudfront create-invalidation \
             --distribution-id ${{ secrets.AWS_CLOUDFRONT_DIST_ID }} \
             --paths "/*" \
             --region ${{ secrets.AWS_REGION }}
+        env:
+          AWS_CLOUDFRONT_DIST_ID: ${{ secrets.AWS_CLOUDFRONT_DIST_ID }}
