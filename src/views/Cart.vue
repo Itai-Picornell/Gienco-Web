@@ -184,7 +184,7 @@ const clearCart = async () => {
 }
 
 // URL de la función Lambda (API Gateway)
-const LAMBDA_ORDER_URL = 'https://zjr353ol8a.execute-api.eu-south-2.amazonaws.com/new-pedido'
+const LAMBDA_ORDER_URL = import.meta.env.VITE_LAMBDA_ORDER_URL
 
 // Maneja el proceso de pago con verificación de sesión
 const handleCheckout = async () => {

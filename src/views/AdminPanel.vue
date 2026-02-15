@@ -124,7 +124,7 @@ const isLoading = ref(false)
 const error = ref('')
 
 // URL del API Gateway (Asegúrate de haber creado la ruta GET /pedidos)
-const API_URL = 'https://zjr353ol8a.execute-api.eu-south-2.amazonaws.com/pedidos'
+const API_URL = import.meta.env.VITE_API_ORDERS_URL
 
 const fetchOrders = async () => {
     isLoading.value = true
