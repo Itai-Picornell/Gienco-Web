@@ -114,6 +114,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { fetchAuthSession } from 'aws-amplify/auth'
 import Footer from '../components/Footer.vue'
 
 const router = useRouter()
@@ -130,10 +131,18 @@ const fetchOrders = async () => {
     isLoading.value = true
     error.value = ''
     try {
+        const session = await fetchAuthSession()
+        const token = session.tokens?.accessToken?.toString()
+
+        if (!token) {
+            throw new Error('No se encontró token de autenticación')
+        }
+
         const response = await fetch(API_URL, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': token
             }
         })
         
