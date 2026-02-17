@@ -96,7 +96,7 @@
                         class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
                         :class="getStatusClass(order.status)"
                     >
-                        {{ order.status || 'PENDING' }}
+                        {{ getStatusText(order.status) }}
                     </span>
                 </div>
               </div>
@@ -114,7 +114,6 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-import { fetchAuthSession } from 'aws-amplify/auth'
 import Footer from '../components/Footer.vue'
 
 const router = useRouter()
@@ -181,6 +180,15 @@ const getStatusClass = (status) => {
         case 'PENDING': return 'bg-yellow-500/10 text-yellow-500'
         case 'CANCELLED': return 'bg-red-500/10 text-red-500'
         default: return 'bg-blue-500/10 text-blue-500'
+    }
+}
+
+const getStatusText = (status) => {
+    switch(status) {
+        case 'COMPLETED': return 'Completado'
+        case 'PENDING': return 'Pendiente'
+        case 'CANCELLED': return 'Cancelado'
+        default: return status || 'Pendiente'
     }
 }
 
