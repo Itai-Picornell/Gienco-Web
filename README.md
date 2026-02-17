@@ -8,8 +8,7 @@
 [![Vite](https://img.shields.io/badge/Vite-6.0.0-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Pinia](https://img.shields.io/badge/Pinia-2.1.7-FFD859?logo=pinia&logoColor=white)](https://pinia.vuejs.org/)
 [![AWS Amplify](https://img.shields.io/badge/AWS%20Amplify-6.16.0-FF9900?logo=aws-amplify&logoColor=white)](https://aws.amazon.com/amplify/)
-[![Build Status](https://img.shields.io/badge/build-passing-success)](https://github.com)
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://d33kjtzxmbw87t.cloudfront.net/)
+
 
 
 
@@ -22,8 +21,6 @@
 - [Flujo de la Aplicación](#flujo-de-la-aplicación)
 - [Características](#características)
 - [Acceso y Ejecución](#acceso-y-ejecución)
-- [Variables de Entorno](#variables-de-entorno)
-- [Pipeline CI/CD](#pipeline-cicd)
 
 ---
 
@@ -249,60 +246,9 @@ graph LR
 2. **Autenticar** → Inicia sesión con credenciales de admin (Cognito User Pool)
 3. **Verificar** → Guard del router verifica rol de admin en token JWT
 4. **Dashboard** → Accede al panel de admin con herramientas de gestión
-5. **Gestionar** → Crear/actualizar/eliminar productos, ver pedidos, gestionar inventario
+5. **Funciones** → Ver pedidos
 
-#### 3. **Flujo de Gestión de Estado**
-```mermaid
-graph TD
-    A[Acción Usuario] --> B[Método Componente]
-    B --> C[Acción Store Pinia]
-    C --> D{Necesita API?}
-    
-    D -->|Sí| E[AWS Amplify API]
-    E --> F[API Gateway]
-    F --> G[Función Lambda]
-    G --> H[Actualizar Estado Store]
-    
-    D -->|No| H
-    H --> I[Actualización UI Reactiva]
-    
-    I --> J{Persistir Estado?}
-    J -->|Sí| K[LocalStorage]
-    J -->|No| L[Solo Memoria]
-    
-    style C fill:#FFD859,stroke:#35495E,color:#000
-    style E fill:#FF9900,stroke:#232F3E,color:#fff
-```
 
----
-
-## Características
-
-### Características del Cliente
-
-- **Catálogo de Productos**: Explora merchandising oficial de la banda con imágenes y descripciones
-- **Búsqueda y Filtrado**: Encuentra productos rápidamente con opciones de filtrado avanzadas
-- **Carrito de Compras**: Carrito persistente con cálculos de precio en tiempo real
-- **Autenticación de Usuario**: Login y registro seguro con AWS Cognito
-- **Diseño Responsivo**: Optimizado para dispositivos móviles, tablets y escritorio
-- **Notificaciones**: Feedback en tiempo real para acciones de usuario y errores
-- **Experiencia de Marca**: Audio y branding visual inmersivo de la banda
-
-### Características del Administrador
-
-- **Acceso Basado en Roles**: Rutas de admin protegidas con verificación JWT
-- **Gestión de Productos**: Operaciones CRUD (crear, leer, actualizar, eliminar) completas
-- **Dashboard de Pedidos**: Ver y gestionar pedidos de clientes
-- **Gestión de Usuarios**: Monitorear usuarios registrados y permisos
-
-### Características Técnicas
-
-- **Carga Rápida**: Vite HMR para feedback instantáneo en desarrollo
-- **División de Código**: Tamaños de bundle optimizados con chunking de vendor
-- **Persistencia de Estado**: Estado de carrito y auth sobrevive recargas de página
-- **Pipeline CI/CD**: Testing y despliegue automatizado en git push
-- **Seguridad**: HTTPS/SSL vía CloudFront, autenticación API segura
-- **CDN Global**: Entrega de contenido de baja latencia en todo el mundo
 
 ---
 
