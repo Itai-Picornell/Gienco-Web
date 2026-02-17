@@ -56,16 +56,16 @@
               :key="order.orderId"
               class="p-6 hover:bg-white/10 transition-colors"
             >
-              <div class="flex flex-col md:flex-row md:items-center gap-4">
+              <div class="flex flex-col lg:flex-row lg:items-center gap-4">
                 <!-- Icon -->
                 <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <span class="material-symbols-outlined text-white text-xl">shopping_bag</span>
                 </div>
                 
                 <!-- Main Info -->
-                <div class="flex-1 min-w-0">
-                  <h3 class="text-white font-bold text-lg">Pedido {{ order.orderId }}</h3>
-                  <p class="text-gray-300 text-sm mt-1">
+                <div class="flex-1 min-w-[200px]">
+                  <h3 class="text-white font-bold text-lg truncate">Pedido {{ order.orderId }}</h3>
+                  <p class="text-gray-300 text-sm mt-1 truncate">
                     <span class="text-gray-500">Usuario:</span> {{ order.email || order.userId }}
                   </p>
                    <p class="text-gray-400 text-xs mt-1">
@@ -74,10 +74,10 @@
                 </div>
 
                 <!-- Products Summary -->
-                <div class="hidden md:block flex-1 border-l border-[#392829] pl-4">
+                <div class="hidden lg:block flex-1 min-w-[200px] max-w-[300px] border-l border-[#392829] pl-4">
                     <p class="text-sm text-gray-400 mb-1">Productos:</p>
                     <ul class="text-xs text-gray-300">
-                        <li v-for="(item, idx) in order.items.slice(0, 2)" :key="idx">
+                        <li v-for="(item, idx) in order.items.slice(0, 2)" :key="idx" class="truncate">
                             {{ item.quantity }}x {{ item.name }} ({{ item.size }})
                         </li>
                         <li v-if="order.items.length > 2" class="text-gray-500 italic">
@@ -87,16 +87,16 @@
                 </div>
 
                 <!-- Price and Status -->
-                <div class="flex items-center gap-4 mt-4 md:mt-0 justify-between md:justify-end min-w-[150px]">
+                <div class="flex items-center gap-3 mt-4 lg:mt-0 justify-between lg:justify-end min-w-[200px] shrink-0">
                     <div class="text-right">
-                        <p class="text-white font-black text-xl">{{ typeof order.totalCurrentPrice === 'number' ? order.totalCurrentPrice.toFixed(2) : order.totalCurrentPrice }}€</p>
+                        <p class="text-white font-black text-xl whitespace-nowrap">{{ typeof order.totalCurrentPrice === 'number' ? order.totalCurrentPrice.toFixed(2) : order.totalCurrentPrice }}€</p>
                     </div>
                     
                     <span 
-                        class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
+                        class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap"
                         :class="getStatusClass(order.status)"
                     >
-                        {{ order.status || 'PENDING' }}
+                        {{ getStatusText(order.status) }}
                     </span>
                 </div>
               </div>
@@ -174,6 +174,15 @@ const getStatusClass = (status) => {
         case 'PENDING': return 'bg-yellow-500/10 text-yellow-500'
         case 'CANCELLED': return 'bg-red-500/10 text-red-500'
         default: return 'bg-blue-500/10 text-blue-500'
+    }
+}
+
+const getStatusText = (status) => {
+    switch(status) {
+        case 'COMPLETED': return 'Completado'
+        case 'PENDING': return 'Pendiente'
+        case 'CANCELLED': return 'Cancelado'
+        default: return status || 'Pendiente'
     }
 }
 
