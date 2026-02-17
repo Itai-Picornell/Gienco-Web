@@ -10,7 +10,8 @@
     
     <!-- Contenedor donde se renderiza el componente de la ruta actual -->
     <!-- router-view es un componente especial de Vue Router que muestra el componente correspondiente a la URL actual -->
-    <router-view />
+    <!-- flex-1 hace que el contenido crezca y empuje el footer al fondo -->
+    <router-view class="flex-1" />
     
     <!-- Modal global para notificaciones -->
     <NotificationModal />

@@ -1,8 +1,9 @@
 <template>
   <main class="flex-grow">
     <!-- Sección Hero a pantalla completa -->
-    <section class="relative w-full h-screen flex items-center justify-center overflow-hidden">
+    <section class="relative w-full h-screen flex items-center justify-center overflow-hidden" @mouseenter="pauseCarousel" @mouseleave="resumeCarousel">
       <h1 class="sr-only">Gienco Band - Banda Oficial de Música</h1>
+      
       <!-- Carrusel de fondo -->
       <div class="absolute inset-0 z-0">
         <div 
@@ -14,12 +15,52 @@
         ></div>
       </div>
       
+      <!-- Controles de navegación -->
+      <div v-if="imagenesFondo.length > 1" class="absolute inset-x-0 top-1/2 -translate-y-1/2 z-20 flex justify-between items-center px-4 md:px-10 pointer-events-none">
+        <!-- Flecha Izquierda -->
+        <button 
+          @click="cambiarImagen(-1)"
+          class="pointer-events-auto group relative w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:bg-white/20 hover:border-white/30 hover:scale-105 active:scale-95 opacity-0 hover:opacity-100 animate-fade-in"
+          style="animation-delay: 0.5s; animation-fill-mode: forwards;"
+          aria-label="Imagen anterior"
+        >
+          <svg class="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:-translate-x-0.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        
+        <!-- Flecha Derecha -->
+        <button 
+          @click="cambiarImagen(1)"
+          class="pointer-events-auto group relative w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:bg-white/20 hover:border-white/30 hover:scale-105 active:scale-95 opacity-0 hover:opacity-100 animate-fade-in"
+          style="animation-delay: 0.5s; animation-fill-mode: forwards;"
+          aria-label="Imagen siguiente"
+        >
+          <svg class="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Indicadores de posición -->
+      <div v-if="imagenesFondo.length > 1" class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+        <button
+          v-for="(imagen, indice) in imagenesFondo"
+          :key="indice"
+          @click="irAImagen(indice)"
+          :class="[
+            'w-2 h-2 rounded-full transition-all',
+            indiceImagenActual === indice ? 'bg-white w-8' : 'bg-white/50 hover:bg-white/75'
+          ]"
+          :aria-label="`Ir a imagen ${indice + 1}`"
+        ></button>
+      </div>
     </section>
 
     <!-- Sección de Último Lanzamiento -->
-    <section class="py-20 bg-background-dark">
+    <section class="py-12 md:py-20 bg-background-dark">
       <div class="container mx-auto px-4 md:px-10 lg:px-40">
-        <div class="flex flex-col lg:flex-row gap-12 lg:gap-20 items-center">
+        <div class="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-20 items-center">
           <div class="flex-1 flex flex-col gap-8 text-center lg:text-left">
             <div class="flex flex-col gap-4">
               <span class="text-primary font-bold tracking-widest text-sm uppercase">Nuevo Lanzamiento</span>
@@ -90,13 +131,42 @@ import Footer from '../components/Footer.vue'
 
 // Imágenes del carrusel de fondo
 const imagenesFondo = ref([
-  '/images/backgrounds/Background3.webp'
+  '/images/backgrounds/Background3.webp',
+  '/images/backgrounds/Fondo_Login.webp',
+  '/images/backgrounds/Fondo_Registrarse.webp'
 ])
 
 const indiceImagenActual = ref(0)
 let idIntervalo = null
 
-// Rota automáticamente cada 5 segundos (deshabilitado si solo hay 1 imagen)
+// Función para cambiar imagen (dirección: -1 izquierda, 1 derecha)
+const cambiarImagen = (direccion) => {
+  const totalImagenes = imagenesFondo.value.length
+  indiceImagenActual.value = (indiceImagenActual.value + direccion + totalImagenes) % totalImagenes
+}
+
+// Función para ir directamente a una imagen
+const irAImagen = (indice) => {
+  indiceImagenActual.value = indice
+}
+
+// Funciones para pausar/reanudar el carrusel
+const pauseCarousel = () => {
+  if (idIntervalo) {
+    clearInterval(idIntervalo)
+    idIntervalo = null
+  }
+}
+
+const resumeCarousel = () => {
+  if (imagenesFondo.value.length > 1 && !idIntervalo) {
+    idIntervalo = setInterval(() => {
+      indiceImagenActual.value = (indiceImagenActual.value + 1) % imagenesFondo.value.length
+    }, 5000)
+  }
+}
+
+// Rota automáticamente cada 5 segundos
 onMounted(() => {
   if (imagenesFondo.value.length > 1) {
     idIntervalo = setInterval(() => {
@@ -173,3 +243,24 @@ const toggleAudio = (pista) => {
 }
 
 </script>
+
+<style scoped>
+/* Animación sutil para las flechas */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.6;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out;
+}
+
+/* Efecto hover para mostrar completamente las flechas */
+.animate-fade-in:hover {
+  opacity: 1 !important;
+}
+</style>

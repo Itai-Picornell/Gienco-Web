@@ -1,7 +1,7 @@
 <template>
-  <main>
-    <!-- HeroSection -->
-    <div class="flex flex-col w-full">
+  <main class="flex-grow">
+    <!-- HeroSection con padding para navbar fixed -->
+    <div class="flex flex-col w-full pt-20">
       <div class="w-full">
         <div class="@container">
           <div class="w-full">

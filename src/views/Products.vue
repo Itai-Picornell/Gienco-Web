@@ -1,7 +1,7 @@
 <template>
-  <main class="flex-grow">
+  <main class="flex-grow pt-20">
     <!-- Hero Section -->
-    <section class="relative w-full bg-gradient-to-br from-background-dark via-surface-dark to-background-dark border-b border-[#392829] py-20">
+    <section class="relative w-full bg-gradient-to-br from-background-dark via-surface-dark to-background-dark border-b border-[#392829] py-12 md:py-20">
       <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div class="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]"></div>
         <div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px]"></div>
@@ -51,21 +51,26 @@
                 {{ producto.description }}
               </p>
               
-              <!-- Price & Sizes -->
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex flex-col">
-                  <span class="text-primary text-2xl font-black">{{ producto.price }}€</span>
-                  <span class="text-text-muted text-xs">Envío gratis</span>
+              <!-- Price & Sizes - Mejor layout responsive -->
+              <div class="flex flex-col gap-4 mb-4">
+                <!-- Precio -->
+                <div class="flex items-end justify-between">
+                  <div class="flex flex-col">
+                    <span class="text-primary text-2xl font-black">{{ producto.price }}€</span>
+                    <span class="text-text-muted text-xs">Envío gratis</span>
+                  </div>
                 </div>
+                
+                <!-- Selector de tallas -->
                 <div class="flex flex-col gap-2">
-                  <span class="text-text-muted text-xs text-right">Elige talla:</span>
-                  <div class="flex gap-2">
+                  <span class="text-text-muted text-xs">Elige talla:</span>
+                  <div class="flex flex-wrap gap-2">
                     <button 
                       v-for="talla in producto.sizes" 
                       :key="talla"
                       @click="seleccionarTalla(producto.id, talla)"
                       :class="[
-                        'w-8 h-8 flex items-center justify-center border rounded text-xs font-bold transition-colors',
+                        'w-10 h-10 flex items-center justify-center border rounded text-sm font-bold transition-colors',
                         tallasSeleccionadas[producto.id] === talla 
                           ? 'bg-white border-white text-black' 
                           : 'border-border-dark text-white hover:bg-white hover:text-black hover:border-white'

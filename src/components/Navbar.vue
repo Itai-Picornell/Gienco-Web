@@ -121,56 +121,94 @@
       </div>
     </div>
 
-    <!-- Menú Móvil (Desplegable) -->
-    <div v-if="isMobileMenuOpen" class="lg:hidden absolute top-full left-0 w-full bg-black/95 backdrop-blur-xl border-t border-white/10 flex flex-col items-center py-6 gap-6 transition-all duration-300">
-      <router-link 
-        to="/" 
-        class="text-white text-lg font-semibold hover:text-red-600 transition-colors uppercase tracking-wider"
-        @click="isMobileMenuOpen = false"
+    <!-- Menú Móvil (Desplegable) con Glassmorphism mejorado -->
+    <transition
+      enter-active-class="transition-all duration-300 ease-out"
+      enter-from-class="opacity-0 -translate-y-4"
+      enter-to-class="opacity-100 translate-y-0"
+      leave-active-class="transition-all duration-200 ease-in"
+      leave-from-class="opacity-100 translate-y-0"
+      leave-to-class="opacity-0 -translate-y-4"
+    >
+      <div 
+        v-if="isMobileMenuOpen" 
+        class="lg:hidden absolute top-full left-0 w-full bg-black/60 backdrop-blur-xl border-t border-white/20 shadow-2xl"
       >
-        INICIO
-      </router-link>
-      <router-link 
-        to="/about" 
-        class="text-white text-lg font-semibold hover:text-red-600 transition-colors uppercase tracking-wider"
-        @click="isMobileMenuOpen = false"
-      >
-        BANDA
-      </router-link>
-      <router-link 
-        to="/products" 
-        class="text-white text-lg font-semibold hover:text-red-600 transition-colors uppercase tracking-wider"
-        @click="isMobileMenuOpen = false"
-      >
-        TIENDA
-      </router-link>
+        <!-- Contenido del menú -->
+        <div class="px-6 py-8 flex flex-col gap-4">
+          <!-- Enlaces principales -->
+          <nav class="flex flex-col gap-2">
+            <router-link 
+              to="/" 
+              class="group flex items-center gap-3 px-4 py-3 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-all duration-200 uppercase tracking-wider"
+              :class="{ 'bg-red-600/20 text-primary border-l-4 border-primary': $route.path === '/' }"
+              @click="isMobileMenuOpen = false"
+            >
+              <span class="material-symbols-outlined text-xl">home</span>
+              <span>Inicio</span>
+            </router-link>
+            
+            <router-link 
+              to="/about" 
+              class="group flex items-center gap-3 px-4 py-3 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-all duration-200 uppercase tracking-wider"
+              :class="{ 'bg-red-600/20 text-primary border-l-4 border-primary': $route.path === '/about' }"
+              @click="isMobileMenuOpen = false"
+            >
+              <span class="material-symbols-outlined text-xl">group</span>
+              <span>Banda</span>
+            </router-link>
+            
+            <router-link 
+              to="/products" 
+              class="group flex items-center gap-3 px-4 py-3 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-all duration-200 uppercase tracking-wider"
+              :class="{ 'bg-red-600/20 text-primary border-l-4 border-primary': $route.path === '/products' }"
+              @click="isMobileMenuOpen = false"
+            >
+              <span class="material-symbols-outlined text-xl">shopping_bag</span>
+              <span>Tienda</span>
+            </router-link>
+          </nav>
 
-      <!-- Iconos en Menú Móvil -->
-      <div class="flex gap-8 mt-4">
-        <router-link to="/cart" class="relative" @click="isMobileMenuOpen = false">
-          <button class="text-white hover:text-red-600 transition-colors">
-            <span class="material-symbols-outlined text-3xl">shopping_cart</span>
-          </button>
-          <div v-if="cantidadArticulosCarrito > 0" class="absolute -top-2 -right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-            <span class="text-white text-xs font-bold">{{ cantidadArticulosCarrito }}</span>
+          <!-- Divisor -->
+          <div class="h-px bg-white/10 my-2"></div>
+
+          <!-- Acciones rápidas -->
+          <div class="grid grid-cols-3 gap-3">
+            <router-link 
+              to="/cart" 
+              class="relative flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all duration-200" 
+              @click="isMobileMenuOpen = false"
+            >
+              <span class="material-symbols-outlined text-2xl text-white">shopping_cart</span>
+              <span class="text-white text-xs font-medium">Carrito</span>
+              <div v-if="cantidadArticulosCarrito > 0" class="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                <span class="text-white text-xs font-bold">{{ cantidadArticulosCarrito }}</span>
+              </div>
+            </router-link>
+            
+            <router-link 
+              to="/login" 
+              class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all duration-200" 
+              @click="isMobileMenuOpen = false"
+            >
+              <span class="material-symbols-outlined text-2xl text-white">person</span>
+              <span class="text-white text-xs font-medium">Cuenta</span>
+            </router-link>
+
+            <router-link 
+              :to="estaAdministradorAutenticado ? '/admin' : '/admin-login'" 
+              class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all duration-200" 
+              @click="isMobileMenuOpen = false"
+            >
+              <span class="material-symbols-outlined text-2xl text-white">
+                {{ estaAdministradorAutenticado ? 'admin_panel_settings' : 'lock' }}
+              </span>
+              <span class="text-white text-xs font-medium">Admin</span>
+            </router-link>
           </div>
-        </router-link>
-        
-        <router-link to="/login" @click="isMobileMenuOpen = false">
-          <button class="text-white hover:text-red-600 transition-colors">
-            <span class="material-symbols-outlined text-3xl">person</span>
-          </button>
-        </router-link>
-
-        <router-link :to="estaAdministradorAutenticado ? '/admin' : '/admin-login'" @click="isMobileMenuOpen = false">
-          <button class="text-white hover:text-red-600 transition-colors">
-            <span class="material-symbols-outlined text-3xl">
-              {{ estaAdministradorAutenticado ? 'admin_panel_settings' : 'lock' }}
-            </span>
-          </button>
-        </router-link>
+        </div>
       </div>
-    </div>
+    </transition>
   </header>
 </template>
 

@@ -56,48 +56,52 @@
               :key="order.orderId"
               class="p-6 hover:bg-white/10 transition-colors"
             >
-              <div class="flex flex-col md:flex-row md:items-center gap-4">
-                <!-- Icon -->
-                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <span class="material-symbols-outlined text-white text-xl">shopping_bag</span>
-                </div>
-                
-                <!-- Main Info -->
-                <div class="flex-1 min-w-0">
-                  <h3 class="text-white font-bold text-lg">Pedido {{ order.orderId }}</h3>
-                  <p class="text-gray-300 text-sm mt-1">
-                    <span class="text-gray-500">Usuario:</span> {{ order.email || order.userId }}
-                  </p>
-                   <p class="text-gray-400 text-xs mt-1">
-                    {{ formatDate(order.createdAt) }}
-                  </p>
-                </div>
-
-                <!-- Products Summary -->
-                <div class="hidden md:block flex-1 border-l border-[#392829] pl-4">
-                    <p class="text-sm text-gray-400 mb-1">Productos:</p>
-                    <ul class="text-xs text-gray-300">
-                        <li v-for="(item, idx) in order.items.slice(0, 2)" :key="idx">
-                            {{ item.quantity }}x {{ item.name }} ({{ item.size }})
-                        </li>
-                        <li v-if="order.items.length > 2" class="text-gray-500 italic">
-                            +{{ order.items.length - 2 }} más...
-                        </li>
-                    </ul>
+              <!-- Layout principal: columna en móvil, fila en desktop -->
+              <div class="flex flex-col gap-4">
+                <!-- Fila superior: Icono + Info principal -->
+                <div class="flex items-start gap-4">
+                  <!-- Icon -->
+                  <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-white text-xl">shopping_bag</span>
+                  </div>
+                  
+                  <!-- Main Info con mejor manejo de overflow -->
+                  <div class="flex-1 min-w-0">
+                    <h3 class="text-white font-bold text-base md:text-lg truncate">Pedido {{ order.orderId }}</h3>
+                    <p class="text-gray-300 text-sm mt-1 truncate">
+                      <span class="text-gray-500">Usuario:</span> {{ order.email || order.userId }}
+                    </p>
+                    <p class="text-gray-400 text-xs mt-1">
+                      {{ formatDate(order.createdAt) }}
+                    </p>
+                  </div>
                 </div>
 
-                <!-- Price and Status -->
-                <div class="flex items-center gap-4 mt-4 md:mt-0 justify-between md:justify-end min-w-[150px]">
-                    <div class="text-right">
-                        <p class="text-white font-black text-xl">{{ typeof order.totalCurrentPrice === 'number' ? order.totalCurrentPrice.toFixed(2) : order.totalCurrentPrice }}€</p>
-                    </div>
-                    
-                    <span 
-                        class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
-                        :class="getStatusClass(order.status)"
-                    >
-                        {{ getStatusText(order.status) }}
-                    </span>
+                <!-- Products Summary - Visible en tablet y desktop -->
+                <div class="hidden sm:block md:pl-14">
+                  <p class="text-sm text-gray-400 mb-1">Productos:</p>
+                  <ul class="text-xs text-gray-300 space-y-0.5">
+                    <li v-for="(item, idx) in order.items.slice(0, 2)" :key="idx">
+                      {{ item.quantity }}x {{ item.name }} ({{ item.size }})
+                    </li>
+                    <li v-if="order.items.length > 2" class="text-gray-500 italic">
+                      +{{ order.items.length - 2 }} más...
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Price and Status - Mejor distribución en móvil -->
+                <div class="flex items-center gap-3 md:pl-14">
+                  <div class="flex-1">
+                    <p class="text-white font-black text-lg md:text-xl">{{ typeof order.totalCurrentPrice === 'number' ? order.totalCurrentPrice.toFixed(2) : order.totalCurrentPrice }}€</p>
+                  </div>
+                  
+                  <span 
+                    class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider whitespace-nowrap"
+                    :class="getStatusClass(order.status)"
+                  >
+                    {{ getStatusText(order.status) }}
+                  </span>
                 </div>
               </div>
             </div>

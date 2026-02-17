@@ -47,10 +47,10 @@
             <div 
               v-for="item in cartStore.items" 
               :key="`${item.id}-${item.size}`"
-              class="bg-background-dark border border-[#392829] rounded-xl p-6 flex gap-6 hover:border-primary/50 transition-colors"
+              class="bg-background-dark border border-[#392829] rounded-xl p-4 md:p-6 flex flex-col sm:flex-row gap-4 md:gap-6 hover:border-primary/50 transition-colors"
             >
               <!-- Product Image -->
-              <div class="w-24 h-24 rounded-lg overflow-hidden bg-[#181111] flex-shrink-0">
+              <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden bg-[#181111] flex-shrink-0 mx-auto sm:mx-0">
                 <img 
                   :src="item.image" 
                   :alt="item.name"
@@ -58,39 +58,42 @@
                 />
               </div>
               
-              <!-- Product Info -->
-              <div class="flex-1 flex flex-col justify-between">
+              <!-- Product Info and Controls -->
+              <div class="flex-1 flex flex-col gap-3">
+                <!-- Info -->
                 <div>
-                  <h3 class="text-white text-lg font-bold mb-1">{{ item.name }}</h3>
+                  <h3 class="text-white text-base md:text-lg font-bold mb-1">{{ item.name }}</h3>
                   <p class="text-text-muted text-sm mb-2">Talla: {{ item.size }}</p>
-                  <p class="text-primary text-xl font-bold">{{ item.price }}€</p>
+                  <p class="text-primary text-lg md:text-xl font-bold">{{ item.price }}€</p>
                 </div>
                 
-                <!-- Quantity Controls -->
-                <div class="flex items-center gap-3 mt-4">
+                <!-- Quantity Controls and Remove Button -->
+                <div class="flex items-center justify-between gap-3">
+                  <div class="flex items-center gap-3">
+                    <button 
+                      @click="decreaseQuantity(item)"
+                      class="w-8 h-8 rounded bg-card-dark hover:bg-white hover:text-black transition-colors flex items-center justify-center text-white"
+                    >
+                      <span class="material-symbols-outlined text-lg">remove</span>
+                    </button>
+                    <span class="text-white font-bold w-8 text-center">{{ item.quantity }}</span>
+                    <button 
+                      @click="increaseQuantity(item)"
+                      class="w-8 h-8 rounded bg-card-dark hover:bg-white hover:text-black transition-colors flex items-center justify-center text-white"
+                    >
+                      <span class="material-symbols-outlined text-lg">add</span>
+                    </button>
+                  </div>
+                  
+                  <!-- Remove Button -->
                   <button 
-                    @click="decreaseQuantity(item)"
-                    class="w-8 h-8 rounded bg-card-dark hover:bg-white hover:text-black transition-colors flex items-center justify-center text-white"
+                    @click="removeItem(item)"
+                    class="text-text-muted hover:bg-white hover:text-black p-2 rounded transition-colors"
                   >
-                    <span class="material-symbols-outlined text-lg">remove</span>
-                  </button>
-                  <span class="text-white font-bold w-8 text-center">{{ item.quantity }}</span>
-                  <button 
-                    @click="increaseQuantity(item)"
-                    class="w-8 h-8 rounded bg-card-dark hover:bg-white hover:text-black transition-colors flex items-center justify-center text-white"
-                  >
-                    <span class="material-symbols-outlined text-lg">add</span>
+                    <span class="material-symbols-outlined">delete</span>
                   </button>
                 </div>
               </div>
-              
-              <!-- Remove Button -->
-              <button 
-                @click="removeItem(item)"
-                class="text-text-muted hover:bg-white hover:text-black p-2 rounded transition-colors self-start"
-              >
-                <span class="material-symbols-outlined">delete</span>
-              </button>
             </div>
           </div>
           
