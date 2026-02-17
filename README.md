@@ -106,20 +106,18 @@ graph TB
 - **Vue.js 3.4.21** - Framework JavaScript progresivo con Composition API
 - **Vue Router 4.3.0** - Biblioteca oficial de enrutamiento para navegación SPA
 - **Pinia 2.1.7** - Gestión de estado intuitiva y type-safe para Vue
-- **Pinia Persisted State 3.2.1** - Plugin para estado persistente entre sesiones
+
 
 ### Estilos y UI
 
 - **Tailwind CSS 4.1.18** - Framework CSS utility-first
-- **@tailwindcss/forms** - Plugin de estilos para formularios
-- **@tailwindcss/container-queries** - Utilidades de container queries
-- **PostCSS & Autoprefixer** - Procesamiento CSS y prefijos de vendor
+
 
 ### Herramientas de Build y Optimización
 
 - **Vite 6.0.0** - Herramienta de build frontend de nueva generación
 - **Terser 5.46.0** - Minificación JavaScript con eliminación de console/debugger
-- **Sharp 0.34.5** - Optimización de imágenes de alto rendimiento
+
 
 ### Integración Cloud
 
