@@ -1,5 +1,5 @@
 <template>
-  <main class="flex-grow">
+  <main class="flex-grow pt-20">
     <!-- HeroSection con padding para navbar fixed -->
     <div class="flex flex-col w-full pt-20">
       <div class="w-full">

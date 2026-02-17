@@ -1,5 +1,5 @@
 <template>
-  <main class="flex-grow pt-28">
+  <main class="flex-grow pt-20">
     <!-- Header Section -->
     <section class="relative w-full bg-gradient-to-br from-background-dark via-surface-dark to-background-dark border-b border-[#392829]">
       <div class="container mx-auto px-4 md:px-10 lg:px-40 py-12">
