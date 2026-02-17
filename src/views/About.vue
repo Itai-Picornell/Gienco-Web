@@ -50,7 +50,6 @@
         </div>
       </div>
     </div>
-    <Footer/>
   </main>
 </template>
 
