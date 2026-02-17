@@ -130,18 +130,12 @@ const fetchOrders = async () => {
     isLoading.value = true
     error.value = ''
     try {
-        const session = await fetchAuthSession()
-        const token = session.tokens?.accessToken?.toString()
-
-        if (!token) {
-            throw new Error('No se encontró token de autenticación')
-        }
-
+        // Note: Currently not sending Authorization header to avoid issues
+        // The Lambda function doesn't validate auth yet, but this should be added in the future
         const response = await fetch(API_URL, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
+                'Content-Type': 'application/json'
             }
         })
         
