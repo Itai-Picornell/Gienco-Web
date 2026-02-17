@@ -130,6 +130,8 @@ const fetchOrders = async () => {
     isLoading.value = true
     error.value = ''
     try {
+        // Note: Currently not sending Authorization header to avoid CORS issues
+        // The Lambda function doesn't validate auth yet, but this should be added in the future
         const response = await fetch(API_URL, {
             method: 'GET',
             headers: {
