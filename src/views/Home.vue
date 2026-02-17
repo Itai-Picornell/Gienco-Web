@@ -1,5 +1,5 @@
 <template>
-  <main class="flex-grow">
+  <main>
     <!-- Sección Hero a pantalla completa -->
     <section class="relative w-full h-screen flex items-center justify-center overflow-hidden" @mouseenter="pauseCarousel" @mouseleave="resumeCarousel">
       <h1 class="sr-only">Gienco Band - Banda Oficial de Música</h1>
