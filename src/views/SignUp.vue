@@ -73,12 +73,11 @@
             <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">Contraseña</span>
             <div class="relative">
               <input 
-                v-model="form.password"
+                v-model.trim="form.password"
                 :type="showPassword ? 'text' : 'password'"
                 class="form-input w-full rounded-lg border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-[#181111] text-slate-900 dark:text-white h-12 px-4 pr-12 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-gray-400 dark:placeholder:text-text-muted transition-all" 
                 placeholder="Ingresa tu contraseña" 
                 required
-                minlength="8"
               />
               <button 
                 type="button"
@@ -88,14 +87,58 @@
                 <span class="material-symbols-outlined text-xl">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
               </button>
             </div>
-            <p class="text-xs text-gray-500 dark:text-text-muted">Debe tener al menos 8 caracteres</p>
           </label>
+          
+          <div class="mb-6 -mt-3">
+            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 block mb-2">Requisitos:</span>
+            <div class="flex flex-wrap gap-x-4 gap-y-1">
+              <!-- Requisito: Longitud -->
+              <div 
+                class="flex items-center gap-1 transition-all duration-300"
+                :class="passwordCriteria.length ? 'text-emerald-500 font-medium' : 'text-gray-400'"
+              >
+                <span v-if="passwordCriteria.length" class="material-symbols-outlined text-[16px]">check</span>
+                <span v-else class="text-[14px] font-bold">*</span>
+                <span class="text-xs">8+ carácteres</span>
+              </div>
+
+              <!-- Requisito: Número -->
+              <div 
+                class="flex items-center gap-1 transition-all duration-300"
+                :class="passwordCriteria.number ? 'text-emerald-500 font-medium' : 'text-gray-400'"
+              >
+                <span v-if="passwordCriteria.number" class="material-symbols-outlined text-[16px]">check</span>
+                <span v-else class="text-[14px] font-bold">*</span>
+                <span class="text-xs">Número</span>
+              </div>
+
+              <!-- Requisito: Mayúscula -->
+              <div 
+                class="flex items-center gap-1 transition-all duration-300"
+                :class="passwordCriteria.upper ? 'text-emerald-500 font-medium' : 'text-gray-400'"
+              >
+                <span v-if="passwordCriteria.upper" class="material-symbols-outlined text-[16px]">check</span>
+                <span v-else class="text-[14px] font-bold">*</span>
+                <span class="text-xs">Mayúscula</span>
+              </div>
+
+              <!-- Requisito: Minúscula -->
+              <div 
+                class="flex items-center gap-1 transition-all duration-300"
+                :class="passwordCriteria.lower ? 'text-emerald-500 font-medium' : 'text-gray-400'"
+              >
+                <span v-if="passwordCriteria.lower" class="material-symbols-outlined text-[16px]">check</span>
+                <span v-else class="text-[14px] font-bold">*</span>
+                <span class="text-xs">Minúscula</span>
+              </div>
+            </div>
+          </div>
           
           <label class="flex flex-col gap-2">
             <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">Confirmar Contraseña</span>
             <div class="relative">
               <input 
-                v-model="form.confirmPassword"
+                v-model.trim="form.confirmPassword"
                 :type="showConfirmPassword ? 'text' : 'password'"
                 class="form-input w-full rounded-lg border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-[#181111] text-slate-900 dark:text-white h-12 px-4 pr-12 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-gray-400 dark:placeholder:text-text-muted transition-all" 
                 placeholder="Confirma tu contraseña" 
@@ -209,6 +252,24 @@ const isLoading = ref(false)
 const showVerification = ref(false)
 const verificationCode = ref('')
 
+const passwordCriteria = ref({
+  length: false,
+  number: false,
+  special: false,
+  upper: false,
+  lower: false
+})
+
+const checkPasswordCriteria = () => {
+  const p = form.value.password
+  passwordCriteria.value = {
+    length: p.length >= 8,
+    number: /\d/.test(p),
+    upper: /[A-Z]/.test(p),
+    lower: /[a-z]/.test(p)
+  }
+}
+
 // Procesa el formulario de registro y crea una nueva cuenta en Cognito
 /**
  * Procesa el registro de un nuevo usuario.
@@ -224,6 +285,12 @@ const handleSignUp = async () => {
   if (form.value.password !== form.value.confirmPassword) {
     errorMessage.value = '¡Las contraseñas no coinciden!'
     return
+  }
+
+  const passwordError = validatePassword(form.value.password)
+  if (passwordError) {
+      errorMessage.value = passwordError
+      return
   }
 
   isLoading.value = true
@@ -255,6 +322,31 @@ const handleSignUp = async () => {
   } finally {
       isLoading.value = false
   }
+}
+
+/**
+ * Valida que la contraseña cumpla con los requisitos de seguridad.
+ * - Mínimo 8 caracteres
+ * - Al menos 1 número
+ * - Al menos 1 carácter especial
+ * - Al menos 1 mayúscula
+ * - Al menos 1 minúscula
+ * 
+ * @param {string} password 
+ * @returns {string|null} Mensaje de error o null si es válida.
+ */
+const validatePassword = (password) => {
+    const minLength = 8
+    const hasNumber = /\d/
+    const hasUpperCase = /[A-Z]/
+    const hasLowerCase = /[a-z]/
+
+    if (password.length < minLength) return 'La contraseña debe tener al menos 8 caracteres.'
+    if (!hasNumber.test(password)) return 'La contraseña debe incluir al menos un número.'
+    if (!hasUpperCase.test(password)) return 'La contraseña debe incluir al menos una mayúscula.'
+    if (!hasLowerCase.test(password)) return 'La contraseña debe incluir al menos una minúscula.'
+
+    return null
 }
 
 // Verifica el código de confirmación enviado por correo electrónico

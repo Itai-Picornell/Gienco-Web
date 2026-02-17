@@ -152,8 +152,14 @@ export const useAuthStore = defineStore('auth', {
         return { success: true, isSignUpComplete, nextStep }
       } catch (error) {
         console.error('Register error:', error)
-        this.authError = error.message
-        return { success: false, error: error.message }
+        let msg = error.message
+        if (msg.includes('Password did not conform with policy')) {
+          msg = 'La contraseña no cumple con la política de seguridad (mínimo 8 caracteres, mayúscula, minúscula y número).'
+        } else if (msg.includes('User already exists')) {
+          msg = 'El usuario ya está registrado.'
+        }
+        this.authError = msg
+        return { success: false, error: msg }
       }
     },
 
