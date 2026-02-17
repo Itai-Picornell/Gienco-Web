@@ -17,7 +17,14 @@ export function useAuth() {
     }
   }
 
-  // Valida credenciales y guarda en localStorage
+  /**
+   * Valida credenciales de administrador y persiste la sesión si son correctas.
+   * Credenciales hardcodeadas para acceso simple al panel.
+   * 
+   * @param {string} username - Nombre de usuario.
+   * @param {string} password - Contraseña.
+   * @returns {boolean} True si las credenciales son válidas, False en caso contrario.
+   */
   const login = (username, password) => {
     if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
       isAuthenticated.value = true
@@ -27,7 +34,11 @@ export function useAuth() {
     return false
   }
 
-  // Cierra sesión
+  /**
+   * Cierra la sesión de administrador y elimina la persistencia local.
+   * 
+   * @returns {void}
+   */
   const logout = () => {
     isAuthenticated.value = false
     localStorage.removeItem('adminAuth')

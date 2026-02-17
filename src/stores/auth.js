@@ -11,7 +11,13 @@ export const useAuthStore = defineStore('auth', {
   }),
 
   actions: {
-    // Inicializa el estado verificando si hay sesión activa
+    /**
+     * Inicializa el estado de autenticación verificando la sesión actual con AWS Cognito.
+     * Recupera atributos del usuario y verifica grupos (admin).
+     * 
+     * @async
+     * @returns {Promise<boolean>} True si el usuario está autenticado, False en caso contrario.
+     */
     async checkAuth() {
       try {
         const user = await getCurrentUser()
@@ -37,7 +43,14 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    // Inicia sesión con Cognito
+    /**
+     * Inicia sesión en la aplicación utilizando AWS Cognito.
+     * 
+     * @async
+     * @param {string} username - Nombre de usuario o correo electrónico.
+     * @param {string} password - Contraseña del usuario.
+     * @returns {Promise<boolean>} True si el inicio de sesión fue exitoso, False si falló o requiere pasos adicionales.
+     */
     async login(username, password) {
       this.authError = null
       try {
@@ -61,7 +74,12 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    // Cierra sesión
+    /**
+     * Cierra la sesión del usuario actual en AWS Cognito y limpia el estado local.
+     * 
+     * @async
+     * @returns {Promise<void>}
+     */
     async logout() {
       try {
         await signOut()
@@ -75,7 +93,14 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    // Confirmar nueva contraseña (para primer login)
+    /**
+     * Confirma el desafío de nueva contraseña (NEW_PASSWORD_REQUIRED) de AWS Cognito.
+     * Comúnmente usado cuando un administrador crea un usuario temporal.
+     * 
+     * @async
+     * @param {string} newPassword - La nueva contraseña definida por el usuario.
+     * @returns {Promise<boolean>} True si el cambio fue exitoso y se inició sesión, False en caso contrario.
+     */
     async confirmNewPassword(newPassword) {
       this.authError = null
       try {
@@ -97,7 +122,17 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    // Registro de nuevo usuario
+    /**
+     * Registra un nuevo usuario en el User Pool de AWS Cognito.
+     * 
+     * @async
+     * @param {string} username - Nombre de usuario (generalmente el email).
+     * @param {string} password - Contraseña del usuario.
+     * @param {string} email - Correo electrónico del usuario.
+     * @param {string} firstName - Nombre de pila.
+     * @param {string} lastName - Apellido.
+     * @returns {Promise<{success: boolean, isSignUpComplete?: boolean, nextStep?: Object, error?: string}>} Resultado del registro.
+     */
     async register(username, password, email, firstName, lastName) {
       this.authError = null
       try {
@@ -122,7 +157,14 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    // Confirmar registro con código de verificación
+    /**
+     * Confirma el registro de un usuario mediante el código de verificación enviado por email (AWS Cognito).
+     * 
+     * @async
+     * @param {string} username - Nombre de usuario.
+     * @param {string} code - Código de confirmación de 6 dígitos.
+     * @returns {Promise<{success: boolean, isSignUpComplete?: boolean, error?: string}>} Resultado de la confirmación.
+     */
     async confirmRegistration(username, code) {
       this.authError = null
       try {

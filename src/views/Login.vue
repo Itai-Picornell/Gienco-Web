@@ -108,18 +108,38 @@ const showPassword = ref(false)
 const errorMessage = ref('')
 const isLoading = ref(false)
 
-// Verificar si ya está logueado
+// Verifica si el usuario ya está autenticado al cargar la página
+/**
+ * Verifica al montar el componente si el usuario ya posee una sesión activa.
+ * De ser así, lo redirige automáticamente.
+ */
 onMounted(async () => {
     if (authStore.isAuthenticated) {
         handleRedirect()
     }
 })
 
+// Redirige al usuario a la ruta solicitada o a la página principal
+/**
+ * Maneja la redirección post-login.
+ * Si existe un parámetro 'redirect' en la URL, envía al usuario allí; de lo contrario, a la home.
+ * 
+ * @returns {void}
+ */
 const handleRedirect = () => {
     const redirectPath = route.query.redirect || '/'
     router.push(redirectPath)
 }
 
+// Procesa el formulario de inicio de sesión y valida credenciales con Cognito
+/**
+ * Procesa el envío del formulario de inicio de sesión.
+ * Llama al store de autenticación para validar credenciales con AWS Cognito.
+ * Maneja errores y redirecciones.
+ * 
+ * @async
+ * @returns {Promise<void>}
+ */
 const handleLogin = async () => {
   errorMessage.value = ''
   isLoading.value = true

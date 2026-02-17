@@ -60,6 +60,10 @@ import { useNotificationStore } from '../stores/notification'
 
 const notificationStore = useNotificationStore()
 
+/**
+ * Maneja el clic en el fondo del modal (backdrop).
+ * Si el modal es de tipo 'alert', permite cerrarlo haciendo clic fuera.
+ */
 const handleBackdropClick = () => {
   if (notificationStore.modalType === 'alert') {
     notificationStore.closeModal(true)

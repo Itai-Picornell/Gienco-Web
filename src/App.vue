@@ -31,6 +31,7 @@ import { useAuthStore } from './stores/auth'
 
 const authStore = useAuthStore()
 
+// Verifica si hay sesión activa al cargar la aplicación
 onMounted(async () => {
   await authStore.checkAuth()
 })

@@ -209,6 +209,15 @@ const isLoading = ref(false)
 const showVerification = ref(false)
 const verificationCode = ref('')
 
+// Procesa el formulario de registro y crea una nueva cuenta en Cognito
+/**
+ * Procesa el registro de un nuevo usuario.
+ * Valida contraseñas y realiza la llamada a AWS Cognito mediante el store.
+ * Si es exitoso, avanza al paso de verificación.
+ * 
+ * @async
+ * @returns {Promise<void>}
+ */
 const handleSignUp = async () => {
   errorMessage.value = ''
 
@@ -248,6 +257,13 @@ const handleSignUp = async () => {
   }
 }
 
+// Verifica el código de confirmación enviado por correo electrónico
+/**
+ * Envía el código de verificación ingresado por el usuario para confirmar su cuenta en AWS Cognito.
+ * 
+ * @async
+ * @returns {Promise<void>}
+ */
 const handleVerification = async () => {
     isLoading.value = true
     errorMessage.value = ''

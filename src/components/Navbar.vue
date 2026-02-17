@@ -231,17 +231,23 @@ const isMobileMenuOpen = ref(false)
 // Estado para el menú de usuario
 const isUserMenuOpen = ref(false)
 
-// Función para alternar el menú móvil
+// Alterna la visibilidad del menú móvil
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
 }
 
-// Función para alternar el menú de usuario
+// Alterna la visibilidad del menú desplegable de usuario
 const toggleUserMenu = () => {
   isUserMenuOpen.value = !isUserMenuOpen.value
 }
 
-// Función para cerrar sesión
+/**
+ * Cierra la sesión del usuario actual mediante el auth store (Cognito)
+ * y redirige a la página de inicio.
+ * 
+ * @async
+ * @returns {Promise<void>}
+ */
 const handleLogout = async () => {
   await almacenAutenticacion.logout()
   isUserMenuOpen.value = false

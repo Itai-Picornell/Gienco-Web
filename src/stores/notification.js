@@ -8,6 +8,13 @@ export const useNotificationStore = defineStore('notification', () => {
     const modalMessage = ref('')
     const modalResolve = ref(null)
 
+    /**
+     * Muestra un modal de alerta informativa y espera a que el usuario lo cierre.
+     * 
+     * @param {string} message - Mensaje a mostrar en el cuerpo de la alerta.
+     * @param {string} [title='Aviso'] - Título del modal. Default 'Aviso'.
+     * @returns {Promise<void>} Promesa que se resuelve cuando el usuario cierra la alerta.
+     */
     const alert = (message, title = 'Aviso') => {
         return new Promise((resolve) => {
             modalType.value = 'alert'
@@ -18,6 +25,13 @@ export const useNotificationStore = defineStore('notification', () => {
         })
     }
 
+    /**
+     * Muestra un modal de confirmación con opciones (Aceptar/Cancelar).
+     * 
+     * @param {string} message - Pregunta o mensaje de confirmación.
+     * @param {string} [title='Confirmar'] - Título del modal. Default 'Confirmar'.
+     * @returns {Promise<boolean>} Promesa que resuelve a True si el usuario acepta, False si cancela.
+     */
     const confirm = (message, title = 'Confirmar') => {
         return new Promise((resolve) => {
             modalType.value = 'confirm'
@@ -28,6 +42,11 @@ export const useNotificationStore = defineStore('notification', () => {
         })
     }
 
+    /**
+     * Cierra el modal activo y resuelve la promesa pendiente con el resultado proporcionado.
+     * 
+     * @param {boolean} [result=true] - Valor con el que se resolverá la promesa (para confirmaciones).
+     */
     const closeModal = (result = true) => {
         showModal.value = false
         if (modalResolve.value) {

@@ -127,6 +127,14 @@ const error = ref('')
 // URL del API Gateway (Asegúrate de haber creado la ruta GET /pedidos)
 const API_URL = import.meta.env.VITE_API_ORDERS_URL
 
+// Obtiene todos los pedidos desde la API de backend
+/**
+ * Recupera el listado de pedidos desde la API Gateway.
+ * Gestiona los estados de carga y error.
+ * 
+ * @async
+ * @returns {Promise<void>}
+ */
 const fetchOrders = async () => {
     isLoading.value = true
     error.value = ''
@@ -155,11 +163,25 @@ const fetchOrders = async () => {
     }
 }
 
+// Cierra sesión de administrador y redirige a la página principal
+/**
+ * Cierra la sesión del administrador y redirige a la página de inicio.
+ * 
+ * @async
+ * @returns {Promise<void>}
+ */
 const handleLogout = async () => {
   await authStore.logout()
   router.push('/')
 }
 
+// Formatea una fecha ISO a formato español legible
+/**
+ * Convierte una fecha en formato ISO a una cadena legible en español.
+ * 
+ * @param {string} isoString - Fecha en formato ISO 8601.
+ * @returns {string} Fecha formateada (ej: 17 de febrero de 2026).
+ */
 const formatDate = (isoString) => {
     if (!isoString) return ''
     const date = new Date(isoString)
@@ -169,6 +191,13 @@ const formatDate = (isoString) => {
     }).format(date)
 }
 
+// Devuelve las clases CSS según el estado del pedido
+/**
+ * Determina las clases CSS (colores) para la etiqueta de estado del pedido.
+ * 
+ * @param {string} status - Estado del pedido (e.g., 'COMPLETED', 'PENDING').
+ * @returns {string} Clases CSS de Tailwind.
+ */
 const getStatusClass = (status) => {
     switch(status) {
         case 'COMPLETED': return 'bg-green-500/10 text-green-500'
@@ -178,6 +207,13 @@ const getStatusClass = (status) => {
     }
 }
 
+// Traduce el estado del pedido al español
+/**
+ * Traduce el código de estado del pedido a un texto legible en español.
+ * 
+ * @param {string} status - Estado del pedido en inglés/código.
+ * @returns {string} Nombre del estado en español.
+ */
 const getStatusText = (status) => {
     switch(status) {
         case 'COMPLETED': return 'Completado'

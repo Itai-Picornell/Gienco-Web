@@ -133,7 +133,11 @@ const router = useRouter()
 const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
 
-// Redirige a /admin si ya está autenticado
+// Redirige al panel de administración si ya está autenticado
+/**
+ * Verifica al montar el componente si el administrador ya está autenticado.
+ * Si es así, redirige al panel de administración.
+ */
 onMounted(() => {
   if (authStore.isAuthenticated) {
     router.push('/admin')
@@ -148,7 +152,14 @@ const form = ref({
 const showPassword = ref(false)
 const errorMessage = ref('')
 
-// Valida credenciales y redirige al panel admin
+// Procesa el inicio de sesión de administrador con AWS Cognito
+/**
+ * Procesa el inicio de sesión del administrador.
+ * Valida credenciales contra AWS Cognito y maneja errores o desafios de contraseña.
+ * 
+ * @async
+ * @returns {Promise<void>}
+ */
 const handleAdminLogin = async () => {
   errorMessage.value = ''
   
@@ -178,6 +189,13 @@ const handleAdminLogin = async () => {
 const newPasswordRequired = ref(false)
 const newPassword = ref('')
 
+// Confirma y establece la nueva contraseña para el primer acceso
+/**
+ * Envía la nueva contraseña requerida por Cognito durante el primer inicio de sesión (Challenge NEW_PASSWORD_REQUIRED).
+ * 
+ * @async
+ * @returns {Promise<void>}
+ */
 const handleNewPasswordSubmit = async () => {
     if (!newPassword.value) return
     

@@ -113,12 +113,26 @@ const almacenCarrito = useCartStore()
 const notificationStore = useNotificationStore()
 const tallasSeleccionadas = ref({}) // {productId: 'M', productId2: 'L'}
 
-// Guarda la talla seleccionada para un producto
+// Almacena la talla elegida para el producto seleccionado
+/**
+ * Registra la selección de talla para un producto específico.
+ * 
+ * @param {string|number} idProducto - ID del producto.
+ * @param {string} talla - Talla seleccionada ('S', 'M', 'L', 'XL').
+ */
 const seleccionarTalla = (idProducto, talla) => {
   tallasSeleccionadas.value[idProducto] = talla
 }
 
-// Añade producto al carrito con talla seleccionada
+// Añade el producto con su talla al carrito y reinicia la selección
+/**
+ * Valida que se haya seleccionado una talla y añade el producto al carrito.
+ * Muestra alerta si falta talla.
+ * 
+ * @async
+ * @param {Object} producto - Objeto del producto a añadir.
+ * @returns {Promise<void>}
+ */
 const agregarAlCarrito = async (producto) => {
   const tallaSeleccionada = tallasSeleccionadas.value[producto.id]
   if (!tallaSeleccionada) {

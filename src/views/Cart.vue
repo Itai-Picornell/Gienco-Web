@@ -158,24 +158,46 @@ const cartStore = useCartStore()
 const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
 
-// Incrementa cantidad de un item
+// Incrementa en uno la cantidad de un producto en el carrito
+/**
+ * Aumenta la cantidad de un item en el carrito en 1 unidad.
+ * 
+ * @param {Object} item - El objeto producto a modificar.
+ */
 const increaseQuantity = (item) => {
   cartStore.updateQuantity(item.id, item.size, item.quantity + 1)
 }
 
-// Decrementa cantidad (mínimo 1)
+// Reduce en uno la cantidad de un producto (mínimo 1)
+/**
+ * Disminuye la cantidad de un item en el carrito en 1 unidad.
+ * No reduce por debajo de 1.
+ * 
+ * @param {Object} item - El objeto producto a modificar.
+ */
 const decreaseQuantity = (item) => {
   if (item.quantity > 1) {
     cartStore.updateQuantity(item.id, item.size, item.quantity - 1)
   }
 }
 
-// Elimina item del carrito
+// Elimina un producto específico del carrito
+/**
+ * Elimina completamente un producto del carrito.
+ * 
+ * @param {Object} item - El objeto producto a eliminar.
+ */
 const removeItem = (item) => {
   cartStore.removeFromCart(item.id, item.size)
 }
 
-// Vacía el carrito con confirmación
+// Vacía completamente el carrito tras confirmación del usuario
+/**
+ * Solicita confirmación al usuario y vacía todo el carrito.
+ * 
+ * @async
+ * @returns {Promise<void>}
+ */
 const clearCart = async () => {
   const confirmed = await notificationStore.confirm('¿Estás seguro de que quieres vaciar tu carrito?', 'Vaciar Carrito')
   if (confirmed) {
@@ -186,7 +208,14 @@ const clearCart = async () => {
 // URL de la función Lambda (API Gateway)
 const LAMBDA_ORDER_URL = import.meta.env.VITE_LAMBDA_ORDER_URL
 
-// Maneja el proceso de pago con verificación de sesión
+// Procesa el pago verificando autenticación y enviando el pedido al backend
+/**
+ * Inicia el proceso de checkout.
+ * Verifica autenticación con AWS Cognito, valida el carrito y envía el pedido a la API Gateway.
+ * 
+ * @async
+ * @returns {Promise<void>}
+ */
 const handleCheckout = async () => {
     // Verificar estado de autenticación actualizado
     await authStore.checkAuth()

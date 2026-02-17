@@ -135,18 +135,31 @@ const imagenesFondo = ref([
 const indiceImagenActual = ref(0)
 let idIntervalo = null
 
-// Función para cambiar imagen (dirección: -1 izquierda, 1 derecha)
+// Cambia la imagen del carrusel según la dirección (-1 izquierda, 1 derecha)
+/**
+ * Cambia la imagen activa del carrusel desplazándose en la dirección indicada.
+ * 
+ * @param {number} direccion - Dirección del desplazamiento: -1 (anterior) o 1 (siguiente).
+ */
 const cambiarImagen = (direccion) => {
   const totalImagenes = imagenesFondo.value.length
   indiceImagenActual.value = (indiceImagenActual.value + direccion + totalImagenes) % totalImagenes
 }
 
-// Función para ir directamente a una imagen
+// Establece directamente el índice de la imagen a mostrar
+/**
+ * Navega directamente a una imagen específica del carrusel.
+ * 
+ * @param {number} indice - Índice de la imagen a mostrar.
+ */
 const irAImagen = (indice) => {
   indiceImagenActual.value = indice
 }
 
-// Funciones para pausar/reanudar el carrusel
+// Pausa la rotación automática del carrusel
+/**
+ * Detiene la rotación automática del carrusel (ej. al hacer hover).
+ */
 const pauseCarousel = () => {
   if (idIntervalo) {
     clearInterval(idIntervalo)
@@ -154,6 +167,11 @@ const pauseCarousel = () => {
   }
 }
 
+// Reanuda la rotación automática del carrusel
+/**
+ * Reinicia la rotación automática del carrusel si no está ya activa.
+ * Intervalo configurado a 5 segundos.
+ */
 const resumeCarousel = () => {
   if (imagenesFondo.value.length > 1 && !idIntervalo) {
     idIntervalo = setInterval(() => {
@@ -162,7 +180,7 @@ const resumeCarousel = () => {
   }
 }
 
-// Rota automáticamente cada 5 segundos
+// Inicia la rotación automática del carrusel al cargar la página
 onMounted(() => {
   if (imagenesFondo.value.length > 1) {
     idIntervalo = setInterval(() => {
@@ -172,8 +190,8 @@ onMounted(() => {
 })
 
 
-// Limpia el intervalo al desmontar
-onUnmounted(() => {
+// Limpia el intervalo y detiene el audio al desmontar el componente
+onBeforeUnmount(() => {
   if (idIntervalo) {
     clearInterval(idIntervalo)
   }
@@ -205,6 +223,14 @@ let audioActual = null
 const pistaReproduciendo = ref(null)
 const estaPausado = ref(false)
 
+// Reproduce, pausa o cambia la pista de audio seleccionada
+/**
+ * Controla la reproducción de audio.
+ * Si se selecciona la misma pista, alterna entre reproducir y pausar.
+ * Si es una nueva pista, detiene la anterior y comienza la nueva.
+ * 
+ * @param {Object} pista - Objeto con la información de la pista de audio (url, titulo, etc).
+ */
 const toggleAudio = (pista) => {
   // Si es la misma pista que está reproduciéndose
   if (pistaReproduciendo.value === pista.titulo && audioActual) {
