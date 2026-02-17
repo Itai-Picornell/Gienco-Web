@@ -119,15 +119,11 @@ Estamos muy contentos de anunciaros nuestro primer álbum "Manifiesto" el cual s
         </div>
       </div>
     </section>
-
-
-    <Footer />
   </main>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import Footer from '../components/Footer.vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 // Imágenes del carrusel de fondo
 const imagenesFondo = ref([

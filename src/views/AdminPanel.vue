@@ -109,8 +109,6 @@
         </div>
       </div>
     </section>
-
-    <Footer />
   </main>
 </template>
 
@@ -118,7 +116,6 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-import Footer from '../components/Footer.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()

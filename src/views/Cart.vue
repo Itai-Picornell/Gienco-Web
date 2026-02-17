@@ -144,8 +144,6 @@
         </div>
       </div>
     </section>
-
-    <Footer />
   </main>
 </template>
 
@@ -154,7 +152,6 @@ import { useRouter } from 'vue-router'
 import { useCartStore } from '../stores/cart'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
-import Footer from '../components/Footer.vue'
 
 const router = useRouter()
 const cartStore = useCartStore()

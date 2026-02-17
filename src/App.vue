@@ -13,6 +13,9 @@
     <!-- flex-1 hace que el contenido crezca y empuje el footer al fondo -->
     <router-view class="flex-1" />
     
+    <!-- Footer global - siempre pegado al fondo -->
+    <Footer />
+    
     <!-- Modal global para notificaciones -->
     <NotificationModal />
   </div>
@@ -21,6 +24,7 @@
 <script setup>
 // Importar el componente de la barra de navegación
 import Navbar from './components/Navbar.vue'
+import Footer from './components/Footer.vue'
 import NotificationModal from './components/NotificationModal.vue'
 import { onMounted } from 'vue'
 import { useAuthStore } from './stores/auth'

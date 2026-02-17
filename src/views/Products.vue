@@ -101,8 +101,6 @@
         </div>
       </div>
     </section>
-
-    <Footer />
   </main>
 </template>
 
@@ -110,7 +108,6 @@
 import { ref } from 'vue'
 import { useCartStore } from '../stores/cart'
 import { useNotificationStore } from '../stores/notification'
-import Footer from '../components/Footer.vue'
 
 const almacenCarrito = useCartStore()
 const notificationStore = useNotificationStore()

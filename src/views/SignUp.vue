@@ -179,8 +179,6 @@
         </p>
       </div>
     </div>
-    
-    <Footer />
   </main>
 </template>
 
@@ -189,7 +187,6 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
-import Footer from '../components/Footer.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
