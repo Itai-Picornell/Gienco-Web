@@ -252,18 +252,7 @@ graph LR
 
 ## Acceso y Ejecución
 
-Puedes acceder al proyecto de dos formas:
-
-1. **Versión Online (Recomendada)**
-   Accede directamente mediante la URL: [https://d33kjtzxmbw87t.cloudfront.net/](https://d33kjtzxmbw87t.cloudfront.net/)
-
-2. **Ejecución Local**
-   Si prefieres ejecutar el proyecto en tu máquina:
-   
-   ```bash
-   npm install
-   npm run dev
-   ```
+**Accede directamente mediante la URL:** [https://d33kjtzxmbw87t.cloudfront.net/](https://d33kjtzxmbw87t.cloudfront.net/)
 
 ---
 

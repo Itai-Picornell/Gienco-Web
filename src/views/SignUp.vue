@@ -7,10 +7,10 @@
       <div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px]"></div>
     </div>
     
-    <div class="w-full max-w-[550px] px-4 py-12 md:py-20 z-10">
+    <div class="w-full max-w-[550px] px-4 pt-20 pb-12 md:pt-24 md:pb-20 z-10">
       <!-- Header -->
       <div class="text-center mb-10">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6 mt-2">
           <span class="material-symbols-outlined text-white text-4xl">person_add</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-black leading-none tracking-tighter text-white mb-4">
