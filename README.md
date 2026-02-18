@@ -19,7 +19,6 @@
 - [Stack Tecnológico](#stack-tecnológico)
 - [Estructura del Proyecto](#estructura-del-proyecto)
 - [Flujo de la Aplicación](#flujo-de-la-aplicación)
-- [Características](#características)
 - [Acceso y Ejecución](#acceso-y-ejecución)
 
 ---
