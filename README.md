@@ -139,9 +139,13 @@ gienco-band/
 │   └── workflows/
 │       └── deploy.yml                # Pipeline CI/CD para despliegues automatizados
 │
+├── .vscode/                          # Configuración del editor Visual Studio Code
+│
 ├── public/                           # Assets estáticos servidos tal cual
 │   ├── audio/                        # Música de fondo y efectos de sonido
 │   ├── images/                       # Imágenes de productos, fotos de banda, logos
+│   ├── favicon-32x32.png             # Favicon estándar del navegador
+│   ├── favicon-192x192.png           # Favicon para dispositivos móviles (PWA)
 │   └── robots.txt                    # Instrucciones de rastreo para motores de búsqueda
 │
 ├── src/                              # Código fuente de la aplicación
@@ -162,21 +166,18 @@ gienco-band/
 │   │
 │   ├── stores/                       # Stores de gestión de estado Pinia
 │   │   ├── auth.js                   # Estado de autenticación (integración Cognito)
-│   │   ├── cart.js                   # Estado del carrito con persistencia
+│   │   ├── cart.js                   # Estado del carrito de compras
 │   │   └── notification.js           # Gestión de notificaciones globales
-│   │
-│   ├── composables/                  # Funciones de composición reutilizables
-│   │   └── [varios composables]      # Hooks personalizados para lógica compartida
 │   │
 │   ├── router/                       # Configuración de Vue Router
 │   │   └── index.js                  # Definiciones de rutas y guards de navegación
 │   │
+│   ├── index.css                     # Estilos globales y directivas de Tailwind CSS
 │   ├── App.vue                       # Componente root con estructura de layout
 │   └── main.js                       # Punto de entrada de la aplicación
 │
-├── index.html                        # Punto de entrada HTML con meta tags
-├── vite.config.js                    # Configuración de build de Vite
-├── tailwind.config.js                # Configuración de Tailwind CSS
+├── index.html                        # Punto de entrada HTML con meta tags y SEO
+├── vite.config.js                    # Configuración de Vite y Tailwind CSS
 ├── package.json                      # Dependencias y scripts del proyecto
 ├── .env                              # Variables de entorno (ignorado por git)
 └── README.md                         # Documentación del proyecto (este archivo)
@@ -184,12 +185,12 @@ gienco-band/
 
 ### Descripción de Directorios
 
+
 - **`/src/components`**: Componentes UI modulares usados en múltiples vistas (Navbar, Footer, Modales)
 - **`/src/views`**: Componentes a nivel de página que representan rutas/pantallas completas
-- **`/src/stores`**: Stores Pinia para gestión de estado centralizada con persistencia
-- **`/src/composables`**: Funciones de composición Vue 3 reutilizables para lógica compartida
+- **`/src/stores`**: Stores Pinia para gestión de estado centralizada
 - **`/src/router`**: Configuración de enrutamiento con guards de autenticación
-- **`/public`**: Assets estáticos que se copian directamente a la carpeta de salida
+- **`/public`**: Assets estáticos (imágenes, audio, favicons) copiados directamente al build
 
 ---
 
