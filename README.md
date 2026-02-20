@@ -243,7 +243,7 @@ graph LR
 1. **Acceder** → Navega al portal de Login de Admin
 2. **Autenticar** → Inicia sesión con credenciales de admin (Cognito User Pool)
 3. **Verificar** → Guard del router verifica rol de admin en token JWT
-4. **Dashboard** → Accede al panel de admin con herramientas de gestión
+4. **Dashboard** → Accede al panel de admin
 5. **Funciones** → Ver pedidos
 
 
