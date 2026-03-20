@@ -36,7 +36,7 @@ jobs:
           VITE_LAMBDA_ORDER_URL: ${{ secrets.VITE_LAMBDA_ORDER_URL }}
           VITE_API_ORDERS_URL: ${{ secrets.VITE_API_ORDERS_URL }}
 
-      # 3. CONEXIÓN SEGURA A AWS (SIN LLAVES ESTÁTICAS)
+      # 3. CONEXIÓN SEGURA A AWS (OIDC)
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
