@@ -100,8 +100,7 @@ const notificationStore = useNotificationStore()
 
 const form = ref({
   email: '',
-  password: '',
-  rememberMe: false
+  password: ''
 })
 
 const showPassword = ref(false)

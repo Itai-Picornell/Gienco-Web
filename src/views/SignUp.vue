@@ -34,29 +34,16 @@
         <div class="absolute -top-20 -right-20 w-40 h-40 bg-primary/20 rounded-full blur-[50px]"></div>
         
         <form v-if="!showVerification" @submit.prevent="handleSignUp" class="flex flex-col gap-6 relative z-10">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <label class="flex flex-col gap-2">
-              <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">Nombre</span>
-              <input 
-                v-model="form.firstName"
-                class="form-input w-full rounded-lg border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-[#181111] text-slate-900 dark:text-white h-12 px-4 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-gray-400 dark:placeholder:text-text-muted transition-all" 
-                placeholder="Pepito" 
-                type="text"
-                required
-              />
-            </label>
-            
-            <label class="flex flex-col gap-2">
-              <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">Apellido</span>
-              <input 
-                v-model="form.lastName"
-                class="form-input w-full rounded-lg border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-[#181111] text-slate-900 dark:text-white h-12 px-4 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-gray-400 dark:placeholder:text-text-muted transition-all" 
-                placeholder="Grillo" 
-                type="text"
-                required
-              />
-            </label>
-          </div>
+          <label class="flex flex-col gap-2">
+            <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">Nombre</span>
+            <input 
+              v-model="form.name"
+              class="form-input w-full rounded-lg border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-[#181111] text-slate-900 dark:text-white h-12 px-4 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-gray-400 dark:placeholder:text-text-muted transition-all" 
+              placeholder="Pepito Grillo" 
+              type="text"
+              required
+            />
+          </label>
           
           <label class="flex flex-col gap-2">
             <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">Correo Electrónico</span>
@@ -204,13 +191,23 @@
                 <span v-else class="material-symbols-outlined animate-spin">refresh</span>
             </button>
             
-            <button 
-                type="button" 
-                @click="showVerification = false"
-                class="text-sm text-gray-400 hover:text-white mt-2"
-            >
-                ¿Correo incorrecto? Volver
-            </button>
+            <div class="flex flex-col gap-2 mt-2">
+              <button 
+                  type="button" 
+                  @click="handleResendCode"
+                  :disabled="isLoading"
+                  class="text-sm text-primary hover:text-white transition-colors font-medium"
+              >
+                  ¿No recibiste el código? Reenviar
+              </button>
+              <button 
+                  type="button" 
+                  @click="showVerification = false"
+                  class="text-sm text-gray-400 hover:text-white transition-colors"
+              >
+                  ¿Correo incorrecto? Volver
+              </button>
+            </div>
         </form>
       </div>
       
@@ -236,13 +233,11 @@ const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
 
 const form = ref({
-  firstName: '',
-  lastName: '',
+  name: '',
   email: '',
   password: '',
   confirmPassword: '',
-  agreeToTerms: false,
-  newsletter: false
+  agreeToTerms: false
 })
 
 const showPassword = ref(false)
@@ -296,13 +291,11 @@ const handleSignUp = async () => {
   isLoading.value = true
   
   try {
-      // Registrar usuario en Cognito
+      // Registrar usuario en Cognito (email como identificador, name como atributo)
       const result = await authStore.register(
-          form.value.email, // username (usamos email)
-          form.value.password,
           form.value.email,
-          form.value.firstName,
-          form.value.lastName
+          form.value.password,
+          form.value.name
       )
       
       if (result.success) {
@@ -371,6 +364,31 @@ const handleVerification = async () => {
         }
     } catch (error) {
         errorMessage.value = 'Error al verificar el código.'
+    } finally {
+        isLoading.value = false
+    }
+}
+
+/**
+ * Reenvía el código de verificación al email del usuario.
+ * 
+ * @async
+ * @returns {Promise<void>}
+ */
+const handleResendCode = async () => {
+    isLoading.value = true
+    errorMessage.value = ''
+
+    try {
+        const result = await authStore.resendCode(form.value.email)
+        
+        if (result.success) {
+            await notificationStore.alert('Código reenviado. Revisa tu bandeja de entrada.', 'Código Enviado')
+        } else {
+            errorMessage.value = result.error || 'Error al reenviar el código.'
+        }
+    } catch (error) {
+        errorMessage.value = 'Error al reenviar el código.'
     } finally {
         isLoading.value = false
     }

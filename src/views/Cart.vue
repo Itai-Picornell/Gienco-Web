@@ -152,6 +152,7 @@ import { useRouter } from 'vue-router'
 import { useCartStore } from '../stores/cart'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
+import { post } from '../services/api'
 
 const router = useRouter()
 const cartStore = useCartStore()
@@ -205,9 +206,6 @@ const clearCart = async () => {
   }
 }
 
-// URL de la función Lambda (API Gateway)
-const LAMBDA_ORDER_URL = import.meta.env.VITE_LAMBDA_ORDER_URL
-
 // Procesa el pago verificando autenticación y enviando el pedido al backend
 /**
  * Inicia el proceso de checkout.
@@ -243,30 +241,16 @@ const handleCheckout = async () => {
                     image: item.image
                 })),
                 userInfo: {
-                    // Aquí podrías añadir datos reales si tuviéramos un perfil de usuario con dirección
                     email: authStore.user?.signInDetails?.loginId || 'usuario@gienco.com' 
                 }
             }
 
-            // Llamada a la Lambda
-            // Nota: En producción, usar axios o fetch es igual. Usamos fetch nativo.
-            const response = await fetch(LAMBDA_ORDER_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(orderData)
-            })
+            // TODO: Actualizar con la URL del nuevo API Gateway cuando esté disponible
+            const ORDERS_API_URL = import.meta.env.VITE_API_ORDERS_URL
+            const result = await post(ORDERS_API_URL, orderData)
 
-            const result = await response.json()
-
-            if (response.ok) {
-                await notificationStore.alert(`¡Pedido realizado con éxito!\nID de pedido: ${result.orderId || 'Desconocido'}`, 'Pedido Confirmado')
-                cartStore.clearCart()
-                // router.push('/profile') // Opcional: ir al historial de pedidos
-            } else {
-                throw new Error(result.error || 'Error en el servidor')
-            }
+            await notificationStore.alert(`¡Pedido realizado con éxito!\nID de pedido: ${result.orderId || 'Desconocido'}`, 'Pedido Confirmado')
+            cartStore.clearCart()
 
         } catch (error) {
             console.error('Error al procesar el pedido:', error)

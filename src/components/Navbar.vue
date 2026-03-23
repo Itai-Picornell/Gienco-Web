@@ -57,7 +57,7 @@
         <!-- Icono de usuario/login con dropdown -->
         <div class="relative">
           <button 
-            v-if="almacenAutenticacion.isAuthenticated && !almacenAutenticacion.isAdmin"
+            v-if="almacenAutenticacion.isAuthenticated"
             @click="toggleUserMenu"
             class="text-white hover:text-red-600 transition-colors"
           >
@@ -71,7 +71,7 @@
 
           <!-- User Dropdown Menu -->
           <div 
-            v-if="isUserMenuOpen && almacenAutenticacion.isAuthenticated && !almacenAutenticacion.isAdmin"
+            v-if="isUserMenuOpen && almacenAutenticacion.isAuthenticated"
             class="absolute right-0 top-12 w-72 bg-surface-dark border border-[#392829] rounded-xl shadow-2xl overflow-hidden z-50 animate-fade-in"
           >
             <!-- User Info Header -->
@@ -103,15 +103,6 @@
             </div>
           </div>
         </div>
-        
-        <!-- Botón Admin (más discreto) -->
-        <router-link :to="estaAdministradorAutenticado ? '/admin' : '/admin-login'">
-          <button class="text-white hover:text-red-600 transition-colors">
-            <span class="material-symbols-outlined text-2xl">
-              {{ estaAdministradorAutenticado ? 'admin_panel_settings' : 'lock' }}
-            </span>
-          </button>
-        </router-link>
       </div>
       
       <!-- Icono de menú móvil (visible solo en pantallas pequeñas) -->
@@ -173,7 +164,7 @@
           <div class="h-px bg-white/10 my-2"></div>
 
           <!-- Acciones rápidas -->
-          <div class="grid grid-cols-3 gap-3">
+          <div class="grid grid-cols-2 gap-3">
             <router-link 
               to="/cart" 
               class="relative flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all duration-200" 
@@ -193,17 +184,6 @@
             >
               <span class="material-symbols-outlined text-2xl text-white">person</span>
               <span class="text-white text-xs font-medium">Cuenta</span>
-            </router-link>
-
-            <router-link 
-              :to="estaAdministradorAutenticado ? '/admin' : '/admin-login'" 
-              class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all duration-200" 
-              @click="isMobileMenuOpen = false"
-            >
-              <span class="material-symbols-outlined text-2xl text-white">
-                {{ estaAdministradorAutenticado ? 'admin_panel_settings' : 'lock' }}
-              </span>
-              <span class="text-white text-xs font-medium">Admin</span>
             </router-link>
           </div>
         </div>
@@ -254,8 +234,7 @@ const handleLogout = async () => {
   router.push('/')
 }
 
-// Propiedad computada que se recalcula automáticamente cuando cambia almacenAutenticacion.isAuthenticated
-const estaAdministradorAutenticado = computed(() => almacenAutenticacion.isAuthenticated)
+
 
 // Propiedad computada que se recalcula automáticamente cuando cambia el carrito
 // Usa el getter totalItems del store de carrito
