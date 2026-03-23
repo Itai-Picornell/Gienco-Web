@@ -26,7 +26,7 @@ export const useAuthStore = defineStore('auth', {
         this.user = user
         this.isAuthenticated = true
 
-        // Obtener atributos del usuario (nombre, email, etc.)
+        // Obtener atributos del usuario (nombre, email)
         const attributes = await fetchUserAttributes()
         this.userAttributes = attributes
 
