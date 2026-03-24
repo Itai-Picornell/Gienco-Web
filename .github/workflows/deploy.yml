@@ -16,6 +16,8 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    #Evita que un error congele el runner y consuma tus minutos gratuitos
+    timeout-minutes: 15 
 
     steps:
       - name: Checkout code
@@ -34,12 +36,13 @@ jobs:
         run: npm run build
         # 2. INYECCIÓN DE VARIABLES DE ENTORNO
         env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_USER_POOL_ID: ${{ secrets.VITE_USER_POOL_ID }}
           VITE_USER_POOL_CLIENT_ID: ${{ secrets.VITE_USER_POOL_CLIENT_ID }}
           VITE_LAMBDA_ORDER_URL: ${{ secrets.VITE_LAMBDA_ORDER_URL }}
           VITE_API_ORDERS_URL: ${{ secrets.VITE_API_ORDERS_URL }}
 
-      # 3. CONEXIÓN SEGURA A AWS (OIDC)
+      # 3. CONEXIÓN SEGURA A AWS (OIDC - Zero Trust)
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:

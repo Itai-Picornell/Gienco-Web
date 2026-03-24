@@ -21,7 +21,7 @@
     "vite": "^6.0.0"
   },
   "overrides": {
-    "fast-xml-parser": "4.2.5",
+    "fast-xml-parser": ">=5.5.7",
     "@aws-sdk/client-firehose": "^3.723.0",
     "@aws-sdk/client-kinesis": "^3.723.0",
     "@aws-sdk/client-personalize-events": "^3.723.0"

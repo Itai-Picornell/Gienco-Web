@@ -1,172 +1,347 @@
 <template>
-  <main class="flex-grow pt-20">
-    <!-- Hero Section -->
-    <section class="relative w-full bg-gradient-to-br from-background-dark via-surface-dark to-background-dark border-b border-[#392829] py-12 md:py-20">
-      <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        <div class="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]"></div>
-        <div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px]"></div>
+  <main class="flex-grow pt-20 relative">
+    
+    <!-- Designer Grade Toast -->
+    <transition name="toast">
+      <div v-if="toastMsg" :class="`fixed top-24 right-4 md:right-10 z-50 bg-[#1c1c1e] border ${toastType === 'error' ? 'border-red-500/50' : 'border-white/10'} text-white px-5 py-3 rounded-full shadow-2xl flex items-center gap-3`">
+        <div :class="`w-6 h-6 rounded-full flex items-center justify-center text-black ${toastType === 'error' ? 'bg-red-500' : 'bg-green-500'}`">
+          <span class="material-symbols-outlined text-[14px] font-bold">{{ toastType === 'error' ? 'close' : 'check' }}</span>
+        </div>
+        <span class="text-sm font-medium tracking-tight">{{ toastMsg }}</span>
       </div>
-      
-      <div class="container mx-auto px-4 md:px-10 lg:px-40 relative z-10">
-        <div class="text-center max-w-3xl mx-auto">
-          <h1 class="text-5xl md:text-7xl font-black leading-none tracking-tighter text-white mb-6">
+    </transition>
+
+    <!-- Hero Section -->
+    <section class="relative w-full bg-gradient-to-b from-background-dark to-surface-dark pb-10 pt-16 font-sans">
+      <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]"></div>
+      </div>
+      <div class="container mx-auto px-4 md:px-8 lg:px-20 relative z-10">
+        <div class="text-center max-w-2xl mx-auto">
+          <h1 class="text-5xl md:text-6xl font-black leading-none tracking-tight text-white mb-4">
             MERCHANDISING
           </h1>
-          <p class="text-text-muted text-lg md:text-xl font-normal leading-relaxed">
+          <p class="text-neutral-400 text-lg font-light tracking-wide">
             Viste nuestra música
           </p>
         </div>
       </div>
     </section>
 
-    <!-- Products Grid -->
-    <section class="py-16 bg-surface-dark">
-      <div class="container mx-auto px-4 md:px-10 lg:px-40">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div 
-            v-for="producto in productos" 
+    <!-- Products Grid (Flex wrap Layout) -->
+    <section class="py-12 bg-[#000000] font-sans relative z-10 min-h-screen">
+      <div class="container mx-auto px-4">
+
+        <div v-if="isLoading" class="flex justify-center items-center py-20">
+          <span class="material-symbols-outlined animate-spin text-white opacity-50 text-4xl">sync</span>
+        </div>
+
+        <div v-else-if="error" class="text-center py-20">
+          <p class="text-red-400 mt-2 text-sm font-medium">{{ error }}</p>
+        </div>
+
+        <div v-else class="flex flex-wrap justify-center gap-6 max-w-7xl mx-auto">
+          <div
+            v-for="producto in products"
             :key="producto.id"
-            class="bg-background-dark border border-[#392829] rounded-2xl overflow-hidden group hover:border-primary/50 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/10"
+            class="w-full sm:w-[calc(50%-1.5rem)] lg:w-[calc(25%-1.5rem)] max-w-[300px] bg-[#111111] border border-neutral-800 rounded-3xl overflow-hidden group hover:border-neutral-600 transition-all duration-500 hover:shadow-2xl flex flex-col justify-between"
           >
-            <!-- Product Image -->
-            <div class="relative aspect-square overflow-hidden bg-[#181111]">
-              <img 
-                :src="producto.image" 
+            <!-- Imagen arriba -->
+            <div class="relative w-full aspect-square overflow-hidden bg-[#0a0a0a]">
+              <img
+                :src="producto.image"
                 :alt="producto.name"
                 width="400"
                 height="400"
-                class="w-full h-full object-contain p-8 group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+                class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                @error="(e) => e.target.src = 'https://placehold.co/600x600/181111/FFF?text=Gienco+Merch'"
               />
-              <div class="absolute top-4 right-4 bg-primary px-3 py-1 rounded-full">
-                <span class="text-white text-xs font-bold uppercase tracking-wider">Nuevo</span>
-              </div>
             </div>
-            
-            <!-- Product Info -->
-            <div class="p-6">
-              <h3 class="text-white text-xl font-bold mb-2 group-hover:text-black transition-colors">
+
+            <!-- Título debajo de la imagen -->
+            <div class="p-5 flex flex-col flex-grow">
+              
+              <h3 class="uppercase tracking-widest font-serif text-lg text-white mb-4 line-clamp-2">
                 {{ producto.name }}
               </h3>
-              <p class="text-text-muted text-sm mb-4">
-                {{ producto.description }}
-              </p>
-              
-              <!-- Price & Sizes - Mejor layout responsive -->
-              <div class="flex flex-col gap-4 mb-4">
-                <!-- Precio -->
-                <div class="flex items-end justify-between">
-                  <div class="flex flex-col">
-                    <span class="text-primary text-2xl font-black">{{ producto.price }}€</span>
-                    <span class="text-text-muted text-xs">Envío gratis</span>
+
+              <div class="flex-grow"></div>
+
+              <!-- Fila 1: Talla y Precio -->
+              <div class="flex justify-between items-center mb-4 gap-4">
+                <div class="relative flex-1 max-w-[130px]">
+                  <select
+                    v-model="orderSelections[producto.id].selectedSize"
+                    class="w-full bg-neutral-900 border border-neutral-700 text-white text-xs rounded-lg px-3 py-3 appearance-none cursor-pointer hover:border-neutral-500 transition-colors uppercase font-bold focus:outline-none"
+                  >
+                    <option :value="null" disabled>Talla...</option>
+                    <option v-for="talla in producto.sizes" :key="talla" :value="talla" class="uppercase">
+                      {{ talla }}
+                    </option>
+                  </select>
+                  <div class="absolute inset-y-0 right-2 flex items-center pointer-events-none text-neutral-400">
+                    <span class="material-symbols-outlined text-[1rem]">expand_more</span>
                   </div>
                 </div>
-                
-                <!-- Selector de tallas -->
-                <div class="flex flex-col gap-2">
-                  <span class="text-text-muted text-xs">Elige talla:</span>
-                  <div class="flex flex-wrap gap-2">
-                    <button 
-                      v-for="talla in producto.sizes" 
-                      :key="talla"
-                      @click="seleccionarTalla(producto.id, talla)"
-                      :class="[
-                        'w-10 h-10 flex items-center justify-center border rounded text-sm font-bold transition-colors',
-                        tallasSeleccionadas[producto.id] === talla 
-                          ? 'bg-white border-white text-black' 
-                          : 'border-border-dark text-white hover:bg-white hover:text-black hover:border-white'
-                      ]"
-                    >
-                      {{ talla }}
-                    </button>
-                  </div>
+
+                <div class="text-primary font-bold text-lg shrink-0 whitespace-nowrap">
+                  {{ formatPriceSafe(producto.price * (orderSelections[producto.id]?.quantity || 1)) }}
                 </div>
               </div>
-              
-              <!-- Add to Cart Button -->
-              <button 
-                @click="agregarAlCarrito(producto)"
-                :disabled="!tallasSeleccionadas[producto.id]"
-                :class="[
-                  'w-full flex items-center justify-center gap-2 rounded-lg h-12 px-6 transition-colors text-sm font-bold uppercase tracking-wider',
-                  tallasSeleccionadas[producto.id]
-                    ? 'bg-black border border-white hover:bg-white hover:text-black text-white active:scale-95 cursor-pointer'
-                    : 'bg-gray-700 text-gray-400 cursor-not-allowed opacity-50'
-                ]"
-              >
-                <span class="material-symbols-outlined">shopping_cart</span>
-                {{ tallasSeleccionadas[producto.id] ? 'Añadir al Carrito' : 'Elige Talla Primero' }}
-              </button>
+
+              <!-- Fila 2: Cantidad y CTA -->
+              <div class="flex justify-between items-center gap-3">
+                <!-- Stepper -->
+                <div class="flex items-center bg-neutral-900 border border-neutral-800 rounded-lg p-1 h-12">
+                  <button
+                    @click="decrementarCantidad(producto.id)"
+                    :disabled="(orderSelections[producto.id]?.quantity ?? 1) <= 1"
+                    class="w-8 h-full flex items-center justify-center text-white/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    v-model="orderSelections[producto.id].quantity"
+                    @input="validarCantidad(producto.id, producto.maxorder)"
+                    @blur="blurCantidad(producto.id)"
+                    class="w-10 bg-transparent text-center text-white font-bold text-sm outline-none appearance-none [&::-webkit-inner-spin-button]:appearance-none p-0 min-w-0"
+                  />
+                  <button
+                    @click="incrementarCantidad(producto.id, producto.maxorder)"
+                    :disabled="cantidadesDisponibles(producto) <= 0"
+                    class="w-8 h-full flex items-center justify-center text-white/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  >
+                    +
+                  </button>
+                </div>
+
+                <!-- CTA Botón -->
+                <button
+                  @click="agregarAlCarrito(producto)"
+                  :disabled="!orderSelections[producto.id]?.selectedSize || (cantidadesDisponibles(producto) <= 0 && isNewAdd(producto))"
+                  :class="[
+                    'flex-1 flex items-center justify-center rounded-lg h-12 transition-all duration-300 text-sm font-bold tracking-wide uppercase',
+                    orderSelections[producto.id]?.selectedSize
+                      ? 'bg-white text-black hover:bg-neutral-200 active:scale-95 shadow-md shadow-white/10'
+                      : 'bg-neutral-800 text-neutral-500 cursor-not-allowed border border-neutral-800'
+                  ]"
+                >
+                  {{ orderSelections[producto.id]?.selectedSize ? 'AÑADIR' : 'TALLA' }}
+                </button>
+              </div>
+
             </div>
           </div>
         </div>
+
       </div>
     </section>
   </main>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useCartStore } from '../stores/cart'
-import { useNotificationStore } from '../stores/notification'
 
-const almacenCarrito = useCartStore()
-const notificationStore = useNotificationStore()
-const tallasSeleccionadas = ref({}) // {productId: 'M', productId2: 'L'}
+const cartStore = useCartStore()
 
-// Almacena la talla elegida para el producto seleccionado
-/**
- * Registra la selección de talla para un producto específico.
- * 
- * @param {string|number} idProducto - ID del producto.
- * @param {string} talla - Talla seleccionada ('S', 'M', 'L', 'XL').
- */
-const seleccionarTalla = (idProducto, talla) => {
-  tallasSeleccionadas.value[idProducto] = talla
+const products = ref([])
+const isLoading = ref(true)
+const error = ref(null)
+
+// El objeto del Local State por cada producto
+const orderSelections = ref({})
+
+// Toasts
+const toastMsg = ref('')
+const toastType = ref('success') // 'success' o 'error'
+let toastTimeout
+
+const IMAGE_PLACEHOLDER = 'https://placehold.co/600x600/181111/FFF?text=Gienco+Merch'
+
+const formatPriceSafe = (value) => {
+  const numericValue = Number(value)
+  if (isNaN(numericValue)) return '0,00 €'
+  return numericValue.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })
 }
 
-// Añade el producto con su talla al carrito y reinicia la selección
-/**
- * Valida que se haya seleccionado una talla y añade el producto al carrito.
- * Muestra alerta si falta talla.
- * 
- * @async
- * @param {Object} producto - Objeto del producto a añadir.
- * @returns {Promise<void>}
- */
-const agregarAlCarrito = async (producto) => {
-  const tallaSeleccionada = tallasSeleccionadas.value[producto.id]
-  if (!tallaSeleccionada) {
-    await notificationStore.alert('Por favor, elige una talla primero', 'Selecciona Talla')
-    return
+const normalizeDynamoProduct = (raw) => {
+  const parseTallas = (tallasObj) => {
+    if (!tallasObj) return []
+    if (Array.isArray(tallasObj)) return tallasObj
+    if (tallasObj.L && Array.isArray(tallasObj.L)) return tallasObj.L.map(t => t.S || t)
+    return []
   }
-  almacenCarrito.addToCart(producto, tallaSeleccionada)
-  tallasSeleccionadas.value[producto.id] = null // Reset
+
+  const rawImage = raw.imagen?.S || raw.imagen
+  
+  return {
+    id: raw.productId?.S || raw.productId,
+    name: raw.nombre?.S || raw.nombre || 'Producto sin nombre',
+    price: Number(raw.precio?.N || raw.precio || 0),
+    image: rawImage || IMAGE_PLACEHOLDER,
+    maxorder: Number(raw.maxorder?.N || raw.maxorder || 50),
+    sizes: parseTallas(raw.tallas)
+  }
 }
 
-const productos = ref([
-  {
-    id: 1,
-    name: 'Gienco',
-    description: 'BÁSICA',
-    price: 15,
-    image: '/images/merch/1.webp',
-    sizes: ['S', 'M', 'L', 'XL']
-  },
-  {
-    id: 2,
-    name: 'Nada bajo control',
-    description: 'VERSIÓN LILA',
-    price: 25,
-    image: '/images/merch/2.webp',
-    sizes: ['S', 'M', 'L', 'XL']
-  },
-  {
-    id: 3,
-    name: 'Nada bajo control',
-    description: 'VERSIÓN VERDE',
-    price: 25,
-    image: '/images/merch/3.webp',
-    sizes: ['S', 'M', 'L', 'XL']
+const fetchProducts = async () => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/products`)
+    if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`)
+    const data = await response.json()
+    products.value = data.map(normalizeDynamoProduct)
+    
+    // Inicializar
+    products.value.forEach(p => {
+      orderSelections.value[p.id] = { quantity: 1, selectedSize: null }
+    })
+  } catch (e) {
+    error.value = 'No se pudieron cargar los productos en este momento.'
+    console.error('[fetchProducts]', e)
+  } finally {
+    isLoading.value = false
   }
-])
+}
+
+onMounted(fetchProducts)
+
+const getSelection = (id) => {
+  if (!orderSelections.value[id]) orderSelections.value[id] = { quantity: 1, selectedSize: null }
+  return orderSelections.value[id]
+}
+
+// Saber cuánto puedo poner basandome en lo que ya hay en el cart
+const cantidadesDisponibles = (producto) => {
+  const sel = getSelection(producto.id)
+  
+  // Getter del Store: Devuelve suma de units que hay en carrito de todos los items que tienen el mismo id
+  let yaEnCarrito = 0;
+  if(cartStore.getProductQuantity) {
+      yaEnCarrito = cartStore.getProductQuantity(producto.id);
+  } else {
+     yaEnCarrito = cartStore.items.reduce((acc, curr) => curr.id === producto.id ? acc + curr.quantity : acc, 0)
+  }
+  
+  const remaining = producto.maxorder - yaEnCarrito
+  return remaining - (sel.quantity - 1) // Remaining for the [+] button allowed step
+}
+
+const isNewAdd = (producto) => {
+  let yaEnCarrito = 0;
+  if(cartStore.getProductQuantity) {
+      yaEnCarrito = cartStore.getProductQuantity(producto.id);
+  } else {
+     yaEnCarrito = cartStore.items.reduce((acc, curr) => curr.id === producto.id ? acc + curr.quantity : acc, 0)
+  }
+  return yaEnCarrito >= producto.maxorder
+}
+
+const validarCantidad = (id, maxorder) => {
+  const sel = getSelection(id)
+  let val = Number(sel.quantity)
+  
+  let yaEnCarrito = 0;
+  if(cartStore.getProductQuantity) yaEnCarrito = cartStore.getProductQuantity(id);
+  else yaEnCarrito = cartStore.items.reduce((acc, curr) => curr.id === id ? acc + curr.quantity : acc, 0);
+
+  const maxReal = Math.max(1, maxorder - yaEnCarrito)
+  
+  if (val > maxReal) sel.quantity = maxReal
+}
+
+const blurCantidad = (id) => {
+  const sel = getSelection(id)
+  let val = parseInt(sel.quantity, 10)
+  if (isNaN(val) || val < 1) sel.quantity = 1
+}
+
+const incrementarCantidad = (id, maxorder) => {
+  const sel = getSelection(id)
+  let val = parseInt(sel.quantity, 10) || 1
+  
+  let yaEnCarrito = 0;
+  if(cartStore.getProductQuantity) yaEnCarrito = cartStore.getProductQuantity(id);
+  else yaEnCarrito = cartStore.items.reduce((acc, curr) => curr.id === id ? acc + curr.quantity : acc, 0);
+
+  const maxReal = Math.max(1, maxorder - yaEnCarrito)
+
+  if (val < maxReal) sel.quantity = val + 1
+}
+
+const decrementarCantidad = (id) => {
+  const sel = getSelection(id)
+  let val = parseInt(sel.quantity, 10) || 1
+  if (val > 1) sel.quantity = val - 1
+}
+
+const showToast = (msg, type = 'success') => {
+  toastMsg.value = msg
+  toastType.value = type
+  clearTimeout(toastTimeout)
+  toastTimeout = setTimeout(() => {
+    toastMsg.value = ''
+  }, 3000)
+}
+
+const agregarAlCarrito = (producto) => {
+  const sel = getSelection(producto.id)
+  if (!sel.selectedSize) return
+
+  try {
+    cartStore.addToCart(
+      {
+        id: producto.id,
+        name: producto.name,
+        price: producto.price,
+        image: producto.image,
+        maxorder: producto.maxorder
+      },
+      sel.selectedSize,
+      sel.quantity
+    )
+    
+    showToast(`Añadido: ${producto.name}`, 'success')
+    // Reset inputs
+    sel.quantity = 1
+    sel.selectedSize = null
+
+  } catch (err) {
+    showToast(err.message, 'error')
+    
+    // Auto adjust al máximo que deja
+    let yaEnCarrito = 0;
+    if(cartStore.getProductQuantity) yaEnCarrito = cartStore.getProductQuantity(producto.id);
+    else yaEnCarrito = cartStore.items.reduce((acc, curr) => curr.id === producto.id ? acc + curr.quantity : acc, 0);
+    
+    const available = producto.maxorder - yaEnCarrito
+    sel.quantity = Math.max(1, available)
+  }
+}
 </script>
+
+<style scoped>
+.toast-enter-active,
+.toast-leave-active {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.toast-enter-from {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.9);
+}
+.toast-leave-to {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.95);
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+</style>
