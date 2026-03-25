@@ -33,7 +33,7 @@
         <div class="flex flex-col md:flex-row gap-8 py-6">
           <div class="flex-1">
             <p class="text-gray-300 text-lg font-normal leading-relaxed">
-              La banda se forma en Agosto 2021 cuando Itai (Batería), Elías (Bajo y violín) y Joan (Guitarra y voz) deciden llevar a cabo el proyecto musical, siempre con la idea de componer canciones propias, pasan por varias formaciones hasta que en 2023 se une Norat y el grupo cierra así lo que es su formación actual.
+              La banda se forma en Agosto 2021 cuando Itai (Batería), Elías (Bajo y violín) y Joan (Guitarra y voz) deciden llevar a cabo el proyecto musical, siempre con la idea de componer canciones propias, pasan por varias formaciones hasta que en 2023 se une Norat (Teclados) y el grupo cierra así lo que es su formación actual.
             </p>
           </div>
           <div class="flex-1">

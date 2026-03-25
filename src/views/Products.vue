@@ -56,6 +56,7 @@
                   width="400"
                   height="400"
                   loading="lazy"
+                  decoding="async"
                   class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-700 ease-in-out"
                   @error="(e) => e.target.src = 'https://placehold.co/600x600/181111/FFF?text=Gienco+Merch'"
                 />

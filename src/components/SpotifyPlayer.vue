@@ -1,6 +1,7 @@
 <template>
   <div v-if="spotifyId" class="w-full mt-4 flex items-center justify-center">
     <iframe
+      title="Reproductor de Spotify oficial de Gienco"
       style="border-radius:12px"
       :src="`https://open.spotify.com/embed/${type}/${spotifyId}?utm_source=generator&theme=0`"
       width="100%"
