@@ -18,7 +18,7 @@
       </div>
       <div class="container mx-auto px-4 md:px-8 lg:px-20 relative z-10">
         <div class="text-center max-w-2xl mx-auto">
-          <h1 class="text-5xl md:text-6xl font-black leading-none tracking-tight text-white mb-4">
+          <h1 class="text-4xl sm:text-5xl md:text-6xl font-black leading-none tracking-tight text-white mb-4 break-words">
             MERCHANDISING
           </h1>
           <p class="text-neutral-400 text-lg font-light tracking-wide">
@@ -40,42 +40,48 @@
           <p class="text-red-400 mt-2 text-sm font-medium">{{ error }}</p>
         </div>
 
-        <div v-else class="flex flex-wrap justify-center gap-6 max-w-7xl mx-auto">
+        <div v-else class="flex flex-wrap justify-center gap-4 md:gap-6 max-w-7xl mx-auto">
           <div
             v-for="producto in products"
             :key="producto.id"
-            class="w-full sm:w-[calc(50%-1.5rem)] lg:w-[calc(25%-1.5rem)] max-w-[300px] bg-[#111111] border border-neutral-800 rounded-3xl overflow-hidden group hover:border-neutral-600 transition-all duration-500 hover:shadow-2xl flex flex-col justify-between"
+            class="w-[calc(50%-0.5rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1.125rem)] max-w-[280px] bg-[#111111] border border-neutral-800 rounded-3xl overflow-hidden group hover:border-neutral-600 transition-all duration-500 hover:shadow-2xl flex flex-col justify-between"
           >
-            <!-- Imagen arriba -->
-            <div class="relative w-full aspect-square overflow-hidden bg-[#0a0a0a]">
-              <img
-                :src="producto.image"
-                :alt="producto.name"
-                width="400"
-                height="400"
-                loading="lazy"
-                class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-700 ease-in-out"
-                @error="(e) => e.target.src = 'https://placehold.co/600x600/181111/FFF?text=Gienco+Merch'"
-              />
+            <!-- Grupo Imagen + Título -->
+            <div class="flex flex-col gap-0.5">
+              <!-- Imagen arriba -->
+              <div class="relative w-full aspect-square overflow-hidden bg-[#0a0a0a]">
+                <img
+                  :src="producto.image"
+                  :alt="producto.name"
+                  width="400"
+                  height="400"
+                  loading="lazy"
+                  class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                  @error="(e) => e.target.src = 'https://placehold.co/600x600/181111/FFF?text=Gienco+Merch'"
+                />
+              </div>
+
+              <!-- Título inmediatamente debajo -->
+              <div class="px-3 md:px-5 pt-3">
+                <h3 class="uppercase tracking-widest font-serif text-xs sm:text-sm font-bold text-center whitespace-normal leading-tight break-words mb-2 text-white">
+                  {{ producto.name }}
+                </h3>
+              </div>
             </div>
 
-            <!-- Título debajo de la imagen -->
-            <div class="p-5 flex flex-col flex-grow">
-              
-              <h3 class="uppercase tracking-widest font-serif text-lg text-white mb-4 line-clamp-2">
-                {{ producto.name }}
-              </h3>
+            <!-- Controles debajo de la imagen y el título -->
+            <div class="px-3 md:px-5 pb-3 md:pb-5 flex flex-col flex-grow">
 
               <div class="flex-grow"></div>
 
               <!-- Fila 1: Talla y Precio -->
-              <div class="flex justify-between items-center mb-4 gap-4">
-                <div class="relative flex-1 max-w-[130px]">
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <div class="w-full sm:w-auto relative">
                   <select
                     v-model="orderSelections[producto.id].selectedSize"
-                    class="w-full bg-neutral-900 border border-neutral-700 text-white text-xs rounded-lg px-3 py-3 appearance-none cursor-pointer hover:border-neutral-500 transition-colors uppercase font-bold focus:outline-none"
+                    class="w-full bg-neutral-900 border border-neutral-700 text-white text-left text-xs sm:text-sm rounded-lg pl-3 pr-8 py-0 h-8 appearance-none cursor-pointer hover:border-neutral-500 transition-colors uppercase font-bold focus:outline-none"
                   >
-                    <option :value="null" disabled>Talla...</option>
+                    <option :value="null" disabled>Talla</option>
                     <option v-for="talla in producto.sizes" :key="talla" :value="talla" class="uppercase">
                       {{ talla }}
                     </option>
@@ -85,15 +91,15 @@
                   </div>
                 </div>
 
-                <div class="text-primary font-bold text-lg shrink-0 whitespace-nowrap">
+                <div class="text-gray-300 font-semibold text-sm sm:text-base sm:shrink-0 whitespace-nowrap">
                   {{ formatPriceSafe(producto.price * (orderSelections[producto.id]?.quantity || 1)) }}
                 </div>
               </div>
 
               <!-- Fila 2: Cantidad y CTA -->
-              <div class="flex justify-between items-center gap-3">
+              <div class="flex items-center justify-between gap-2">
                 <!-- Stepper -->
-                <div class="flex items-center bg-neutral-900 border border-neutral-800 rounded-lg p-1 h-12">
+                <div class="w-1/2 flex items-center justify-between bg-neutral-900 border border-neutral-700 rounded-lg p-1 h-8">
                   <button
                     @click="decrementarCantidad(producto.id)"
                     :disabled="(orderSelections[producto.id]?.quantity ?? 1) <= 1"
@@ -106,7 +112,7 @@
                     v-model="orderSelections[producto.id].quantity"
                     @input="validarCantidad(producto.id, producto.maxorder)"
                     @blur="blurCantidad(producto.id)"
-                    class="w-10 bg-transparent text-center text-white font-bold text-sm outline-none appearance-none [&::-webkit-inner-spin-button]:appearance-none p-0 min-w-0"
+                    class="w-10 bg-transparent text-center text-white font-bold text-xs sm:text-sm outline-none appearance-none [&::-webkit-inner-spin-button]:appearance-none p-0 min-w-0"
                   />
                   <button
                     @click="incrementarCantidad(producto.id, producto.maxorder)"
@@ -122,13 +128,13 @@
                   @click="agregarAlCarrito(producto)"
                   :disabled="!orderSelections[producto.id]?.selectedSize || (cantidadesDisponibles(producto) <= 0 && isNewAdd(producto))"
                   :class="[
-                    'flex-1 flex items-center justify-center rounded-lg h-12 transition-all duration-300 text-sm font-bold tracking-wide uppercase',
+                    'w-1/2 flex items-center justify-center rounded-lg h-8 transition-all duration-300 text-xs font-bold tracking-wide uppercase active:scale-95',
                     orderSelections[producto.id]?.selectedSize
-                      ? 'bg-white text-black hover:bg-neutral-200 active:scale-95 shadow-md shadow-white/10'
+                      ? 'bg-white text-black hover:bg-neutral-200 shadow-md shadow-white/10'
                       : 'bg-neutral-800 text-neutral-500 cursor-not-allowed border border-neutral-800'
                   ]"
                 >
-                  {{ orderSelections[producto.id]?.selectedSize ? 'AÑADIR' : 'TALLA' }}
+                  {{ orderSelections[producto.id]?.selectedSize ? 'AÑADIR' : 'AÑADIR' }}
                 </button>
               </div>
 

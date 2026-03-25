@@ -113,6 +113,11 @@
     </div>
 
     <!-- Menú Móvil (Desplegable) con Glassmorphism mejorado -->
+    <div 
+      v-if="isMobileMenuOpen" 
+      @click="isMobileMenuOpen = false" 
+      class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm w-screen h-screen lg:hidden"
+    ></div>
     <transition
       enter-active-class="transition-all duration-300 ease-out"
       enter-from-class="opacity-0 -translate-y-4"
@@ -123,7 +128,7 @@
     >
       <div 
         v-if="isMobileMenuOpen" 
-        class="lg:hidden absolute top-full left-0 w-full bg-black/60 backdrop-blur-xl border-t border-white/20 shadow-2xl"
+        class="lg:hidden absolute top-full left-0 w-full bg-black/60 backdrop-blur-xl border-t border-white/20 shadow-2xl z-50"
       >
         <!-- Contenido del menú -->
         <div class="px-6 py-8 flex flex-col gap-4">

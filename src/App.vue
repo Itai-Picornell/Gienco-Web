@@ -4,7 +4,7 @@
   <!-- text-slate-900/white: color de texto según el modo -->
   <!-- min-h-screen: altura mínima de toda la pantalla -->
   <!-- flex flex-col: diseño en columna para apilar navbar y contenido -->
-  <div class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display min-h-screen flex flex-col">
+  <div class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display min-h-screen flex flex-col overflow-x-hidden">
     <!-- Barra de navegación visible en todas las páginas -->
     <Navbar />
     
