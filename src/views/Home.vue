@@ -9,10 +9,10 @@
       
       <div 
         ref="carouselRef"
-        class="flex w-full h-full overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar pointer-events-auto"
+        class="flex w-full h-full overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar pointer-events-auto touch-pan-y"
       >
-        <div class="min-w-full h-full snap-center shrink-0 relative">
-          <picture>
+        <div class="w-full h-full flex-none snap-center relative">
+          <picture class="absolute inset-0 w-full h-full block">
             <source 
               media="(max-width: 768px)" 
               :srcset="`${cdnUrl}/images/backgrounds/home/gienco-banda-luces-home-mobile.webp`"
@@ -21,16 +21,16 @@
             <img 
               :src="`${cdnUrl}/images/backgrounds/home/gienco-banda-luces-home.webp`"
               alt="Gienco Band - Luces de Concierto"
-              class="w-full h-full object-cover object-center transform-gpu"
+              class="w-full h-full object-cover object-center"
               loading="eager"
               fetchpriority="high"
             />
           </picture>
-          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+          <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none"></div>
         </div>
 
-        <div class="min-w-full h-full snap-center shrink-0 relative">
-          <picture>
+        <div class="w-full h-full flex-none snap-center relative">
+          <picture class="absolute inset-0 w-full h-full block">
             <source 
               media="(max-width: 768px)" 
               :srcset="`${cdnUrl}/images/backgrounds/home/gienco-fondo-concierto-home-mobile.webp`"
@@ -39,16 +39,16 @@
             <img 
               :src="`${cdnUrl}/images/backgrounds/home/gienco-fondo-concierto-home.webp`"
               alt="Gienco Band - Fondo Concierto"
-              class="w-full h-full object-cover object-center transform-gpu"
+              class="w-full h-full object-cover object-center"
               loading="eager"
               fetchpriority="high"
             />
           </picture>
-          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+          <div class="absolute inset-0 z-10 bg-gradient-to-t from-black via-black/40 to-transparent pointer-events-none"></div>
         </div>
       </div>
       
-      <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 z-20 flex justify-between items-center px-4 md:px-10 pointer-events-none transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+      <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 z-20 flex justify-between items-center px-4 md:px-10 pointer-events-none transition-opacity duration-300 opacity-0 group-hover:opacity-100 hidden md:flex">
         <button 
           @click="scrollPrev"
           class="pointer-events-auto w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:bg-white/20 hover:border-white/30 hover:scale-105 active:scale-95"
