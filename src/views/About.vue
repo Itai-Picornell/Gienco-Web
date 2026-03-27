@@ -6,9 +6,25 @@
         <div class="@container">
           <div class="w-full">
             <div 
-              class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat items-center justify-center p-4 relative" 
-              style='background-image: linear-gradient(rgba(24, 17, 17, 0.3) 0%, rgba(24, 17, 17, 1) 100%), url("/images/backgrounds/About_Hero.webp");'
+              class="flex min-h-[480px] flex-col gap-6 items-center justify-center p-4 relative overflow-hidden"
             >
+              <!-- Fondo responsivo con art direction -->
+              <picture>
+                <source 
+                  media="(max-width: 768px)" 
+                  :srcset="`${cdnUrl}/images/backgrounds/about/gienco-making-of-about-mobile.webp`"
+                  type="image/webp"
+                />
+                <img 
+                  :src="`${cdnUrl}/images/backgrounds/about/gienco-making-of-about.webp`"
+                  alt="Gienco Band - About Hero Background"
+                  class="absolute inset-0 w-full h-full object-cover object-[20%_center] md:object-left opacity-60 z-0"
+                  loading="eager"
+                  fetchpriority="high"
+                />
+              </picture>
+              <!-- Gradient overlay -->
+              <div class="absolute inset-0 z-[1] bg-gradient-to-b from-[rgba(24,17,17,0.3)] to-[rgba(24,17,17,1)]"></div>
 
               <div class="flex flex-col gap-2 text-center max-w-[800px] z-10">
                 <h1 class="text-white text-5xl md:text-7xl leading-tight tracking-wide" style="font-family: 'Cinzel Decorative', serif; font-weight: 700;">
@@ -50,9 +66,14 @@
         </div>
       </div>
     </div>
+
+    <!-- Band Carousel Section -->
+    <BandCarousel />
   </main>
 </template>
 
 <script setup>
-import Footer from '../components/Footer.vue'
+import BandCarousel from '../components/BandCarousel.vue'
+
+const cdnUrl = import.meta.env.VITE_CDN_URL || ''
 </script>

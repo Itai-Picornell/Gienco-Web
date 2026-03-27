@@ -6,7 +6,7 @@
       <div class="flex items-center text-white mr-8">
         <div class="h-10 flex items-center justify-center">
           <img 
-            src="/images/logos/Logo_1x.webp" 
+            :src="`${cdnUrl}/images/logos/logo-gienco-official-gold.webp`" 
             alt="Gienco Band Logo" 
             width="219" 
             height="70" 
@@ -209,6 +209,8 @@ import { useCartStore } from '../stores/cart'
 const almacenAutenticacion = useAuthStore()
 const almacenCarrito = useCartStore()
 const router = useRouter()
+
+const cdnUrl = import.meta.env.VITE_CDN_URL || ''
 
 // Estado para el menú móvil
 const isMobileMenuOpen = ref(false)

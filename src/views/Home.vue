@@ -1,67 +1,85 @@
 <template>
   <main class="flex flex-col">
-    <!-- Sección Hero a pantalla completa -->
-    <section class="relative w-full min-h-[70vh] md:min-h-screen flex items-center justify-center overflow-hidden" @mouseenter="pauseCarousel" @mouseleave="resumeCarousel">
+    <section 
+      class="relative w-full h-[70vh] md:h-screen overflow-hidden group"
+      @mouseenter="pauseCarousel" 
+      @mouseleave="resumeCarousel"
+    >
       <h1 class="sr-only">Gienco Band - Banda Oficial de Música</h1>
       
-      <!-- Carrusel de fondo -->
-      <div class="absolute inset-0 z-0">
-        <div 
-          v-for="(imagen, indice) in imagenesFondo" 
-          :key="indice"
-          class="absolute inset-0 bg-cover bg-no-repeat transition-opacity duration-1000 object-cover w-full h-full"
-          :class="[
-            indiceImagenActual === indice ? 'opacity-100' : 'opacity-0',
-            imagen.includes('Background3') ? 'bg-[position:75%_center] md:bg-center' :
-            imagen.includes('Fondo_Registrarse') ? 'bg-[position:65%_center] md:bg-center' : 'bg-center'
-          ]"
-          :style="`background-image: linear-gradient(rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.4) 100%), url('${imagen}');`"
-        ></div>
+      <div 
+        ref="carouselRef"
+        class="flex w-full h-full overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scrollbar pointer-events-auto"
+      >
+        <div class="min-w-full h-full snap-center shrink-0 relative">
+          <picture>
+            <source 
+              media="(max-width: 768px)" 
+              :srcset="`${cdnUrl}/images/backgrounds/home/gienco-banda-luces-home-mobile.webp`"
+              type="image/webp"
+            />
+            <img 
+              :src="`${cdnUrl}/images/backgrounds/home/gienco-banda-luces-home.webp`"
+              alt="Gienco Band - Luces de Concierto"
+              class="w-full h-full object-cover object-center transform-gpu"
+              loading="eager"
+              fetchpriority="high"
+            />
+          </picture>
+          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+        </div>
+
+        <div class="min-w-full h-full snap-center shrink-0 relative">
+          <picture>
+            <source 
+              media="(max-width: 768px)" 
+              :srcset="`${cdnUrl}/images/backgrounds/home/gienco-fondo-concierto-home-mobile.webp`"
+              type="image/webp"
+            />
+            <img 
+              :src="`${cdnUrl}/images/backgrounds/home/gienco-fondo-concierto-home.webp`"
+              alt="Gienco Band - Fondo Concierto"
+              class="w-full h-full object-cover object-center transform-gpu"
+              loading="eager"
+              fetchpriority="high"
+            />
+          </picture>
+          <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+        </div>
       </div>
       
-      <!-- Controles de navegación -->
-      <div v-if="imagenesFondo.length > 1" class="absolute inset-x-0 top-1/2 -translate-y-1/2 z-20 flex justify-between items-center px-4 md:px-10 pointer-events-none">
-        <!-- Flecha Izquierda -->
+      <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 z-20 flex justify-between items-center px-4 md:px-10 pointer-events-none transition-opacity duration-300 opacity-0 group-hover:opacity-100">
         <button 
-          @click="cambiarImagen(-1)"
-          class="pointer-events-auto group relative w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:bg-white/20 hover:border-white/30 hover:scale-105 active:scale-95 opacity-0 hover:opacity-100 animate-fade-in"
-          style="animation-delay: 0.5s; animation-fill-mode: forwards;"
+          @click="scrollPrev"
+          class="pointer-events-auto w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:bg-white/20 hover:border-white/30 hover:scale-105 active:scale-95"
           aria-label="Imagen anterior"
         >
-          <svg class="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:-translate-x-0.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <span class="material-symbols-outlined text-xl md:text-2xl">arrow_back</span>
         </button>
         
-        <!-- Flecha Derecha -->
         <button 
-          @click="cambiarImagen(1)"
-          class="pointer-events-auto group relative w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:bg-white/20 hover:border-white/30 hover:scale-105 active:scale-95 opacity-0 hover:opacity-100 animate-fade-in"
-          style="animation-delay: 0.5s; animation-fill-mode: forwards;"
+          @click="scrollNext"
+          class="pointer-events-auto w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white transition-all duration-300 hover:bg-white/20 hover:border-white/30 hover:scale-105 active:scale-95"
           aria-label="Imagen siguiente"
         >
-          <svg class="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300 group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <span class="material-symbols-outlined text-xl md:text-2xl">arrow_forward</span>
         </button>
       </div>
       
-      <!-- Indicadores de posición -->
-      <div v-if="imagenesFondo.length > 1" class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
         <button
-          v-for="(imagen, indice) in imagenesFondo"
-          :key="indice"
-          @click="irAImagen(indice)"
+          v-for="i in 2"
+          :key="i"
+          @click="scrollToSlide(i - 1)"
           :class="[
             'w-2 h-2 rounded-full transition-all',
-            indiceImagenActual === indice ? 'bg-white w-8' : 'bg-white/50 hover:bg-white/75'
+            currentSlide === i - 1 ? 'bg-white w-8' : 'bg-white/50 hover:bg-white/75'
           ]"
-          :aria-label="`Ir a imagen ${indice + 1}`"
+          :aria-label="`Ir a imagen ${i}`"
         ></button>
       </div>
     </section>
 
-    <!-- Sección de Último Lanzamiento -->
     <section class="py-12 md:py-20 bg-background-dark">
       <div class="container mx-auto px-4 md:px-10 lg:px-40">
         <div class="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-20 items-center">
@@ -85,7 +103,6 @@ Estamos muy contentos de anunciaros nuestro primer álbum "Manifiesto" el cual s
           </div>
         </div>
         
-        <!-- Events Calendar Section -->
         <section class="w-full max-w-5xl mx-auto mt-20 mb-12 px-4">
           <h2 class="text-white text-4xl lg:text-5xl font-black leading-tight tracking-tight mb-8 text-center lg:text-left">
             Próximos Eventos
@@ -102,112 +119,99 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import SpotifyPlayer from '../components/SpotifyPlayer.vue'
 import EventsCalendar from '../components/EventsCalendar.vue'
 
-// Imágenes del carrusel de fondo
-const imagenesFondo = ref([
-  '/images/backgrounds/Background3.webp',
-  '/images/backgrounds/Fondo_Login.webp',
-  '/images/backgrounds/Fondo_Registrarse.webp'
-])
+// Lógica de entorno segura
+const cdnUrl = import.meta.env.VITE_CDN_URL || ''
 
-const indiceImagenActual = ref(0)
-let idIntervalo = null
+const carouselRef = ref(null)
+const currentSlide = ref(0)
+let autoplayInterval = null
 
-// Cambia la imagen del carrusel según la dirección (-1 izquierda, 1 derecha)
-/**
- * Cambia la imagen activa del carrusel desplazándose en la dirección indicada.
- * 
- * @param {number} direccion - Dirección del desplazamiento: -1 (anterior) o 1 (siguiente).
- */
-const cambiarImagen = (direccion) => {
-  const totalImagenes = imagenesFondo.value.length
-  indiceImagenActual.value = (indiceImagenActual.value + direccion + totalImagenes) % totalImagenes
+// Manejo del scroll para detectar el slide actual
+const handleScroll = () => {
+  if (!carouselRef.value) return
+  const { scrollLeft, clientWidth } = carouselRef.value
+  currentSlide.value = Math.round(scrollLeft / clientWidth)
 }
 
-// Establece directamente el índice de la imagen a mostrar
-/**
- * Navega directamente a una imagen específica del carrusel.
- * 
- * @param {number} indice - Índice de la imagen a mostrar.
- */
-const irAImagen = (indice) => {
-  indiceImagenActual.value = indice
+const scrollToSlide = (index) => {
+  if (!carouselRef.value) return
+  const { clientWidth } = carouselRef.value
+  carouselRef.value.scrollTo({
+    left: index * clientWidth,
+    behavior: 'smooth'
+  })
 }
 
-// Pausa la rotación automática del carrusel
-/**
- * Detiene la rotación automática del carrusel (ej. al hacer hover).
- */
+const scrollNext = () => {
+  if (!carouselRef.value) return
+  const { scrollLeft, clientWidth, scrollWidth } = carouselRef.value
+  if (scrollLeft + clientWidth >= scrollWidth - 10) {
+    carouselRef.value.scrollTo({ left: 0, behavior: 'smooth' })
+  } else {
+    carouselRef.value.scrollBy({ left: clientWidth, behavior: 'smooth' })
+  }
+}
+
+const scrollPrev = () => {
+  if (!carouselRef.value) return
+  const { scrollLeft, clientWidth, scrollWidth } = carouselRef.value
+  if (scrollLeft <= 10) {
+    carouselRef.value.scrollTo({ left: scrollWidth, behavior: 'smooth' })
+  } else {
+    carouselRef.value.scrollBy({ left: -clientWidth, behavior: 'smooth' })
+  }
+}
+
+const startAutoplay = () => {
+  if (autoplayInterval) return
+  autoplayInterval = setInterval(scrollNext, 5000)
+}
+
 const pauseCarousel = () => {
-  if (idIntervalo) {
-    clearInterval(idIntervalo)
-    idIntervalo = null
+  if (autoplayInterval) {
+    clearInterval(autoplayInterval)
+    autoplayInterval = null
   }
 }
 
-// Reanuda la rotación automática del carrusel
-/**
- * Reinicia la rotación automática del carrusel si no está ya activa.
- * Intervalo configurado a 5 segundos.
- */
 const resumeCarousel = () => {
-  if (imagenesFondo.value.length > 1 && !idIntervalo) {
-    idIntervalo = setInterval(() => {
-      indiceImagenActual.value = (indiceImagenActual.value + 1) % imagenesFondo.value.length
-    }, 5000)
-  }
+  startAutoplay()
 }
 
-// Inicia la rotación automática del carrusel al cargar la página
 onMounted(() => {
-  if (imagenesFondo.value.length > 1) {
-    idIntervalo = setInterval(() => {
-      indiceImagenActual.value = (indiceImagenActual.value + 1) % imagenesFondo.value.length
-    }, 5000)
+  startAutoplay()
+  if (carouselRef.value) {
+    carouselRef.value.addEventListener('scroll', handleScroll, { passive: true })
   }
 })
 
-
-// Limpia el intervalo al desmontar el componente
 onBeforeUnmount(() => {
-  if (idIntervalo) {
-    clearInterval(idIntervalo)
+  pauseCarousel()
+  if (carouselRef.value) {
+    carouselRef.value.removeEventListener('scroll', handleScroll)
   }
 })
-
-const pistas = ref([
-  {
-    titulo: 'Florecer',
-    duracion: '3:34',
-    imagen: '/images/songs/Florecer_Fondo.webp',
-    spotifyId: '1wFpM7aH9bT0fH2H9fH1qX' // REEMPLAZAR_CON_ID_FLORECER
-  },
-  {
-    titulo: '¡Menudo Porvenir!',
-    duracion: '2:46',
-    imagen: '/images/songs/Menudo_Porvenir_Fondo.webp',
-    spotifyId: '3vK1H2H9fH1qX1wFpM7aH9' // REEMPLAZAR_CON_ID_MENUDO_PORVENIR
-  }
-])
-
 </script>
 
 <style scoped>
-/* Animación sutil para las flechas */
 @keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 0.6;
-  }
+  from { opacity: 0; }
+  to { opacity: 0.6; }
 }
 
 .animate-fade-in {
   animation: fade-in 0.8s ease-out;
 }
 
-/* Efecto hover para mostrar completamente las flechas */
 .animate-fade-in:hover {
   opacity: 1 !important;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 </style>

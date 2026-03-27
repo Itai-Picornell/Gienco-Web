@@ -2,7 +2,21 @@
   <main class="flex-grow flex flex-col items-center justify-center relative min-h-[calc(100vh-80px)]">
     <!-- Background Elements -->
     <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-      <div class="absolute top-0 left-0 w-full h-full bg-[url('/images/backgrounds/Fondo_Login.webp')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
+      <!-- Fondo responsivo con art direction -->
+      <picture>
+        <source 
+          media="(max-width: 768px)" 
+          :srcset="`${cdnUrl}/images/backgrounds/login/gienco-bateria-login.webp`"
+          type="image/webp"
+        />
+        <img 
+          :src="`${cdnUrl}/images/backgrounds/login/gienco-fondo-acceso-fans.webp`"
+          alt="Gienco Band - Login Background"
+          class="absolute inset-0 w-full h-full object-cover opacity-60 z-0"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </picture>
       <div class="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]"></div>
       <div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px]"></div>
     </div>
@@ -92,6 +106,8 @@ import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
+
+const cdnUrl = import.meta.env.VITE_CDN_URL || ''
 
 const router = useRouter()
 const route = useRoute()

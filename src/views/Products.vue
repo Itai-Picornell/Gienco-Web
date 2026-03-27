@@ -58,7 +58,6 @@
                   loading="lazy"
                   decoding="async"
                   class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-700 ease-in-out"
-                  @error="(e) => e.target.src = 'https://placehold.co/600x600/181111/FFF?text=Gienco+Merch'"
                 />
               </div>
 
@@ -135,7 +134,7 @@
                       : 'bg-neutral-800 text-neutral-500 cursor-not-allowed border border-neutral-800'
                   ]"
                 >
-                  {{ orderSelections[producto.id]?.selectedSize ? 'AÑADIR' : 'AÑADIR' }}
+                  AÑADIR
                 </button>
               </div>
 
@@ -153,61 +152,75 @@ import { ref, onMounted } from 'vue'
 import { useCartStore } from '../stores/cart'
 
 const cartStore = useCartStore()
+const cdnUrl = import.meta.env.VITE_CDN_URL || ''
 
 const products = ref([])
 const isLoading = ref(true)
 const error = ref(null)
-
-// El objeto del Local State por cada producto
 const orderSelections = ref({})
 
-// Toasts
 const toastMsg = ref('')
-const toastType = ref('success') // 'success' o 'error'
+const toastType = ref('success')
 let toastTimeout
 
-const IMAGE_PLACEHOLDER = 'https://placehold.co/600x600/181111/FFF?text=Gienco+Merch'
+// 1. SEGURIDAD: Saneamiento básico para evitar XSS en nombres
+const sanitizeHTML = (str) => {
+  if (!str) return '';
+  return String(str).replace(/[&<>'"]/g, 
+    tag => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[tag])
+  );
+}
 
 const formatPriceSafe = (value) => {
   const numericValue = Number(value)
-  if (isNaN(numericValue)) return '0,00 €'
+  if (isNaN(numericValue) || numericValue < 0) return '0,00 €'
   return numericValue.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })
 }
 
 const normalizeDynamoProduct = (raw) => {
-  const parseTallas = (tallasObj) => {
-    if (!tallasObj) return []
-    if (Array.isArray(tallasObj)) return tallasObj
-    if (tallasObj.L && Array.isArray(tallasObj.L)) return tallasObj.L.map(t => t.S || t)
-    return []
+  const parseTallas = (t) => {
+    if (!t) return []
+    if (Array.isArray(t)) return t
+    if (t.L) return t.L.map(item => sanitizeHTML(item.S || item))
+    try { return typeof t === 'string' ? JSON.parse(t) : [] } catch { return [] }
   }
 
-  const rawImage = raw.imagen?.S || raw.imagen
+  // Prevención de Directory Traversal en el nombre de la imagen
+  const rawImage = raw.imagen?.S || raw.imagen || '';
+  const safeFileName = rawImage ? rawImage.split('/').pop().replace(/[^a-zA-Z0-9._-]/g, '').trim() : 'placeholder.webp';
   
   return {
-    id: raw.productId?.S || raw.productId,
-    name: raw.nombre?.S || raw.nombre || 'Producto sin nombre',
-    price: Number(raw.precio?.N || raw.precio || 0),
-    image: rawImage || IMAGE_PLACEHOLDER,
-    maxorder: Number(raw.maxorder?.N || raw.maxorder || 50),
-    sizes: parseTallas(raw.tallas)
+    id: sanitizeHTML(raw.productId?.S || raw.productId),
+    name: sanitizeHTML(raw.nombre?.S || raw.nombre || 'Producto sin nombre'),
+    price: Math.max(0, Number(raw.precio?.N || raw.precio || 0)),
+    image: `${cdnUrl}/images/merch/${safeFileName}`,
+    thumbnail: `${cdnUrl}/images/merch/${safeFileName.replace('.webp', '-thumb.webp')}`,
+    maxorder: Math.min(100, Math.max(1, Number(raw.maxorder?.N || raw.maxorder || 50))),
+    sizes: parseTallas(raw.tallas?.S || raw.tallas)
   }
 }
 
 const fetchProducts = async () => {
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/products`)
-    if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`)
+    if (!response.ok) throw new Error('Error de conexión con el catálogo.')
     const data = await response.json()
     products.value = data.map(normalizeDynamoProduct)
     
-    // Inicializar
     products.value.forEach(p => {
       orderSelections.value[p.id] = { quantity: 1, selectedSize: null }
     })
   } catch (e) {
     error.value = 'No se pudieron cargar los productos en este momento.'
-    console.error('[fetchProducts]', e)
+    if (import.meta.env.DEV) {
+       console.error('[fetchProducts Error]:', e)
+    }
   } finally {
     isLoading.value = false
   }
@@ -220,29 +233,21 @@ const getSelection = (id) => {
   return orderSelections.value[id]
 }
 
-// Saber cuánto puedo poner basandome en lo que ya hay en el cart
+// 2. RENDIMIENTO Y ESTABILIDAD: Funciones seguras
+const getUnidadesEnCarrito = (productoId) => {
+  if (cartStore.getProductQuantity) return cartStore.getProductQuantity(productoId);
+  return cartStore.items?.reduce((acc, curr) => curr.id === productoId ? acc + curr.quantity : acc, 0) || 0;
+}
+
 const cantidadesDisponibles = (producto) => {
   const sel = getSelection(producto.id)
-  
-  // Getter del Store: Devuelve suma de units que hay en carrito de todos los items que tienen el mismo id
-  let yaEnCarrito = 0;
-  if(cartStore.getProductQuantity) {
-      yaEnCarrito = cartStore.getProductQuantity(producto.id);
-  } else {
-     yaEnCarrito = cartStore.items.reduce((acc, curr) => curr.id === producto.id ? acc + curr.quantity : acc, 0)
-  }
-  
+  const yaEnCarrito = getUnidadesEnCarrito(producto.id)
   const remaining = producto.maxorder - yaEnCarrito
-  return remaining - (sel.quantity - 1) // Remaining for the [+] button allowed step
+  return remaining - (sel.quantity - 1)
 }
 
 const isNewAdd = (producto) => {
-  let yaEnCarrito = 0;
-  if(cartStore.getProductQuantity) {
-      yaEnCarrito = cartStore.getProductQuantity(producto.id);
-  } else {
-     yaEnCarrito = cartStore.items.reduce((acc, curr) => curr.id === producto.id ? acc + curr.quantity : acc, 0)
-  }
+  const yaEnCarrito = getUnidadesEnCarrito(producto.id)
   return yaEnCarrito >= producto.maxorder
 }
 
@@ -250,10 +255,12 @@ const validarCantidad = (id, maxorder) => {
   const sel = getSelection(id)
   let val = Number(sel.quantity)
   
-  let yaEnCarrito = 0;
-  if(cartStore.getProductQuantity) yaEnCarrito = cartStore.getProductQuantity(id);
-  else yaEnCarrito = cartStore.items.reduce((acc, curr) => curr.id === id ? acc + curr.quantity : acc, 0);
+  if (isNaN(val) || val <= 0) {
+    sel.quantity = 1;
+    return;
+  }
 
+  const yaEnCarrito = getUnidadesEnCarrito(id)
   const maxReal = Math.max(1, maxorder - yaEnCarrito)
   
   if (val > maxReal) sel.quantity = maxReal
@@ -268,11 +275,7 @@ const blurCantidad = (id) => {
 const incrementarCantidad = (id, maxorder) => {
   const sel = getSelection(id)
   let val = parseInt(sel.quantity, 10) || 1
-  
-  let yaEnCarrito = 0;
-  if(cartStore.getProductQuantity) yaEnCarrito = cartStore.getProductQuantity(id);
-  else yaEnCarrito = cartStore.items.reduce((acc, curr) => curr.id === id ? acc + curr.quantity : acc, 0);
-
+  const yaEnCarrito = getUnidadesEnCarrito(id)
   const maxReal = Math.max(1, maxorder - yaEnCarrito)
 
   if (val < maxReal) sel.quantity = val + 1
@@ -295,7 +298,16 @@ const showToast = (msg, type = 'success') => {
 
 const agregarAlCarrito = (producto) => {
   const sel = getSelection(producto.id)
-  if (!sel.selectedSize) return
+  
+  if (!sel.selectedSize) return showToast('Selecciona una talla primero', 'error')
+  
+  const cantidadDeseada = parseInt(sel.quantity, 10);
+  if (isNaN(cantidadDeseada) || cantidadDeseada < 1) return showToast('Cantidad inválida', 'error');
+
+  const yaEnCarrito = getUnidadesEnCarrito(producto.id)
+  if ((yaEnCarrito + cantidadDeseada) > producto.maxorder) {
+     return showToast(`Stock limitado. Máximo ${producto.maxorder} unidades.`, 'error');
+  }
 
   try {
     cartStore.addToCart(
@@ -307,23 +319,16 @@ const agregarAlCarrito = (producto) => {
         maxorder: producto.maxorder
       },
       sel.selectedSize,
-      sel.quantity
+      cantidadDeseada
     )
     
     showToast(`Añadido: ${producto.name}`, 'success')
-    // Reset inputs
     sel.quantity = 1
     sel.selectedSize = null
 
   } catch (err) {
-    showToast(err.message, 'error')
-    
-    // Auto adjust al máximo que deja
-    let yaEnCarrito = 0;
-    if(cartStore.getProductQuantity) yaEnCarrito = cartStore.getProductQuantity(producto.id);
-    else yaEnCarrito = cartStore.items.reduce((acc, curr) => curr.id === producto.id ? acc + curr.quantity : acc, 0);
-    
-    const available = producto.maxorder - yaEnCarrito
+    showToast(err.message || 'Error al añadir al carrito', 'error')
+    const available = producto.maxorder - getUnidadesEnCarrito(producto.id)
     sel.quantity = Math.max(1, available)
   }
 }
