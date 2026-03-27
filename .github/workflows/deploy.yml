@@ -41,14 +41,13 @@ jobs:
 
       - name: Build project & Inject Secrets
         run: npm run build
-        # Resolución de variables de entorno para el empaquetado de Vite
+        # INYECCIÓN CRÍTICA: Aquí Vite absorbe las variables para pegarlas en el HTML/JS
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_USER_POOL_ID: ${{ secrets.VITE_USER_POOL_ID }}
           VITE_USER_POOL_CLIENT_ID: ${{ secrets.VITE_USER_POOL_CLIENT_ID }}
-          VITE_LAMBDA_ORDER_URL: ${{ secrets.VITE_LAMBDA_ORDER_URL }}
-          VITE_API_ORDERS_URL: ${{ secrets.VITE_API_ORDERS_URL }}
           VITE_BANDSINTOWN_APP_ID: ${{ secrets.VITE_BANDSINTOWN_APP_ID }}
+          VITE_CDN_URL: ${{ secrets.VITE_CDN_URL }}
 
       - name: Configure AWS Credentials (OIDC/STS)
         uses: aws-actions/configure-aws-credentials@v4
