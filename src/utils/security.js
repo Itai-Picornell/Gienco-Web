@@ -1,33 +1,34 @@
-/**
- * Enterprise Security Utilities
- */
-
-/**
- * Sanitizes HTML strings to prevent XSS attacks.
- * @param {string} str - The string to sanitize.
- * @returns {string} - The sanitized string.
- */
 export const sanitizeHTML = (str) => {
-  if (!str) return '';
-  return String(str).replace(/[&<>'"]/g, 
-    tag => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      "'": '&#39;',
-      '"': '&quot;'
-    }[tag])
-  );
+  if (typeof str !== 'string') return '';
+  
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '/': '&#x2F;'
+  };
+  
+  return str.replace(/[&<>"'/]/g, (s) => map[s]);
 };
 
 /**
- * Sanitizes image paths to prevent Directory Traversal attacks.
- * @param {string} rawPath - The raw path or filename.
- * @returns {string} - The sanitized filename.
+ * Sanitiza nombres de archivos de imagen.
+ * Evita ataques de Directory Traversal (../) y caracteres de ejecución.
  */
 export const sanitizeImagePath = (rawPath) => {
-  const path = String(rawPath || '').trim();
-  if (!path) return 'placeholder.webp';
-  // extracts filename and removes special characters except dots, dashes and underscores
-  return path.split('/').pop().replace(/[^a-zA-Z0-9._-]/g, '').trim() || 'placeholder.webp';
+  if (!rawPath || typeof rawPath !== 'string') return 'placeholder.webp';
+
+  // 1. Limpieza de espacios y normalización
+  const cleanPath = rawPath.trim();
+
+  // 2. Extraer solo el nombre del archivo (evita rutas relativas como ../../etc/passwd)
+  const fileName = cleanPath.split(/[\\/]/).pop();
+
+  // 3. Regex estricta: Solo permite letras, números, puntos, guiones y guiones bajos.
+  // Cualquier otro carácter (espacios, %, $, scripts) es eliminado.
+  const safeName = fileName.replace(/[^a-zA-Z0-9._-]/g, '');
+
+  return safeName || 'placeholder.webp';
 };
