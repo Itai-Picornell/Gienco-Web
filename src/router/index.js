@@ -5,6 +5,7 @@ import Products from '../views/Products.vue'
 import Cart from '../views/Cart.vue'
 import Login from '../views/Login.vue'
 import SignUp from '../views/SignUp.vue'
+import NotFound from '../views/NotFound.vue'
 
 const routes = [
   {
@@ -36,6 +37,14 @@ const routes = [
     path: '/signup',
     name: 'SignUp',
     component: SignUp
+  },
+  // ──────────────────────────────────────────────
+  // Catch-All 404 — DEBE ser la ÚLTIMA ruta
+  // ──────────────────────────────────────────────
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFound
   }
 ]
 
@@ -45,3 +54,5 @@ const router = createRouter({
 })
 
 export default router
+
+

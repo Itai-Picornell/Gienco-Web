@@ -149,21 +149,10 @@
 <script setup>
 import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
 import { useCartStore } from '../stores/cart'
+import { cdnUrl } from '../utils/cdn'
+import { sanitizeHTML, sanitizeImagePath } from '../utils/security'
 
 const cartStore = useCartStore()
-
-/**
- * SEGURIDAD: Validación de origen del CDN
- */
-const ALLOWED_CDN_ORIGINS = ['https://d2iume3cn1sk35.cloudfront.net']
-const cdnUrl = (() => {
-  const url = import.meta.env.VITE_CDN_URL || ''
-  if (!url) return ''
-  try {
-    const origin = new URL(url).origin
-    return ALLOWED_CDN_ORIGINS.includes(origin) ? url : ''
-  } catch { return '' }
-})()
 
 const products = ref([])
 const isLoading = ref(true)
@@ -176,19 +165,7 @@ const toastType = ref('success')
 let toastTimeout = null
 let fetchAbortController = null
 
-// ─── Utilidades de Seguridad ───────────────────────────────────────────────
-
-const sanitizeHTML = (str) => {
-  if (!str) return ''
-  return String(str).replace(/[&<>"']/g, tag => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  }[tag]))
-}
-
-const sanitizeImagePath = (path) => {
-  if (!path) return 'placeholder.webp'
-  return path.split('/').pop().replace(/[^a-zA-Z0-9._-]/g, '').trim()
-}
+// ─── Utilidades ─────────────────────────────────────────────────────────────
 
 const formatPriceSafe = (value) => {
   const numericValue = Number(value)

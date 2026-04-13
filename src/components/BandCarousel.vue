@@ -4,9 +4,9 @@
 
       <h2
         id="carousel-heading"
-        class="text-5xl font-black italic tracking-tighter uppercase mb-6 text-white"
+        class="text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white mb-6"
       >
-        CONCIERTOS
+        Conciertos
       </h2>
 
       <!-- Carrusel container -->

@@ -46,7 +46,7 @@
     <section class="flex flex-col items-center w-full bg-background-dark py-10" aria-labelledby="history-title">
       <div class="w-full max-w-[960px] px-4 md:px-0">
         <div class="flex flex-col gap-2">
-          <h2 id="history-title" class="text-white text-3xl font-bold leading-tight tracking-[-0.015em] pb-3 pt-5 border-l-4 border-primary pl-4">
+          <h2 id="history-title" class="text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white pb-3 pt-5 border-l-4 border-primary pl-4">
             La Historia
           </h2>
         </div>
@@ -78,20 +78,7 @@
 
 <script setup>
 import BandCarousel from '../components/BandCarousel.vue'
-
-const ALLOWED_CDN_ORIGINS = ['https://d2iume3cn1sk35.cloudfront.net'];
-
-const cdnUrl = (() => {
-  const url = import.meta.env.VITE_CDN_URL || '';
-  if (!url) return '';
-  try {
-    const origin = new URL(url).origin;
-    // Bloqueamos cualquier URL que no pertenezca a nuestro CloudFront oficial
-    return ALLOWED_CDN_ORIGINS.includes(origin) ? url : '';
-  } catch (e) {
-    return '';
-  }
-})();
+import { cdnUrl } from '../utils/cdn'
 </script>
 
 <style scoped>

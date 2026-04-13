@@ -86,7 +86,7 @@
           <div class="flex-1 flex flex-col gap-8 text-center lg:text-left">
             <div class="flex flex-col gap-4">
               <span class="text-primary font-bold tracking-widest text-sm uppercase">Nuevo Lanzamiento</span>
-              <h2 class="text-white text-4xl lg:text-5xl font-black leading-tight tracking-tight">
+              <h2 class="text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white">
                 Nuestros Proyectos:<br/>
               </h2>
               <p class="text-gray-400 text-base md:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
@@ -101,7 +101,7 @@
         </div>
         
         <section class="w-full max-w-5xl mx-auto mt-20 mb-12 px-4">
-          <h2 class="text-white text-4xl lg:text-5xl font-black leading-tight tracking-tight mb-8 text-center lg:text-left">
+          <h2 class="text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white mb-8 text-center lg:text-left">
             Próximos Eventos
           </h2>
           <EventsCalendar />
@@ -118,8 +118,6 @@ import EventsCalendar from '../components/EventsCalendar.vue'
 
 import { cdnUrl } from '../utils/cdn'
 
-/** * CONFIGURACIÓN ENTERPRISE (Evitar Hardcoding)
- */
 const AUTOPLAY_DELAY = 5000
 
 const SLIDES = [

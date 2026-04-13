@@ -205,12 +205,12 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useCartStore } from '../stores/cart'
 
+import { cdnUrl } from '../utils/cdn'
+
 // Obtener las instancias de los stores
 const almacenAutenticacion = useAuthStore()
 const almacenCarrito = useCartStore()
 const router = useRouter()
-
-const cdnUrl = import.meta.env.VITE_CDN_URL || ''
 
 // Estado para el menú móvil
 const isMobileMenuOpen = ref(false)

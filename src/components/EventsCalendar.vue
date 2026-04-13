@@ -128,7 +128,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 
-const appId = import.meta.env.VITE_BANDSINTOWN_APP_ID || '097fb1a191b88c552b1e8aa531151b99'
+const appId = import.meta.env.VITE_BANDSINTOWN_APP_ID || ''
 const events = ref([])
 const isLoading = ref(true)
 

@@ -10,7 +10,7 @@
         <div class="flex items-center gap-4 mb-6">
 
           <div>
-            <h1 class="text-4xl md:text-5xl leading-tight tracking-wide text-white" style="font-family: 'Cinzel Decorative', serif; font-weight: 700;">
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-black leading-none tracking-tighter text-white">
               Carrito de Compra
             </h1>
             <p class="text-text-muted text-sm mt-2">{{ cartStore.totalItems }} artículos en tu carrito</p>
