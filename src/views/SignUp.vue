@@ -190,10 +190,10 @@
               required
             />
             <span class="text-sm text-slate-700 dark:text-gray-300 leading-relaxed">
-              Acepto los
-              <a href="#" class="text-white hover:bg-white hover:text-black px-1 rounded transition-colors font-medium">Términos de Servicio</a>
+              He leído y acepto los
+              <router-link to="/terminos" target="_blank" class="text-white hover:bg-white hover:text-black px-1 rounded transition-colors font-medium">Términos y Condiciones</router-link>
               y la
-              <a href="#" class="text-white hover:bg-white hover:text-black px-1 rounded transition-colors font-medium">Política de Privacidad</a>
+              <router-link to="/privacidad" target="_blank" class="text-white hover:bg-white hover:text-black px-1 rounded transition-colors font-medium">Política de Privacidad</router-link>
             </span>
           </label>
 
@@ -355,6 +355,11 @@ const isValidVerificationCode = (code) => {
  */
 const handleSignUp = async () => {
   errorMessage.value = ''
+
+  if (!form.value.agreeToTerms) {
+    errorMessage.value = 'Debes aceptar los Términos y Condiciones y la Política de Privacidad para continuar.'
+    return
+  }
 
   if (form.value.password !== form.value.confirmPassword) {
     errorMessage.value = '¡Las contraseñas no coinciden!'

@@ -7,7 +7,7 @@
       @mouseenter="pauseCarousel" 
       @mouseleave="resumeCarousel"
     >
-      <h1 class="sr-only">Gienco Band - Banda Oficial de Música</h1>
+      <h1 class="sr-only">Gienco - Banda Oficial de Música</h1>
       
       <div 
         ref="carouselRef"
@@ -121,8 +121,8 @@ import { cdnUrl } from '../utils/cdn'
 const AUTOPLAY_DELAY = 5000
 
 const SLIDES = [
-  { id: 'slide-1', imgName: 'gienco-banda-luces-home', alt: 'Gienco Band - Concierto con efectos de luces' },
-  { id: 'slide-2', imgName: 'gienco-fondo-concierto-home', alt: 'Gienco Band - Vista del público en concierto' }
+  { id: 'slide-1', imgName: 'gienco-banda-luces-home', alt: 'Gienco - Concierto con efectos de luces' },
+  { id: 'slide-2', imgName: 'gienco-fondo-concierto-home', alt: 'Gienco - Vista del público en concierto' }
 ]
 
 const carouselRef = ref(null)

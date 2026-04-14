@@ -6,8 +6,13 @@
       <div class="flex flex-col md:flex-row justify-between items-center gap-8">
         <!-- Información de la banda -->
         <div class="flex flex-col items-center md:items-start gap-2">
-          <h2 class="text-white text-2xl font-bold uppercase tracking-tight">Gienco Band</h2>
+          <h2 class="text-white text-2xl font-bold uppercase tracking-tight">Gienco</h2>
           <p class="text-gray-400 text-sm">© 2026 Gienco. Todos los derechos reservados.</p>
+          <div class="flex items-center gap-2 text-xs text-gray-500">
+            <router-link to="/terminos" class="hover:text-gray-300 transition-colors">Términos y Condiciones</router-link>
+            <span aria-hidden="true">·</span>
+            <router-link to="/privacidad" class="hover:text-gray-300 transition-colors">Política de Privacidad</router-link>
+          </div>
         </div>
         
         <!-- Enlaces a redes sociales -->

@@ -39,6 +39,19 @@ const routes = [
     component: SignUp
   },
   // ──────────────────────────────────────────────
+  // Páginas Legales (RGPD)
+  // ──────────────────────────────────────────────
+  {
+    path: '/terminos',
+    name: 'TermsOfService',
+    component: () => import('../views/TermsOfService.vue')
+  },
+  {
+    path: '/privacidad',
+    name: 'PrivacyPolicy',
+    component: () => import('../views/PrivacyPolicy.vue')
+  },
+  // ──────────────────────────────────────────────
   // Catch-All 404 — DEBE ser la ÚLTIMA ruta
   // ──────────────────────────────────────────────
   {
