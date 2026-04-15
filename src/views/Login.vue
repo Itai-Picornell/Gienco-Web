@@ -81,6 +81,13 @@
               <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">
                 Contraseña
               </span>
+              <button
+                type="button"
+                @click="showForgotPasswordModal = true"
+                class="text-sm text-gray-400 hover:text-white transition-colors py-2 font-medium"
+              >
+                ¿Olvidaste tu contraseña?
+              </button>
             </div>
             <div class="relative">
               <input
@@ -118,6 +125,75 @@
         </form>
       </div>
 
+      <!-- Modal de Recuperación de Contraseña -->
+      <div
+        v-if="showForgotPasswordModal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+        @click.self="showForgotPasswordModal = false"
+      >
+        <div class="bg-card-dark border border-border-dark rounded-2xl shadow-2xl max-w-md w-full p-8 animate-fade-in">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-white">Recuperar contraseña</h2>
+            <button
+              type="button"
+              @click="showForgotPasswordModal = false"
+              class="text-gray-400 hover:text-white transition-colors"
+              aria-label="Cerrar"
+            >
+              <span class="material-symbols-outlined text-2xl" aria-hidden="true">close</span>
+            </button>
+          </div>
+
+          <div
+            v-if="forgotPasswordError"
+            role="alert"
+            class="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/50"
+          >
+            <p class="text-red-400 text-sm font-medium">{{ forgotPasswordError }}</p>
+          </div>
+
+          <div
+            v-if="forgotPasswordSuccess"
+            role="alert"
+            class="mb-4 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/50"
+          >
+            <p class="text-emerald-400 text-sm font-medium">{{ forgotPasswordSuccess }}</p>
+          </div>
+
+          <form @submit.prevent="handleForgotPassword" class="flex flex-col gap-4" novalidate>
+            <label class="flex flex-col gap-2">
+              <span class="text-sm font-medium text-gray-300 uppercase tracking-wide">Correo Electrónico</span>
+              <input
+                v-model="forgotPasswordEmail"
+                type="email"
+                class="form-input w-full rounded-lg border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-[#181111] text-slate-900 dark:text-white h-10 px-3 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-gray-400 dark:placeholder:text-text-muted text-sm transition-all"
+                placeholder="gienco@ejemplo.com"
+                autocomplete="email"
+                maxlength="254"
+                required
+              />
+            </label>
+
+            <button
+              :disabled="isForgotPasswordLoading"
+              type="submit"
+              class="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-primary border border-primary text-white text-sm font-bold uppercase tracking-wider hover:bg-primary-dark active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span v-if="!isForgotPasswordLoading">Enviar código</span>
+              <span v-else class="material-symbols-outlined animate-spin text-sm" aria-hidden="true">refresh</span>
+            </button>
+
+            <button
+              type="button"
+              @click="showForgotPasswordModal = false"
+              class="text-sm text-gray-400 hover:text-white transition-colors py-2"
+            >
+              Volver
+            </button>
+          </form>
+        </div>
+      </div>
+
       <!-- Sign Up Link -->
       <div class="text-center mt-6">
         <p class="text-sm text-gray-400">
@@ -151,6 +227,13 @@ const form = ref({
 const showPassword = ref(false)
 const errorMessage = ref('')
 const isLoading = ref(false)
+
+// Variables para modal de recuperación de contraseña
+const showForgotPasswordModal = ref(false)
+const forgotPasswordEmail = ref('')
+const forgotPasswordError = ref('')
+const forgotPasswordSuccess = ref('')
+const isForgotPasswordLoading = ref(false)
 
 /**
  * SEGURIDAD: Valida que la ruta de redirección sea interna.
@@ -239,6 +322,50 @@ const handleLogin = async () => {
     }
   } finally {
     isLoading.value = false
+  }
+}
+
+/**
+ * Inicia el flujo de recuperación de contraseña.
+ * Envía un código de verificación al email del usuario.
+ * 
+ * @async
+ */
+const handleForgotPassword = async () => {
+  forgotPasswordError.value = ''
+  forgotPasswordSuccess.value = ''
+  isForgotPasswordLoading.value = true
+
+  try {
+    const email = forgotPasswordEmail.value.trim().toLowerCase()
+
+    if (!email) {
+      forgotPasswordError.value = 'Por favor ingresa tu correo electrónico.'
+      return
+    }
+
+    // Llamamos al método del store de autenticación
+    const result = await authStore.forgotPassword(email)
+
+    if (result.success) {
+      forgotPasswordSuccess.value = 'Se ha enviado un código a tu correo. Revisa tu bandeja de entrada.'
+      forgotPasswordEmail.value = ''
+      
+      // Cerramos el modal después de 2 segundos y redirigimos a reset
+      setTimeout(() => {
+        showForgotPasswordModal.value = false
+        router.push(`/login/reset?email=${encodeURIComponent(email)}`)
+      }, 2000)
+    } else {
+      forgotPasswordError.value = result.error || 'Error al enviar el código de recuperación.'
+    }
+  } catch (error) {
+    forgotPasswordError.value = 'Ocurrió un error al procesar tu solicitud.'
+    if (import.meta.env.DEV) {
+      console.error('[ForgotPassword Error]:', error)
+    }
+  } finally {
+    isForgotPasswordLoading.value = false
   }
 }
 </script>

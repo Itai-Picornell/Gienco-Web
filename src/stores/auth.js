@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { signIn, signOut, getCurrentUser, signUp, confirmSignUp, resendSignUpCode, fetchAuthSession, fetchUserAttributes } from 'aws-amplify/auth'
+import { signIn, signOut, getCurrentUser, signUp, confirmSignUp, resendSignUpCode, resetPassword, confirmResetPassword, fetchAuthSession, fetchUserAttributes } from 'aws-amplify/auth'
 
 const APP_MODE = import.meta.env.VITE_APP_MODE || 'web'
 
@@ -200,6 +200,68 @@ export const useAuthStore = defineStore('auth', {
         console.warn('Role Enforcement: Usuario expulsado. Se requiere rol de Administrador.')
         await this.logout()
         throw new Error('UNAUTHORIZED_ROLE')
+      }
+    },
+
+    /**
+     * Inicia el flujo de recuperación de contraseña.
+     * Envía un código de verificación (OTP) al email del usuario para que pueda restablecer su contraseña.
+     * 
+     * @async
+     * @param {string} email - Correo electrónico del usuario.
+     * @returns {Promise<{success: boolean, error?: string}>} Resultado del inicio de recuperación.
+     */
+    async forgotPassword(email) {
+      this.authError = null
+      try {
+        const result = await resetPassword({ username: email })
+        return { success: true }
+      } catch (error) {
+        console.error('Forgot password error:', error)
+        let msg = error.message
+        if (msg.includes('User does not exist')) {
+          msg = 'No existe ninguna cuenta con ese correo.'
+        } else if (msg.includes('Cannot reset password')) {
+          msg = 'El correo no está registrado o no ha sido verificado.'
+        } else if (msg.includes('User account is disabled')) {
+          msg = 'La cuenta está deshabilitada. Contacta con soporte.'
+        } else if (msg.includes('Too many requests')) {
+          msg = 'Demasiados intentos. Espera 15 minutos antes de intentar de nuevo.'
+        }
+        this.authError = msg
+        return { success: false, error: msg }
+      }
+    },
+
+    /**
+     * Confirma el restablecimiento de contraseña usando el código de verificación.
+     * Se llama después de que el usuario ingresa el código OTP y la nueva contraseña.
+     * 
+     * @async
+     * @param {string} email - Correo electrónico del usuario.
+     * @param {string} code - Código de confirmación de 6 dígitos.
+     * @param {string} newPassword - Nueva contraseña del usuario.
+     * @returns {Promise<{success: boolean, error?: string}>} Resultado de la confirmación de recuperación.
+     */
+    async confirmForgotPassword(email, code, newPassword) {
+      this.authError = null
+      try {
+        await confirmResetPassword({
+          username: email,
+          confirmationCode: code,
+          newPassword
+        })
+        return { success: true }
+      } catch (error) {
+        console.error('Confirm forgot password error:', error)
+        let msg = error.message
+        if (msg.includes('Incorrect confirmation code')) {
+          msg = 'El código ingresado es incorrecto.'
+        } else if (msg.includes('Attempt limit exceeded')) {
+          msg = 'Número de intentos excedido. Solicita un nuevo código.'
+        }
+        this.authError = msg
+        return { success: false, error: msg }
       }
     }
   }

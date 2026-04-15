@@ -6,20 +6,20 @@
       <picture aria-hidden="true">
         <source
           media="(max-width: 768px)"
-          :srcset="`${cdnUrl}/images/backgrounds/sign_up/gienco-cantante-registro.webp`"
+          :srcset="`${cdnUrl}/images/backgrounds/login/gienco-bateria-login.webp`"
           type="image/webp"
           width="768"
           height="1024"
         />
         <source
-          :srcset="`${cdnUrl}/images/backgrounds/sign_up/gienco-publico-registro.webp`"
+          :srcset="`${cdnUrl}/images/backgrounds/login/gienco-fondo-acceso-fans.webp`"
           type="image/webp"
           width="1920"
           height="1080"
         />
         <!-- Fallback JPG si WebP no es soportado -->
         <img
-          :src="`${cdnUrl}/images/backgrounds/sign_up/gienco-publico-registro.jpg`"
+          :src="`${cdnUrl}/images/backgrounds/login/gienco-fondo-acceso-fans.jpg`"
           alt=""
           class="absolute inset-0 w-full h-full object-cover opacity-60 z-0"
           loading="eager"
@@ -32,18 +32,15 @@
       <div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px]"></div>
     </div>
 
-    <div class="w-full max-w-[550px] px-4 pt-20 pb-12 md:pt-24 md:pb-20 z-10">
+    <div class="w-full max-w-[480px] px-4 py-12 md:py-20 z-10">
       <!-- Header -->
       <div class="text-center mb-10">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6 mt-2">
-          <span class="material-symbols-outlined text-white text-4xl" aria-hidden="true">person_add</span>
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6">
+          <span class="material-symbols-outlined text-white text-4xl" aria-hidden="true">lock_reset</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-black leading-none tracking-tighter text-white mb-4">
-          REGISTRARSE
+          RESTABLECER CONTRASEÑA
         </h1>
-        <p class="text-text-muted text-base md:text-lg font-normal max-w-md mx-auto leading-relaxed">
-          Crea tu cuenta y forma parte de este gran proyecto.
-        </p>
       </div>
 
       <!-- Error Alert -->
@@ -59,65 +56,77 @@
         </div>
       </div>
 
-      <!-- Sign Up Form -->
+      <!-- Success Alert -->
+      <div
+        v-if="successMessage"
+        role="alert"
+        aria-live="polite"
+        class="mb-6 p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/50 animate-fade-in"
+      >
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-emerald-500" aria-hidden="true">check_circle</span>
+          <p class="text-emerald-400 text-sm font-medium">{{ successMessage }}</p>
+        </div>
+      </div>
+
+      <!-- Reset Form -->
       <div class="bg-white dark:bg-card-dark p-8 rounded-2xl border border-gray-200 dark:border-border-dark shadow-2xl relative overflow-hidden">
         <div class="absolute -top-20 -right-20 w-40 h-40 bg-primary/20 rounded-full blur-[50px]"></div>
 
-        <!-- PASO 1: Formulario de registro -->
-        <form v-if="!showVerification" @submit.prevent="handleSignUp" class="flex flex-col gap-6 relative z-10" novalidate>
-          <label class="flex flex-col gap-2">
-            <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">Nombre</span>
+        <form @submit.prevent="handleResetPassword" class="flex flex-col gap-6 relative z-10" novalidate>
+          <!-- Step 1: Verification Code -->
+          <div>
+            <label class="flex flex-col gap-2 mb-4">
+              <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">
+                Código de Verificación
+              </span>
+              <p class="text-xs text-gray-400">Se ha enviado un código a <strong>{{ emailDisplay }}</strong></p>
+            </label>
             <input
-              v-model="form.name"
-              class="form-input w-full rounded-lg border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-[#181111] text-slate-900 dark:text-white h-12 px-4 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-gray-400 dark:placeholder:text-text-muted transition-all"
-              placeholder="Pepito Grillo"
+              v-model="verificationCode"
+              class="form-input w-full rounded-lg border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-[#181111] text-slate-900 dark:text-white h-12 px-4 text-center text-xl tracking-widest focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+              placeholder="123456"
               type="text"
-              autocomplete="name"
-              maxlength="100"
+              inputmode="numeric"
+              pattern="[0-9]{6}"
+              autocomplete="one-time-code"
+              maxlength="6"
               required
             />
-          </label>
+          </div>
 
-          <label class="flex flex-col gap-2">
-            <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">Correo Electrónico</span>
-            <input
-              v-model="form.email"
-              class="form-input w-full rounded-lg border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-[#181111] text-slate-900 dark:text-white h-12 px-4 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-gray-400 dark:placeholder:text-text-muted transition-all"
-              placeholder="gienco@ejemplo.com"
-              type="email"
-              autocomplete="email"
-              maxlength="254"
-              required
-            />
-          </label>
-
-          <label class="flex flex-col gap-2">
-            <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">Contraseña</span>
+          <!-- Step 2: New Password -->
+          <div>
+            <label class="flex flex-col gap-2 mb-4">
+              <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">
+                Nueva Contraseña
+              </span>
+            </label>
             <div class="relative">
               <input
-                v-model.trim="form.password"
-                :type="showPassword ? 'text' : 'password'"
+                v-model.trim="newPassword"
+                :type="showNewPassword ? 'text' : 'password'"
                 class="form-input w-full rounded-lg border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-[#181111] text-slate-900 dark:text-white h-12 px-4 pr-12 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-gray-400 dark:placeholder:text-text-muted transition-all"
-                placeholder="Ingresa tu contraseña"
+                placeholder="Ingresa tu nueva contraseña"
                 autocomplete="new-password"
                 maxlength="128"
                 required
               />
               <button
                 type="button"
-                @click="showPassword = !showPassword"
-                :aria-label="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
-                :aria-pressed="showPassword"
+                @click="showNewPassword = !showNewPassword"
+                :aria-label="showNewPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                :aria-pressed="showNewPassword"
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors"
               >
                 <span class="material-symbols-outlined text-xl" aria-hidden="true">
-                  {{ showPassword ? 'visibility_off' : 'visibility' }}
+                  {{ showNewPassword ? 'visibility_off' : 'visibility' }}
                 </span>
               </button>
             </div>
-          </label>
+          </div>
 
-          <!-- Medidor de fortaleza de contraseña -->
+          <!-- Password Requirements -->
           <div class="mb-6 -mt-3" aria-live="polite" aria-label="Requisitos de contraseña">
             <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 block mb-2">Requisitos:</span>
             <div class="flex flex-wrap gap-x-4 gap-y-1">
@@ -156,14 +165,19 @@
             </div>
           </div>
 
-          <label class="flex flex-col gap-2">
-            <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">Confirmar Contraseña</span>
+          <!-- Confirm Password -->
+          <div>
+            <label class="flex flex-col gap-2 mb-4">
+              <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">
+                Confirmar Nueva Contraseña
+              </span>
+            </label>
             <div class="relative">
               <input
-                v-model.trim="form.confirmPassword"
+                v-model.trim="confirmPassword"
                 :type="showConfirmPassword ? 'text' : 'password'"
                 class="form-input w-full rounded-lg border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-[#181111] text-slate-900 dark:text-white h-12 px-4 pr-12 focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-gray-400 dark:placeholder:text-text-muted transition-all"
-                placeholder="Confirma tu contraseña"
+                placeholder="Confirma tu nueva contraseña"
                 autocomplete="new-password"
                 maxlength="128"
                 required
@@ -180,62 +194,14 @@
                 </span>
               </button>
             </div>
-          </label>
-
-          <label class="flex items-start gap-3 cursor-pointer">
-            <input
-              v-model="form.agreeToTerms"
-              type="checkbox"
-              class="w-4 h-4 mt-1 rounded border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-[#181111] text-primary focus:ring-primary focus:ring-1"
-              required
-            />
-            <span class="text-sm text-slate-700 dark:text-gray-300 leading-relaxed">
-              He leído y acepto los
-              <router-link to="/terminos" target="_blank" class="text-white hover:bg-white hover:text-black px-1 rounded transition-colors font-medium">Términos y Condiciones</router-link>
-              y la
-              <router-link to="/privacidad" target="_blank" class="text-white hover:bg-white hover:text-black px-1 rounded transition-colors font-medium">Política de Privacidad</router-link>
-            </span>
-          </label>
-
-          <button
-            :disabled="isLoading"
-            class="mt-2 flex w-full items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 bg-black border border-white text-white text-base font-bold uppercase tracking-wider hover:bg-white hover:text-black active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            type="submit"
-          >
-            <span v-if="!isLoading">Crear Cuenta</span>
-            <span v-else class="material-symbols-outlined animate-spin" aria-hidden="true">refresh</span>
-          </button>
-        </form>
-
-        <!-- PASO 2: Formulario de verificación de código -->
-        <form v-else @submit.prevent="handleVerification" class="flex flex-col gap-6 relative z-10 animate-fade-in" novalidate>
-          <div class="text-center mb-4">
-            <span class="material-symbols-outlined text-white text-5xl mb-2" aria-hidden="true">mark_email_read</span>
-            <h2 class="text-xl font-bold text-white mb-2">Verifica tu correo</h2>
-            <p class="text-text-muted text-sm">Hemos enviado un código a <strong>{{ form.email }}</strong></p>
           </div>
 
-          <label class="flex flex-col gap-2">
-            <span class="text-sm font-medium text-slate-700 dark:text-gray-300 uppercase tracking-wide">Código de Verificación</span>
-            <input
-              v-model="verificationCode"
-              class="form-input w-full rounded-lg border-gray-300 dark:border-border-dark bg-gray-50 dark:bg-[#181111] text-slate-900 dark:text-white h-12 px-4 text-center text-xl tracking-widest focus:border-primary focus:ring-1 focus:ring-primary transition-all"
-              placeholder="123456"
-              type="text"
-              inputmode="numeric"
-              pattern="[0-9]{6}"
-              autocomplete="one-time-code"
-              maxlength="6"
-              required
-            />
-          </label>
-
           <button
             :disabled="isLoading"
             class="mt-2 flex w-full items-center justify-center gap-2 overflow-hidden rounded-lg h-12 px-6 bg-black border border-white text-white text-base font-bold uppercase tracking-wider hover:bg-white hover:text-black active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             type="submit"
           >
-            <span v-if="!isLoading">Confirmar Cuenta</span>
+            <span v-if="!isLoading">Restablecer Contraseña</span>
             <span v-if="!isLoading" class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
             <span v-else class="material-symbols-outlined animate-spin" aria-hidden="true">refresh</span>
           </button>
@@ -251,55 +217,43 @@
               <span v-if="!isLoading">¿No recibiste el código? Reenviar</span>
               <span v-else class="material-symbols-outlined animate-spin text-base" aria-hidden="true">refresh</span>
             </button>
+
             <button
               type="button"
-              @click="showVerification = false"
+              @click="handleBackToLogin"
               class="text-sm text-gray-400 hover:text-white transition-colors py-2 font-medium"
             >
-              ¿Correo incorrecto? Volver
+              Volver al inicio de sesión
             </button>
           </div>
         </form>
-      </div>
-
-      <!-- Login Link -->
-      <div class="text-center mt-6">
-        <p class="text-sm text-gray-400">
-          ¿Ya tienes cuenta?
-          <router-link to="/login" class="text-white hover:bg-white hover:text-black px-2 py-1 rounded transition-colors font-bold ml-1">
-            Iniciar sesión
-          </router-link>
-        </p>
       </div>
     </div>
   </main>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, watch, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
 import { cdnUrl } from '../utils/cdn'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
 
-const form = ref({
-  name: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-  agreeToTerms: false
-})
+const emailDisplay = ref('')
+const verificationCode = ref('')
+const newPassword = ref('')
+const confirmPassword = ref('')
 
-const showPassword = ref(false)
+const showNewPassword = ref(false)
 const showConfirmPassword = ref(false)
 const errorMessage = ref('')
+const successMessage = ref('')
 const isLoading = ref(false)
-const showVerification = ref(false)
-const verificationCode = ref('')
 
 const passwordCriteria = ref({
   length: false,
@@ -309,12 +263,10 @@ const passwordCriteria = ref({
 })
 
 /**
- * FIX CRÍTICO: El medidor de contraseña ahora se actualiza en tiempo real
- * gracias al watch reactivo sobre form.password.
- * Antes, checkPasswordCriteria estaba definida pero nunca se llamaba.
+ * Watch sobre newPassword para validar requisitos en tiempo real
  */
 watch(
-  () => form.value.password,
+  () => newPassword.value,
   (password) => {
     passwordCriteria.value = {
       length: password.length >= 8,
@@ -326,8 +278,23 @@ watch(
 )
 
 /**
+ * Obtiene y valida el email desde los query params
+ */
+onMounted(() => {
+  const email = route.query.email
+  if (email && typeof email === 'string') {
+    try {
+      emailDisplay.value = decodeURIComponent(email)
+    } catch {
+      emailDisplay.value = 'tu correo electrónico'
+    }
+  } else {
+    emailDisplay.value = 'tu correo electrónico'
+  }
+})
+
+/**
  * Valida que la contraseña cumpla los requisitos de seguridad.
- * NOTA: Los requisitos aquí deben estar sincronizados con passwordCriteria.
  *
  * @param {string} password
  * @returns {string|null} Mensaje de error o null si es válida.
@@ -341,8 +308,7 @@ const validatePassword = (password) => {
 }
 
 /**
- * FIX: Valida el formato del código de verificación antes de llamar a la API.
- * Solo acepta exactamente 6 dígitos numéricos.
+ * Valida que el código sea exactamente 6 dígitos numéricos.
  *
  * @param {string} code
  * @returns {boolean}
@@ -352,24 +318,26 @@ const isValidVerificationCode = (code) => {
 }
 
 /**
- * Procesa el registro del nuevo usuario.
- * 
+ * Procesa el restablecimiento de contraseña.
+ *
  * @async
  */
-const handleSignUp = async () => {
+const handleResetPassword = async () => {
   errorMessage.value = ''
+  successMessage.value = ''
 
-  if (!form.value.agreeToTerms) {
-    errorMessage.value = 'Debes aceptar los Términos y Condiciones y la Política de Privacidad para continuar.'
+  // Validaciones
+  if (!isValidVerificationCode(verificationCode.value)) {
+    errorMessage.value = 'El código debe ser de 6 dígitos numéricos.'
     return
   }
 
-  if (form.value.password !== form.value.confirmPassword) {
+  if (newPassword.value !== confirmPassword.value) {
     errorMessage.value = '¡Las contraseñas no coinciden!'
     return
   }
 
-  const passwordError = validatePassword(form.value.password)
+  const passwordError = validatePassword(newPassword.value)
   if (passwordError) {
     errorMessage.value = passwordError
     return
@@ -378,26 +346,25 @@ const handleSignUp = async () => {
   isLoading.value = true
 
   try {
-    const result = await authStore.register(
-      form.value.email.trim().toLowerCase(),
-      form.value.password,
-      form.value.name.trim()
+    const email = emailDisplay.value
+    const result = await authStore.confirmForgotPassword(
+      email,
+      verificationCode.value.trim(),
+      newPassword.value
     )
 
     if (result.success) {
-      if (!result.isSignUpComplete) {
-        showVerification.value = true
-      } else {
-        await notificationStore.alert('¡Cuenta creada exitosamente! Por favor inicia sesión.', 'Registro Exitoso')
+      successMessage.value = '¡Contraseña restablecida correctamente! Redirigiendo...'
+      setTimeout(() => {
         router.push('/login')
-      }
+      }, 2000)
     } else {
-      errorMessage.value = result.error || 'Error al crear la cuenta.'
+      errorMessage.value = result.error || 'Error al restablecer la contraseña.'
     }
   } catch (error) {
-    errorMessage.value = 'Ocurrió un error inesperado al registrarse.'
+    errorMessage.value = 'Ocurrió un error inesperado.'
     if (import.meta.env.DEV) {
-      console.error('[SignUp Error]:', error)
+      console.error('[ResetPassword Error]:', error)
     }
   } finally {
     isLoading.value = false
@@ -405,47 +372,15 @@ const handleSignUp = async () => {
 }
 
 /**
- * Envía el código de verificación para confirmar la cuenta.
- * FIX: Ahora valida el formato del código antes de llamar a la API.
- * 
- * @async
+ * Regresa al login
  */
-const handleVerification = async () => {
-  errorMessage.value = ''
-
-  // FIX: Validación del código antes de llamar a la API
-  if (!isValidVerificationCode(verificationCode.value)) {
-    errorMessage.value = 'El código debe ser de 6 dígitos numéricos.'
-    return
-  }
-
-  isLoading.value = true
-
-  try {
-    const result = await authStore.confirmRegistration(
-      form.value.email.trim().toLowerCase(),
-      verificationCode.value.trim()
-    )
-
-    if (result.success) {
-      await notificationStore.alert('¡Cuenta verificada correctamente! Ahora puedes iniciar sesión.', 'Verificación Exitosa')
-      router.push('/login')
-    } else {
-      errorMessage.value = result.error || 'Código inválido o error en verificación.'
-    }
-  } catch (error) {
-    errorMessage.value = 'Error al verificar el código.'
-    if (import.meta.env.DEV) {
-      console.error('[Verification Error]:', error)
-    }
-  } finally {
-    isLoading.value = false
-  }
+const handleBackToLogin = () => {
+  router.push('/login')
 }
 
 /**
- * Reenvía el código de verificación.
- * 
+ * Reenvía el código de recuperación de contraseña
+ *
  * @async
  */
 const handleResendCode = async () => {
@@ -453,15 +388,19 @@ const handleResendCode = async () => {
   errorMessage.value = ''
 
   try {
-    const result = await authStore.resendCode(form.value.email.trim().toLowerCase())
+    const email = emailDisplay.value
+    const result = await authStore.forgotPassword(email)
 
     if (result.success) {
-      await notificationStore.alert('Código reenviado. Revisa tu bandeja de entrada.', 'Código Enviado')
+      successMessage.value = 'Código reenviado. Revisa tu bandeja de entrada.'
+      setTimeout(() => {
+        successMessage.value = ''
+      }, 3000)
     } else {
       errorMessage.value = result.error || 'Error al reenviar el código.'
     }
   } catch (error) {
-    errorMessage.value = 'Error al reenviar el código.'
+    errorMessage.value = 'Ocurrió un error al reenviar el código.'
     if (import.meta.env.DEV) {
       console.error('[ResendCode Error]:', error)
     }

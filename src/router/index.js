@@ -5,6 +5,7 @@ import Products from '../views/Products.vue'
 import Cart from '../views/Cart.vue'
 import Login from '../views/Login.vue'
 import SignUp from '../views/SignUp.vue'
+import ResetPassword from '../views/ResetPassword.vue'
 import NotFound from '../views/NotFound.vue'
 
 const routes = [
@@ -37,6 +38,11 @@ const routes = [
     path: '/signup',
     name: 'SignUp',
     component: SignUp
+  },
+  {
+    path: '/login/reset',
+    name: 'ResetPassword',
+    component: ResetPassword
   },
   // ──────────────────────────────────────────────
   // Páginas Legales (RGPD)
