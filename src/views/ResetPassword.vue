@@ -327,6 +327,11 @@ const handleResetPassword = async () => {
   successMessage.value = ''
 
   // Validaciones
+  if (emailDisplay.value === 'tu correo electrónico' || !emailDisplay.value.includes('@')) {
+    errorMessage.value = 'No se detecta un correo en la URL. Pincha en "Volver..." y solicita recuperar de nuevo.'
+    return
+  }
+
   if (!isValidVerificationCode(verificationCode.value)) {
     errorMessage.value = 'El código debe ser de 6 dígitos numéricos.'
     return
@@ -389,6 +394,13 @@ const handleResendCode = async () => {
 
   try {
     const email = emailDisplay.value
+    
+    if (email === 'tu correo electrónico' || !email.includes('@')) {
+      errorMessage.value = 'No se detecta un correo en la URL. Pincha en "Volver..." y solicita recuperar de nuevo.'
+      isLoading.value = false
+      return
+    }
+
     const result = await authStore.forgotPassword(email)
 
     if (result.success) {
