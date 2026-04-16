@@ -24,7 +24,7 @@ async function getAuthHeaders() {
       headers['Authorization'] = `Bearer ${token}`
     }
   } catch (error) {
-    console.warn('No se pudo obtener el token de sesión:', error)
+    if (import.meta.env.DEV) console.warn('No se pudo obtener el token de sesión:', error)
   }
 
   return headers

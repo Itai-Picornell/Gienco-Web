@@ -180,7 +180,7 @@ const cartStore = useCartStore()
 const products = ref([])
 const isLoading = ref(true)
 const error = ref(null)
-const orderSelections = reactive({})   // reactive en lugar de ref
+const orderSelections = reactive({})
 const isAddingToCart = reactive({})
 
 const toastMsg = ref('')
@@ -205,9 +205,15 @@ const formatPriceSafe = (value) => {
 const normalizeDynamoProduct = (raw) => {
   const parseTallas = (t) => {
     if (!t) return []
-    if (Array.isArray(t)) return t
-    if (t.L) return t.L.map(item => sanitizeHTML(item.S || item))
-    try { return typeof t === 'string' ? JSON.parse(t) : [] } catch { return [] }
+    if (Array.isArray(t)) return t.map(item => sanitizeHTML(String(item))).slice(0, 20)
+    if (t.L) return t.L.map(item => sanitizeHTML(item.S || String(item))).slice(0, 20)
+    try {
+      if (typeof t === 'string') {
+        const parsed = JSON.parse(t)
+        return Array.isArray(parsed) ? parsed.map(item => sanitizeHTML(String(item))).slice(0, 20) : []
+      }
+      return []
+    } catch { return [] }
   }
   const fileName = sanitizeImagePath(raw.imagen?.S || raw.imagen || '')
   return {

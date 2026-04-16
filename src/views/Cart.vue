@@ -64,7 +64,7 @@
                 <div>
                   <h3 class="text-white text-base md:text-lg font-bold mb-1">{{ item.name }}</h3>
                   <p class="text-text-muted text-sm mb-2">Talla: {{ item.size }}</p>
-                  <p class="text-primary text-lg md:text-xl font-bold">{{ item.price }}€</p>
+                  <p class="text-primary text-lg md:text-xl font-bold">{{ formatPrice(item.price) }}</p>
                 </div>
                 
                 <!-- Quantity Controls and Remove Button -->
@@ -105,7 +105,7 @@
               <div class="space-y-4 mb-6 pb-6 border-b border-border-dark">
                 <div class="flex justify-between text-text-muted">
                   <span>Subtotal ({{ cartStore.totalItems }} artículos)</span>
-                  <span>{{ cartStore.totalPrice }}€</span>
+                  <span>{{ formatPrice(cartStore.totalPrice) }}</span>
                 </div>
                 <div class="flex justify-between text-text-muted">
                   <span>Envío</span>
@@ -115,15 +115,24 @@
               
               <div class="flex justify-between text-white text-xl font-bold mb-6">
                 <span>Total</span>
-                <span class="text-primary">{{ cartStore.totalPrice }}€</span>
+                <span class="text-primary">{{ formatPrice(cartStore.totalPrice) }}</span>
               </div>
               
               <button 
                 @click="handleCheckout"
-                class="w-full flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-black border border-white hover:bg-white hover:text-black transition-colors text-white text-sm font-bold uppercase tracking-wider mb-3"
+                :disabled="isProcessingCheckout"
+                :class="[
+                  'w-full flex items-center justify-center gap-2 rounded-lg h-12 px-6 transition-colors text-sm font-bold uppercase tracking-wider mb-3',
+                  isProcessingCheckout
+                    ? 'bg-neutral-800 text-neutral-500 cursor-not-allowed'
+                    : 'bg-black border border-white hover:bg-white hover:text-black text-white'
+                ]"
               >
-                <span class="material-symbols-outlined">shopping_bag</span>
-                Pagar
+                <span v-if="isProcessingCheckout" class="material-symbols-outlined animate-spin text-sm">refresh</span>
+                <template v-else>
+                  <span class="material-symbols-outlined">shopping_bag</span>
+                  Pagar
+                </template>
               </button>
               
               <router-link to="/products">
@@ -148,6 +157,7 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '../stores/cart'
 import { useAuthStore } from '../stores/auth'
@@ -159,7 +169,21 @@ const cartStore = useCartStore()
 const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
 
-// Incrementa en uno la cantidad de un producto en el carrito
+/** Estado de procesamiento para prevenir doble-click en checkout */
+const isProcessingCheckout = ref(false)
+
+/**
+ * Formatea un precio numérico en formato EUR español.
+ * 
+ * @param {number} value - Valor numérico del precio.
+ * @returns {string} Precio formateado (ej: "50,00 €").
+ */
+const formatPrice = (value) => {
+  const n = Number(value)
+  if (isNaN(n) || n < 0) return '0,00 €'
+  return n.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })
+}
+
 /**
  * Aumenta la cantidad de un item en el carrito en 1 unidad.
  * 
@@ -169,7 +193,6 @@ const increaseQuantity = (item) => {
   cartStore.updateQuantity(item.id, item.size, item.quantity + 1)
 }
 
-// Reduce en uno la cantidad de un producto (mínimo 1)
 /**
  * Disminuye la cantidad de un item en el carrito en 1 unidad.
  * No reduce por debajo de 1.
@@ -182,7 +205,6 @@ const decreaseQuantity = (item) => {
   }
 }
 
-// Elimina un producto específico del carrito
 /**
  * Elimina completamente un producto del carrito.
  * 
@@ -192,7 +214,6 @@ const removeItem = (item) => {
   cartStore.removeFromCart(item.id, item.size)
 }
 
-// Vacía completamente el carrito tras confirmación del usuario
 /**
  * Solicita confirmación al usuario y vacía todo el carrito.
  * 
@@ -206,60 +227,76 @@ const clearCart = async () => {
   }
 }
 
-// Procesa el pago verificando autenticación y enviando el pedido al backend
 /**
  * Inicia el proceso de checkout.
  * Verifica autenticación con AWS Cognito, valida el carrito y envía el pedido a la API Gateway.
+ * Incluye protección contra doble-click y validación de datos antes del envío.
  * 
  * @async
  * @returns {Promise<void>}
  */
 const handleCheckout = async () => {
-    // Verificar estado de autenticación actualizado
-    await authStore.checkAuth()
-    
-    if (authStore.isAuthenticated) {
+    // Prevenir doble-click
+    if (isProcessingCheckout.value) return
+    isProcessingCheckout.value = true
+
+    try {
+        // Verificar estado de autenticación actualizado
+        await authStore.checkAuth()
+        
+        if (!authStore.isAuthenticated) {
+            await notificationStore.alert('Debes iniciar sesión para procesar el pago.', 'Autenticación Requerida')
+            router.push({ path: '/login', query: { redirect: '/cart' } })
+            return
+        }
+
         if (cartStore.items.length === 0) {
             await notificationStore.alert('El carrito está vacío')
             return
         }
 
-        const confirmPurchase = await notificationStore.confirm(`¿Confirmar pedido por ${cartStore.totalPrice}€?`, 'Confirmar Pedido')
-        if (!confirmPurchase) return
-
-        try {
-            // Preparar datos para el backend
-            const orderData = {
-                userId: authStore.user?.userId || authStore.user?.username,
-                totalPrice: cartStore.totalPrice,
-                items: cartStore.items.map(item => ({
-                    id: item.id,
-                    name: item.name,
-                    price: item.price,
-                    quantity: item.quantity,
-                    size: item.size,
-                    image: item.image
-                })),
-                userInfo: {
-                    email: authStore.user?.signInDetails?.loginId || 'usuario@gienco.com' 
-                }
-            }
-
-            const ORDERS_API_URL = import.meta.env.VITE_API_ORDERS_URL
-            const result = await post(ORDERS_API_URL, orderData)
-
-            await notificationStore.alert(`¡Pedido realizado con éxito!\nID de pedido: ${result.orderId || 'Desconocido'}`, 'Pedido Confirmado')
-            cartStore.clearCart()
-
-        } catch (error) {
-            if (import.meta.env.DEV) console.error('Error al procesar el pedido:', error)
-            await notificationStore.alert('Hubo un error al procesar tu pedido. Por favor intenta de nuevo.', 'Error')
+        // Validar que el email del usuario existe — no enviar pedidos con email ficticio
+        const userEmail = authStore.userAttributes?.email || authStore.user?.signInDetails?.loginId
+        if (!userEmail) {
+            await notificationStore.alert('No se pudo verificar tu email. Cierra sesión e inicia sesión de nuevo.', 'Error de Verificación')
+            return
         }
 
-    } else {
-        // Redirigir al login guardando la intención de volver
-        await notificationStore.alert('Debes iniciar sesión para procesar el pago.', 'Autenticación Requerida')
-        router.push({ path: '/login', query: { redirect: '/cart' } })
+        // Validar que la URL de la API de pedidos está configurada
+        const ORDERS_API_URL = import.meta.env.VITE_API_ORDERS_URL
+        if (!ORDERS_API_URL) {
+            await notificationStore.alert('El servicio de pedidos no está disponible en este momento. Inténtalo más tarde.', 'Servicio No Disponible')
+            return
+        }
+
+        const confirmPurchase = await notificationStore.confirm(`¿Confirmar pedido por ${formatPrice(cartStore.totalPrice)}?`, 'Confirmar Pedido')
+        if (!confirmPurchase) return
+
+        // Preparar datos para el backend — el backend DEBE recalcular el precio real
+        const orderData = {
+            userId: authStore.user?.userId || authStore.user?.username,
+            items: cartStore.items.map(item => ({
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity,
+                size: item.size
+            })),
+            userInfo: {
+                email: userEmail
+            }
+        }
+
+        const result = await post(ORDERS_API_URL, orderData)
+
+        await notificationStore.alert(`¡Pedido realizado con éxito!\nID de pedido: ${result.orderId || 'Procesando'}`, 'Pedido Confirmado')
+        cartStore.clearCart()
+
+    } catch (error) {
+        if (import.meta.env.DEV) console.error('Error al procesar el pedido:', error)
+        await notificationStore.alert('Hubo un error al procesar tu pedido. Por favor intenta de nuevo.', 'Error')
+    } finally {
+        isProcessingCheckout.value = false
     }
 }
 </script>
