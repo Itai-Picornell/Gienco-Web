@@ -72,7 +72,7 @@ export const useAuthStore = defineStore('auth', {
           await this.checkAuth()
           return true
         } else {
-          console.log('Login next step:', nextStep)
+          if (import.meta.env.DEV) console.log('Login next step:', nextStep)
           this.authError = `Paso requerido: ${nextStep.signInStep}`
           return false
         }

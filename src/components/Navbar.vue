@@ -106,7 +106,6 @@
       </div>
       
       <!-- Icono de menú móvil (visible solo en pantallas pequeñas) -->
-      <!-- TODO: Implementar funcionalidad de menú móvil -->
     <div class="lg:hidden text-white ml-auto cursor-pointer" @click="toggleMobileMenu">
         <span class="material-symbols-outlined">menu</span>
       </div>

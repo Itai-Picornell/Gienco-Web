@@ -245,7 +245,6 @@ const handleCheckout = async () => {
                 }
             }
 
-            // TODO: Actualizar con la URL del nuevo API Gateway cuando esté disponible
             const ORDERS_API_URL = import.meta.env.VITE_API_ORDERS_URL
             const result = await post(ORDERS_API_URL, orderData)
 
@@ -253,7 +252,7 @@ const handleCheckout = async () => {
             cartStore.clearCart()
 
         } catch (error) {
-            console.error('Error al procesar el pedido:', error)
+            if (import.meta.env.DEV) console.error('Error al procesar el pedido:', error)
             await notificationStore.alert('Hubo un error al procesar tu pedido. Por favor intenta de nuevo.', 'Error')
         }
 

@@ -19,13 +19,10 @@ import { Amplify } from 'aws-amplify'
 const userPoolId = import.meta.env.VITE_USER_POOL_ID
 const userPoolClientId = import.meta.env.VITE_USER_POOL_CLIENT_ID
 
-console.log('Amplify Config Debug:', {
-    userPoolId: userPoolId ? 'Defined' : 'Missing',
-    userPoolClientId: userPoolClientId ? 'Defined' : 'Missing'
-})
-
 if (!userPoolId || !userPoolClientId) {
-    console.error('CRITICAL: Missing Cognito configuration. Check .env or CI/CD secrets.')
+    if (import.meta.env.DEV) {
+        console.error('CRITICAL: Missing Cognito configuration. Check .env or CI/CD secrets.')
+    }
 }
 
 /**
