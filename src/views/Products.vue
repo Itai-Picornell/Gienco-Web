@@ -1,7 +1,7 @@
 <template>
   <main class="flex-grow pt-20 relative">
 
-    <!-- Toast -->
+    <!-- Toast — sin cambios -->
     <transition name="toast">
       <div
         v-if="toastMsg"
@@ -18,7 +18,7 @@
       </div>
     </transition>
 
-    <!-- Hero -->
+    <!-- Hero — sin cambios -->
     <section class="relative w-full bg-gradient-to-b from-background-dark to-surface-dark pb-10 pt-16 font-sans">
       <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]"></div>
@@ -36,16 +36,14 @@
       <div class="container mx-auto px-4">
 
         <!-- Skeleton -->
-        <div v-if="isLoading" class="flex flex-wrap justify-center gap-4 md:gap-6 max-w-7xl mx-auto">
-          <div
-            v-for="n in 8" :key="n"
-            class="w-[calc(50%-0.5rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1.125rem)] max-w-[280px] bg-[#111] border border-neutral-800 rounded-xl overflow-hidden"
-          >
+        <div v-if="isLoading" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 max-w-7xl mx-auto">
+          <div v-for="n in 8" :key="n" class="bg-[#111] border border-neutral-800 rounded-xl overflow-hidden">
             <div class="aspect-square bg-neutral-900 animate-pulse"></div>
             <div class="p-4 space-y-3">
               <div class="h-3 bg-neutral-800 rounded animate-pulse w-3/4 mx-auto"></div>
-              <div class="h-8 bg-neutral-800 rounded animate-pulse"></div>
-              <div class="h-8 bg-neutral-800 rounded animate-pulse"></div>
+              <div class="h-10 bg-neutral-800 rounded animate-pulse"></div>
+              <div class="h-10 bg-neutral-800 rounded animate-pulse"></div>
+              <div class="h-10 bg-neutral-800 rounded animate-pulse"></div>
             </div>
           </div>
         </div>
@@ -54,10 +52,7 @@
         <div v-else-if="error" class="text-center py-20" role="alert">
           <span class="material-symbols-outlined text-red-400 text-5xl mb-4 block">error</span>
           <p class="text-red-400 text-sm font-medium">{{ error }}</p>
-          <button
-            @click="fetchProducts"
-            class="mt-6 px-6 py-2 border border-neutral-700 text-neutral-400 text-sm rounded-lg hover:border-neutral-500 hover:text-white transition-colors"
-          >
+          <button @click="fetchProducts" class="mt-6 px-6 py-2 border border-neutral-700 text-neutral-400 text-sm rounded-lg hover:border-neutral-500 hover:text-white transition-colors">
             Reintentar
           </button>
         </div>
@@ -68,12 +63,11 @@
           <p class="text-neutral-500 text-sm">No hay productos disponibles en este momento.</p>
         </div>
 
-        <!-- Grid de productos -->
-        <div v-else class="flex flex-wrap justify-center gap-4 md:gap-6 max-w-7xl mx-auto">
+        <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 max-w-7xl mx-auto">
           <article
             v-for="(producto, index) in products"
             :key="producto.id"
-            class="w-[calc(50%-0.5rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1.125rem)] max-w-[280px] bg-[#111] border border-neutral-800 rounded-xl overflow-hidden group hover:border-neutral-600 transition-all duration-500 hover:shadow-2xl flex flex-col"
+            class="bg-[#111] border border-neutral-800 rounded-xl overflow-hidden group hover:border-neutral-600 transition-all duration-500 hover:shadow-2xl flex flex-col"
           >
             <!-- Imagen -->
             <div class="relative w-full aspect-square overflow-hidden bg-[#0a0a0a]">
@@ -89,77 +83,79 @@
               />
             </div>
 
-            <!-- Nombre -->
-            <div class="px-4 pt-3">
-              <h3 class="uppercase tracking-widest font-serif text-xs sm:text-sm font-bold text-center leading-tight break-words text-white">
+            <!-- Nombre + Precio -->
+            <div class="px-4 pt-4 pb-2">
+              <h3 class="uppercase tracking-widest font-serif text-xs sm:text-sm font-bold text-center leading-tight break-words text-white mb-2">
                 {{ producto.name }}
               </h3>
+              <p class="text-center text-white font-bold text-base sm:text-lg">
+                {{ formatPriceSafe(producto.price * (orderSelections[producto.id]?.quantity || 1)) }}
+              </p>
             </div>
 
-            <!-- Controles -->
-            <div class="px-4 pb-4 mt-auto pt-3 flex flex-col gap-2">
+            <div class="px-4 pb-4 mt-auto flex flex-col gap-2">
 
-              <!-- Talla + Precio -->
-              <div class="flex items-center gap-2">
-                <div class="flex-1 relative">
-                  <select
-                    v-model="orderSelections[producto.id].selectedSize"
-                    :aria-label="`Talla para ${producto.name}`"
-                    class="w-full bg-neutral-900 border border-neutral-700 text-white text-xs rounded-lg pl-3 pr-8 h-8 appearance-none cursor-pointer hover:border-neutral-500 transition-colors uppercase font-bold focus:outline-none focus:border-neutral-500"
-                  >
-                    <option :value="null" disabled>Talla</option>
-                    <option v-for="talla in producto.sizes" :key="talla" :value="talla">{{ talla }}</option>
-                  </select>
-                  <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-neutral-400 text-base pointer-events-none" aria-hidden="true">expand_more</span>
-                </div>
-                <span class="text-gray-300 font-semibold text-sm shrink-0" aria-label="Precio">
-                  {{ formatPriceSafe(producto.price * (orderSelections[producto.id]?.quantity || 1)) }}
-                </span>
+              <!-- Talla — fila completa, altura táctil cómoda -->
+              <div class="relative w-full">
+                <select
+                  v-model="orderSelections[producto.id].selectedSize"
+                  :aria-label="`Talla para ${producto.name}`"
+                  class="w-full bg-neutral-900 border border-neutral-700 text-white text-sm rounded-lg pl-4 pr-10 h-11 appearance-none cursor-pointer hover:border-neutral-500 transition-colors uppercase font-bold focus:outline-none focus:border-neutral-500"
+                >
+                  <option :value="null" disabled>Selecciona talla</option>
+                  <option v-for="talla in producto.sizes" :key="talla" :value="talla">{{ talla }}</option>
+                </select>
+                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none" aria-hidden="true">expand_more</span>
               </div>
 
-              <!-- Cantidad + Añadir -->
-              <div class="flex items-center gap-2">
-                <div class="w-1/2 flex items-center justify-between bg-neutral-900 border border-neutral-700 rounded-lg px-1 h-8" role="group" :aria-label="`Cantidad de ${producto.name}`">
-                  <button
-                    @click="decrementarCantidad(producto.id)"
-                    :disabled="(orderSelections[producto.id]?.quantity ?? 1) <= 1"
-                    :aria-label="`Menos ${producto.name}`"
-                    class="w-7 h-full flex items-center justify-center text-white/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                  >−</button>
-                  <input
-                    type="number"
-                    min="1"
-                    :max="producto.maxorder"
-                    step="1"
-                    v-model.number="orderSelections[producto.id].quantity"
-                    @input="validarCantidad(producto.id, producto.maxorder)"
-                    @blur="blurCantidad(producto.id)"
-                    :aria-label="`Cantidad de ${producto.name}`"
-                    class="w-8 bg-transparent text-center text-white font-bold text-xs outline-none appearance-none [&::-webkit-inner-spin-button]:appearance-none p-0"
-                  />
-                  <button
-                    @click="incrementarCantidad(producto.id, producto.maxorder)"
-                    :disabled="disponibilidad[producto.id] <= 0"
-                    :aria-label="`Más ${producto.name}`"
-                    class="w-7 h-full flex items-center justify-center text-white/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                  >+</button>
-                </div>
+              <!-- Cantidad — fila completa, botones grandes -->
+              <div
+                class="w-full flex items-center justify-between bg-neutral-900 border border-neutral-700 rounded-lg h-11"
+                role="group"
+                :aria-label="`Cantidad de ${producto.name}`"
+              >
+                <button
+                  @click="decrementarCantidad(producto.id)"
+                  :disabled="(orderSelections[producto.id]?.quantity ?? 1) <= 1"
+                  :aria-label="`Menos ${producto.name}`"
+                  class="w-12 h-full flex items-center justify-center text-white/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-lg font-light"
+                >−</button>
+
+                <input
+                  type="number"
+                  min="1"
+                  :max="producto.maxorder"
+                  step="1"
+                  v-model.number="orderSelections[producto.id].quantity"
+                  @input="validarCantidad(producto.id, producto.maxorder)"
+                  @blur="blurCantidad(producto.id)"
+                  :aria-label="`Cantidad de ${producto.name}`"
+                  class="flex-1 bg-transparent text-center text-white font-bold text-sm outline-none appearance-none [&::-webkit-inner-spin-button]:appearance-none p-0"
+                />
 
                 <button
-                  @click="agregarAlCarrito(producto)"
-                  :disabled="!orderSelections[producto.id]?.selectedSize || disponibilidad[producto.id] <= 0 || isAddingToCart[producto.id]"
-                  :aria-label="`Añadir ${producto.name} al carrito`"
-                  :class="[
-                    'w-1/2 flex items-center justify-center rounded-lg h-8 transition-all duration-300 text-xs font-bold tracking-wide uppercase active:scale-95',
-                    orderSelections[producto.id]?.selectedSize && !isAddingToCart[producto.id]
-                      ? 'bg-white text-black hover:bg-neutral-200 shadow-md shadow-white/10'
-                      : 'bg-neutral-800 text-neutral-500 cursor-not-allowed'
-                  ]"
-                >
-                  <span v-if="isAddingToCart[producto.id]" class="material-symbols-outlined animate-spin text-sm" aria-hidden="true">refresh</span>
-                  <span v-else>AÑADIR</span>
-                </button>
+                  @click="incrementarCantidad(producto.id, producto.maxorder)"
+                  :disabled="disponibilidad[producto.id] <= 0"
+                  :aria-label="`Más ${producto.name}`"
+                  class="w-12 h-full flex items-center justify-center text-white/50 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-lg font-light"
+                >+</button>
               </div>
+
+              <!-- ✅ Botón AÑADIR — fila completa, altura generosa -->
+              <button
+                @click="agregarAlCarrito(producto)"
+                :disabled="!orderSelections[producto.id]?.selectedSize || disponibilidad[producto.id] <= 0 || isAddingToCart[producto.id]"
+                :aria-label="`Añadir ${producto.name} al carrito`"
+                :class="[
+                  'w-full flex items-center justify-center rounded-lg h-11 transition-all duration-300 text-xs font-bold tracking-widest uppercase active:scale-95',
+                  orderSelections[producto.id]?.selectedSize && !isAddingToCart[producto.id]
+                    ? 'bg-white text-black hover:bg-neutral-200 shadow-md shadow-white/10'
+                    : 'bg-neutral-800 text-neutral-500 cursor-not-allowed'
+                ]"
+              >
+                <span v-if="isAddingToCart[producto.id]" class="material-symbols-outlined animate-spin text-sm" aria-hidden="true">refresh</span>
+                <span v-else>AÑADIR AL CARRITO</span>
+              </button>
             </div>
           </article>
         </div>
