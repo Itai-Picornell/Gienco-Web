@@ -72,16 +72,17 @@ export const useAuthStore = defineStore('auth', {
           await this.checkAuth()
           return true
         } else {
-          if (import.meta.env.DEV) console.log('Login next step:', nextStep)
+          if (import.meta.env.DEV) console.log('[Auth] Paso adicional requerido:', nextStep)
           this.authError = `Paso requerido: ${nextStep.signInStep}`
           return false
         }
       } catch (error) {
-        console.error('Login error:', error)
+        if (import.meta.env.DEV) console.error('[Auth] Error en login:', error)
         if (error?.message === 'UNAUTHORIZED_ROLE') {
           this.authError = 'No tienes permisos de Administrador para acceder a este entorno.'
         } else {
-          this.authError = error.message
+          // Mensaje genérico — nunca exponer el error crudo de Cognito al usuario
+          this.authError = error.message || 'Error en el inicio de sesión.'
         }
         this.isAuthenticated = false
         return false
@@ -98,7 +99,7 @@ export const useAuthStore = defineStore('auth', {
       try {
         await signOut()
       } catch (error) {
-        console.error('Logout error:', error)
+        if (import.meta.env.DEV) console.error('[Auth] Error en logout:', error)
       } finally {
         this.isAuthenticated = false
         this.user = null
@@ -133,7 +134,7 @@ export const useAuthStore = defineStore('auth', {
 
         return { success: true, isSignUpComplete, nextStep }
       } catch (error) {
-        console.error('Register error:', error)
+        if (import.meta.env.DEV) console.error('[Auth] Error en registro:', error)
         let msg = error.message
         if (msg.includes('Password did not conform with policy')) {
           msg = 'La contraseña no cumple con la política de seguridad (mínimo 8 caracteres, mayúscula, minúscula y número).'
@@ -162,7 +163,7 @@ export const useAuthStore = defineStore('auth', {
         })
         return { success: true, isSignUpComplete }
       } catch (error) {
-        console.error('Confirm registration error:', error)
+        if (import.meta.env.DEV) console.error('[Auth] Error al confirmar registro:', error)
         this.authError = error.message
         return { success: false, error: error.message }
       }
@@ -182,7 +183,7 @@ export const useAuthStore = defineStore('auth', {
         await resendSignUpCode({ username: email })
         return { success: true }
       } catch (error) {
-        console.error('Resend code error:', error)
+        if (import.meta.env.DEV) console.error('[Auth] Error al reenviar código:', error)
         this.authError = error.message
         return { success: false, error: error.message }
       }
@@ -197,7 +198,7 @@ export const useAuthStore = defineStore('auth', {
      */
     async enforceRole() {
       if (APP_MODE === 'admin' && !this.isAdmin) {
-        console.warn('Role Enforcement: Usuario expulsado. Se requiere rol de Administrador.')
+        if (import.meta.env.DEV) console.warn('[Auth] Acceso denegado: se requiere rol de Administrador.')
         await this.logout()
         throw new Error('UNAUTHORIZED_ROLE')
       }
@@ -217,16 +218,17 @@ export const useAuthStore = defineStore('auth', {
         const result = await resetPassword({ username: email })
         return { success: true }
       } catch (error) {
-        console.error('Forgot password error:', error)
+        if (import.meta.env.DEV) console.error('[Auth] Error en recuperación de contraseña:', error)
         let msg = error.message
-        if (msg.includes('User does not exist')) {
-          msg = 'No existe ninguna cuenta con ese correo.'
-        } else if (msg.includes('Cannot reset password')) {
-          msg = 'El correo no está registrado o no ha sido verificado.'
+        // Mensaje genérico para evitar enumeración de usuarios
+        if (msg.includes('User does not exist') || msg.includes('Cannot reset password')) {
+          msg = 'Si el correo está registrado, recibirás un código de verificación.'
         } else if (msg.includes('User account is disabled')) {
-          msg = 'La cuenta está deshabilitada. Contacta con soporte.'
-        } else if (msg.includes('Too many requests')) {
-          msg = 'Demasiados intentos. Espera 15 minutos antes de intentar de nuevo.'
+          msg = 'No se pudo procesar la solicitud. Contacta con soporte.'
+        } else if (msg.includes('Too many requests') || msg.includes('Attempt limit exceeded')) {
+          msg = 'Demasiados intentos. Espera unos minutos antes de intentar de nuevo.'
+        } else {
+          msg = 'No se pudo procesar la solicitud. Inténtalo de nuevo.'
         }
         this.authError = msg
         return { success: false, error: msg }
@@ -253,7 +255,7 @@ export const useAuthStore = defineStore('auth', {
         })
         return { success: true }
       } catch (error) {
-        console.error('Confirm forgot password error:', error)
+        if (import.meta.env.DEV) console.error('[Auth] Error al restablecer contraseña:', error)
         let msg = error.message
         if (msg.includes('Incorrect confirmation code')) {
           msg = 'El código ingresado es incorrecto.'

@@ -287,7 +287,7 @@ const traducirErrorCognito = (mensaje) => {
   if (mensaje.includes('Incorrect username or password')) return 'Usuario o contraseña incorrectos.'
   if (mensaje.includes('User is not confirmed')) return 'Cuenta no verificada. Revisa tu correo.'
   if (mensaje.includes('Too many requests')) return 'Demasiados intentos. Espera unos minutos.'
-  if (mensaje.includes('User does not exist')) return 'No existe ninguna cuenta con ese correo.'
+  if (mensaje.includes('User does not exist')) return 'Usuario o contraseña incorrectos.'
   return 'Error en el inicio de sesión. Inténtalo de nuevo.'
 }
 
@@ -303,7 +303,13 @@ const handleLogin = async () => {
   try {
     // Sanitizamos los inputs antes de enviarlos
     const email = form.value.email.trim().toLowerCase()
-    const password = form.value.password.trim()
+    const password = form.value.password
+
+    if (!email || !password) {
+      errorMessage.value = 'Por favor completa todos los campos.'
+      isLoading.value = false
+      return
+    }
 
     const success = await authStore.login(email, password)
 

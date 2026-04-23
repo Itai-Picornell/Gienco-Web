@@ -364,6 +364,19 @@ const handleSignUp = async () => {
     return
   }
 
+  const name = form.value.name.trim()
+  const email = form.value.email.trim().toLowerCase()
+
+  if (!name) {
+    errorMessage.value = 'Por favor ingresa tu nombre.'
+    return
+  }
+
+  if (!email) {
+    errorMessage.value = 'Por favor ingresa tu correo electrónico.'
+    return
+  }
+
   if (form.value.password !== form.value.confirmPassword) {
     errorMessage.value = '¡Las contraseñas no coinciden!'
     return
@@ -379,9 +392,9 @@ const handleSignUp = async () => {
 
   try {
     const result = await authStore.register(
-      form.value.email.trim().toLowerCase(),
+      email,
       form.value.password,
-      form.value.name.trim()
+      name
     )
 
     if (result.success) {
