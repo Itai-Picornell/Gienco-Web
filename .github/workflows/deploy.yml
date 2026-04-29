@@ -17,9 +17,6 @@ permissions:
   id-token: write
   contents: read
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
   deploy:
     name: Build & Deploy to AWS
@@ -52,7 +49,7 @@ jobs:
       - name: Configure AWS Credentials (OIDC/STS)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/role-github-actions-gienco
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}  # ARN completo en secret — nada expuesto en el YAML
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Deploy to S3 (Cache Strategy)

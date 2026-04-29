@@ -64,9 +64,6 @@
             <p class="text-gray-400 text-base font-normal leading-relaxed mt-4">
               Somos un grupo de cuatro jóvenes a los que les apasiona la música... Sobre el escenario ofrecemos un directo muy enérgico y auténtico.
             </p>
-            <p class="text-gray-400 text-base font-normal leading-relaxed mt-4 font-bold text-primary">
-              ¡Que no te lo cuenten!
-            </p>
           </div>
         </article>
       </div>
