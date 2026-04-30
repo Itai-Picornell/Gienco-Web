@@ -59,6 +59,7 @@ coverage/
 
 # Brain artifacts (Gemini / AI)
 .gemini/
+.claude/
 
 # ASSETS Y MULTIMEDIA (Arquitectura S3/CDN)
 # Ignoramos la carpeta local de imágenes porque se sirven desde AWS CloudFront
