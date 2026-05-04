@@ -39,10 +39,10 @@
           <span class="material-symbols-outlined text-white text-4xl" aria-hidden="true">person_add</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-black leading-none tracking-tighter text-white mb-4">
-          REGISTRARSE
+          {{ content.fields.page_title }}
         </h1>
-        <p class="text-text-muted text-base md:text-lg font-normal max-w-md mx-auto leading-relaxed">
-          Crea tu cuenta y forma parte de este gran proyecto.
+        <p class="text-text-muted text-base md:text-lg font-normal max-w-md mx-auto leading-relaxed whitespace-pre-line">
+          {{ content.fields.page_subtitle }}
         </p>
       </div>
 
@@ -281,10 +281,17 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
 import { cdnUrl } from '../utils/cdn'
+import { useContent } from '../composables/useContent'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
+
+/** Textos editables desde el panel admin (sección "sign_up"). */
+const content = useContent('sign_up', {
+  page_title: 'REGISTRARSE',
+  page_subtitle: 'Crea tu cuenta y forma parte de este gran proyecto.'
+})
 
 const form = ref({
   name: '',

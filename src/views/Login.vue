@@ -39,7 +39,7 @@
           <span class="material-symbols-outlined text-white text-4xl" aria-hidden="true">lock</span>
         </div>
         <h1 class="text-4xl md:text-5xl font-black leading-none tracking-tighter text-white mb-4">
-          INICIAR SESIÓN
+          {{ content.fields.page_title }}
         </h1>
       </div>
 
@@ -213,11 +213,17 @@ import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
 import { cdnUrl } from '../utils/cdn'
+import { useContent } from '../composables/useContent'
 
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
+
+/** Textos editables desde el panel admin (sección "login"). */
+const content = useContent('login', {
+  page_title: 'INICIAR SESIÓN'
+})
 
 const form = ref({
   email: '',

@@ -6,7 +6,7 @@
         id="carousel-heading"
         class="text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white mb-6"
       >
-        Conciertos
+        {{ content.fields.section_heading }}
       </h2>
 
       <!-- Carrusel container -->
@@ -81,6 +81,12 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { cdnUrl } from '../utils/cdn'
+import { useContent } from '../composables/useContent'
+
+/** Textos editables desde el panel admin (sección "band"). */
+const content = useContent('band', {
+  section_heading: 'Conciertos'
+})
 
 /**
  * MEJORA: Array de objetos con alt texts individuales.

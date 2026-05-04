@@ -25,9 +25,9 @@
       </div>
       <div class="container mx-auto px-4 md:px-8 lg:px-20 relative z-10 text-center max-w-2xl mx-auto">
         <h1 class="text-4xl sm:text-5xl md:text-6xl font-black leading-none tracking-tight text-white mb-4">
-          MERCHANDISING
+          {{ content.fields.hero_title }}
         </h1>
-        <p class="text-neutral-400 text-lg font-light tracking-wide">Viste nuestra música</p>
+        <p class="text-neutral-400 text-lg font-light tracking-wide">{{ content.fields.hero_subtitle }}</p>
       </div>
     </section>
 
@@ -60,7 +60,7 @@
         <!-- Estado vacío -->
         <div v-else-if="products.length === 0" class="text-center py-20">
           <span class="material-symbols-outlined text-neutral-700 text-5xl mb-4 block">inventory_2</span>
-          <p class="text-neutral-500 text-sm">No hay productos disponibles en este momento.</p>
+          <p class="text-neutral-500 text-sm">{{ content.fields.empty_message }}</p>
         </div>
 
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 max-w-7xl mx-auto">
@@ -170,8 +170,16 @@ import { ref, reactive, computed, watchEffect, onMounted, onBeforeUnmount } from
 import { useCartStore } from '../stores/cart'
 import { cdnUrl } from '../utils/cdn'
 import { sanitizeHTML, sanitizeImagePath } from '../utils/security'
+import { useContent } from '../composables/useContent'
 
 const cartStore = useCartStore()
+
+/** Textos editables desde el panel admin (sección "products"). */
+const content = useContent('products', {
+  hero_title: 'MERCHANDISING',
+  hero_subtitle: 'Viste nuestra música',
+  empty_message: 'No hay productos disponibles en este momento.'
+})
 
 const products = ref([])
 const isLoading = ref(true)

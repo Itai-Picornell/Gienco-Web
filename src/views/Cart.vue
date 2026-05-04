@@ -11,7 +11,7 @@
 
           <div>
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-black leading-none tracking-tighter text-white">
-              Carrito de Compra
+              {{ content.fields.page_title }}
             </h1>
             <p class="text-text-muted text-sm mt-2">{{ cartStore.totalItems }} artículos en tu carrito</p>
           </div>
@@ -26,12 +26,12 @@
           <div class="w-24 h-24 rounded-full bg-card-dark flex items-center justify-center mx-auto mb-6">
             <span class="material-symbols-outlined text-text-muted text-5xl">shopping_cart</span>
           </div>
-          <h2 class="text-white text-2xl font-bold mb-3">Tu carrito está vacío</h2>
-          <p class="text-text-muted mb-8">¡Añade merchandising increíble para comenzar!</p>
+          <h2 class="text-white text-2xl font-bold mb-3">{{ content.fields.empty_heading }}</h2>
+          <p class="text-text-muted mb-8 whitespace-pre-line">{{ content.fields.empty_body }}</p>
           <router-link to="/products">
             <button class="flex items-center justify-center gap-2 rounded-lg h-12 px-8 bg-black border border-white hover:bg-white hover:text-black transition-colors text-white text-sm font-bold uppercase tracking-wider mx-auto">
               <span class="material-symbols-outlined">storefront</span>
-              Ver Productos
+              {{ content.fields.empty_cta }}
             </button>
           </router-link>
         </div>
@@ -163,10 +163,19 @@ import { useCartStore } from '../stores/cart'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
 import { post } from '../services/api'
+import { useContent } from '../composables/useContent'
 
 const router = useRouter()
 const cartStore = useCartStore()
 const authStore = useAuthStore()
+
+/** Textos editables desde el panel admin (sección "cart"). */
+const content = useContent('cart', {
+  page_title: 'Carrito de Compra',
+  empty_heading: 'Tu carrito está vacío',
+  empty_body: '¡Añade merchandising increíble para comenzar!',
+  empty_cta: 'Ver Productos'
+})
 const notificationStore = useNotificationStore()
 
 /** Estado de procesamiento para prevenir doble-click en checkout */

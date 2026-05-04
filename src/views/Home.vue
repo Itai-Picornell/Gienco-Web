@@ -85,24 +85,24 @@
         <div class="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-20 items-center">
           <div class="flex-1 flex flex-col gap-8 text-center lg:text-left">
             <div class="flex flex-col gap-4">
-              <span class="text-primary font-bold tracking-widest text-sm uppercase">Nuevo Lanzamiento</span>
+              <span class="text-primary font-bold tracking-widest text-sm uppercase">{{ content.fields.releases_kicker }}</span>
               <h2 class="text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white">
-                Nuestros Proyectos:<br/>
+                {{ content.fields.releases_heading }}<br/>
               </h2>
-              <p class="text-gray-400 text-base md:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0">
-                Estamos muy contentos de anunciaros nuestro primer álbum "Manifiesto" el cual se encuentra en proceso de grabación. Os dejamos dos sorpresas que ya están disponibles.
+              <p class="text-gray-400 text-base md:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0 whitespace-pre-line">
+                {{ content.fields.releases_body }}
               </p>
             </div>
           </div>
-          
+
           <div class="w-full max-w-2xl mx-auto mt-8">
             <SpotifyPlayer spotifyId="2SuZxiVemUNCCrzzXZVJg3" type="artist" />
           </div>
         </div>
-        
+
         <section class="w-full max-w-5xl mx-auto mt-20 mb-12 px-4">
           <h2 class="text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white mb-8 text-center lg:text-left">
-            Próximos Eventos
+            {{ content.fields.events_heading }}
           </h2>
           <EventsCalendar />
         </section>
@@ -117,6 +117,18 @@ import SpotifyPlayer from '../components/SpotifyPlayer.vue'
 import EventsCalendar from '../components/EventsCalendar.vue'
 
 import { cdnUrl } from '../utils/cdn'
+import { useContent } from '../composables/useContent'
+
+/**
+ * Textos editables desde el panel admin (sección "home").
+ * Los `defaults` reflejan el contenido original — si la API se cae, se ven estos.
+ */
+const content = useContent('home', {
+  releases_kicker: 'Nuevo Lanzamiento',
+  releases_heading: 'Nuestros Proyectos:',
+  releases_body: 'Estamos muy contentos de anunciaros nuestro primer álbum "Manifiesto" el cual se encuentra en proceso de grabación. Os dejamos dos sorpresas que ya están disponibles.',
+  events_heading: 'Próximos Eventos'
+})
 
 const AUTOPLAY_DELAY = 5000
 
