@@ -78,7 +78,7 @@
         <div class="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-20 items-center">
           <div class="flex-1 flex flex-col gap-8 text-center lg:text-left">
             <div class="flex flex-col gap-4">
-              <span class="text-primary font-bold tracking-widest text-sm uppercase">{{ content.fields.releases_kicker }}</span>
+              <span class="text-white font-bold tracking-widest text-sm uppercase">{{ content.fields.releases_kicker }}</span>
               <h2 class="text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white">
                 {{ content.fields.releases_heading }}<br/>
               </h2>
