@@ -23,14 +23,14 @@
           aria-label="Carrusel de imágenes de la banda en concierto"
         >
           <div
-            v-for="(slide, index) in BAND_SLIDES"
+            v-for="(slide, index) in gallery.items"
             :key="slide.filename"
             class="flex-none w-[85vw] md:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.75rem)] snap-start"
           >
             <div class="relative aspect-[4/3] rounded-2xl overflow-hidden bg-neutral-900">
               <img
-                :src="`${cdnUrl}/images/band/${slide.filename}`"
-                :alt="slide.alt"
+                :src="slide.url"
+                :alt="filenameToAlt(slide.filename)"
                 class="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                 :loading="index === 0 ? 'eager' : 'lazy'"
                 decoding="async"
@@ -82,6 +82,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { cdnUrl } from '../utils/cdn'
 import { useContent } from '../composables/useContent'
+import { useGallery } from '../composables/useGallery'
 
 /** Textos editables desde el panel admin (sección "band"). */
 const content = useContent('band', {
@@ -89,18 +90,33 @@ const content = useContent('band', {
 })
 
 /**
- * MEJORA: Array de objetos con alt texts individuales.
- * Antes era un array de strings y el alt se generaba manipulando el filename,
- * lo que producía textos como "gienco bajo guitarra banda" — poco descriptivos.
+ * Imágenes del carrusel — gestionadas dinámicamente desde el panel admin
+ * (sección "band"). Los `defaults` son las 6 imágenes originales: si la API
+ * se cae o aún no cargó, el carrusel sigue funcionando con ellas.
+ *
+ * El alt text se genera del filename — para textos personalizados, se
+ * podría añadir un campo `alt` en DynamoDB en el futuro.
  */
-const BAND_SLIDES = [
-  { filename: 'gienco-bajo-guitarra-banda.webp', alt: 'Gienco Band - Bajo y guitarra en concierto' },
-  { filename: 'gienco-concierto-colaborativo-banda.webp', alt: 'Gienco Band - Concierto colaborativo' },
-  { filename: 'gienco-concierto-instrumental-banda.webp', alt: 'Gienco Band - Momento instrumental en directo' },
-  { filename: 'gienco-guitarrista-banda.webp', alt: 'Gienco Band - Guitarrista en acción' },
-  { filename: 'gienco-making-of-backstage-banda.webp', alt: 'Gienco Band - Backstage y making of' },
-  { filename: 'gienco-saludo-banda.webp', alt: 'Gienco Band - Saludo al público' }
-]
+const gallery = useGallery('band', [
+  { filename: 'gienco-bajo-guitarra-banda.webp',           url: `${cdnUrl}/images/band/gienco-bajo-guitarra-banda.webp` },
+  { filename: 'gienco-concierto-colaborativo-banda.webp',  url: `${cdnUrl}/images/band/gienco-concierto-colaborativo-banda.webp` },
+  { filename: 'gienco-concierto-instrumental-banda.webp',  url: `${cdnUrl}/images/band/gienco-concierto-instrumental-banda.webp` },
+  { filename: 'gienco-guitarrista-banda.webp',             url: `${cdnUrl}/images/band/gienco-guitarrista-banda.webp` },
+  { filename: 'gienco-making-of-backstage-banda.webp',     url: `${cdnUrl}/images/band/gienco-making-of-backstage-banda.webp` },
+  { filename: 'gienco-saludo-banda.webp',                  url: `${cdnUrl}/images/band/gienco-saludo-banda.webp` }
+])
+
+/**
+ * Genera un alt text legible a partir del nombre de archivo.
+ * @param {string} filename
+ * @returns {string}
+ */
+function filenameToAlt(filename) {
+  if (!filename || typeof filename !== 'string') return 'Imagen de Gienco'
+  const base = filename.replace(/\.(webp|jpe?g|png)$/i, '')
+  const cleaned = base.replace(/[-_]+/g, ' ').trim()
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
+}
 
 /** Intervalo de autoplay en ms */
 const AUTOPLAY_DELAY = 5000

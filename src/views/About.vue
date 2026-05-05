@@ -6,30 +6,16 @@
       role="banner"
       aria-labelledby="about-heading"
     >
-      <picture aria-hidden="true" class="absolute inset-0 w-full h-full">
-        <source
-          media="(max-width: 768px)"
-          :srcset="`${cdnUrl}/images/backgrounds/about/gienco-making-of-about-mobile.webp`"
-          type="image/webp"
-          width="768"
-          height="1024"
-        />
-        <source
-          :srcset="`${cdnUrl}/images/backgrounds/about/gienco-making-of-about.webp`"
-          type="image/webp"
-          width="1920"
-          height="1080"
-        />
-        <img
-          :src="`${cdnUrl}/images/backgrounds/about/gienco-making-of-about.jpg`"
-          alt=""
-          class="absolute inset-0 w-full h-full object-cover object-[20%_center] md:object-left opacity-60 z-0"
-          loading="eager"
-          fetchpriority="high"
-          width="1920"
-          height="1080"
-        />
-      </picture>
+      <img
+        v-if="heroImage"
+        :src="heroImage.url"
+        :alt="filenameToAlt(heroImage.filename)"
+        class="absolute inset-0 w-full h-full object-cover object-[20%_center] md:object-left opacity-60 z-0"
+        loading="eager"
+        fetchpriority="high"
+        width="1920"
+        height="1080"
+      />
 
       <div class="absolute inset-0 z-[1] bg-gradient-to-b from-background-dark/30 to-background-dark pointer-events-none"></div>
 
@@ -74,18 +60,16 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import BandCarousel from '../components/BandCarousel.vue'
 import { cdnUrl } from '../utils/cdn'
 import { useContent } from '../composables/useContent'
+import { useGallery } from '../composables/useGallery'
 
 /**
  * Textos editables desde el panel admin (sección "about").
  * Los `defaults` son los textos originales: si la API se cae o aún no
  * llegó la respuesta, se muestran estos en lugar de quedarse en blanco.
- *
- * Para añadir/quitar campos, edita el schema en
- *   Gienco_Admin/src/config/contentSchema.js
- * y actualiza los `defaults` aquí + el template arriba.
  */
 const content = useContent('about', {
   intro_heading: 'Somos Gienco',
@@ -94,6 +78,38 @@ const content = useContent('about', {
   description_quote: 'Rock n\' Roll desde nuestros corazones.',
   description_body: 'Somos un grupo de cuatro jóvenes a los que les apasiona la música... Sobre el escenario ofrecemos un directo muy enérgico y auténtico.'
 })
+
+/**
+ * Imagen de fondo del hero — gestionada dinámicamente desde el panel admin.
+ * El default es la imagen original: si la API se cae o aún no cargó,
+ * el hero no se queda en blanco.
+ *
+ * Si hay varias imágenes en la sección, se muestra la primera por orden
+ * alfabético — el admin puede renombrar con prefijo (`01-`, `00-`) para
+ * controlar cuál sale.
+ */
+const gallery = useGallery('about', [
+  {
+    filename: 'gienco-making-of-about.webp',
+    url: `${cdnUrl}/images/backgrounds/about/gienco-making-of-about.webp`
+  }
+])
+
+/** Primera imagen disponible (o null si por alguna razón no hay ninguna). */
+const heroImage = computed(() => gallery.items[0] || null)
+
+/**
+ * Genera un alt text legible a partir del nombre de archivo.
+ *
+ * @param {string} filename
+ * @returns {string}
+ */
+function filenameToAlt(filename) {
+  if (!filename || typeof filename !== 'string') return 'Imagen de Gienco'
+  const base = filename.replace(/\.(webp|jpe?g|png)$/i, '')
+  const cleaned = base.replace(/[-_]+/g, ' ').trim()
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
+}
 </script>
 
 <style scoped>

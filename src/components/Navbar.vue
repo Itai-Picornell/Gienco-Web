@@ -2,16 +2,17 @@
   <!-- Barra de navegación transparente con efecto glassmorphism -->
   <header class="fixed top-0 z-50 w-full bg-black/30 backdrop-blur-lg border-b border-white/10">
     <div class="px-4 md:px-10 lg:px-40 py-4 flex items-center">
-      <!-- Logo de la banda (a la izquierda) -->
+      <!-- Logo de la banda (a la izquierda, gestionado dinámicamente) -->
       <div class="flex items-center text-white mr-8">
         <div class="h-10 flex items-center justify-center">
-          <img 
-            :src="`${cdnUrl}/images/logos/logo-gienco-official-gold.webp`" 
-            alt="Gienco Band Logo" 
-            width="219" 
-            height="70" 
+          <img
+            v-if="logoImage"
+            :src="logoImage.url"
+            alt="Gienco Band Logo"
+            width="219"
+            height="70"
             fetchpriority="high"
-            class="h-full w-auto" 
+            class="h-full w-auto"
           />
         </div>
       </div>
@@ -205,6 +206,21 @@ import { useAuthStore } from '../stores/auth'
 import { useCartStore } from '../stores/cart'
 
 import { cdnUrl } from '../utils/cdn'
+import { useGallery } from '../composables/useGallery'
+
+/**
+ * Logo de la banda — gestionado dinámicamente desde el panel admin
+ * (sección "logos"). Si la API se cae o aún no cargó, se muestra el
+ * logo original como fallback.
+ */
+const logoGallery = useGallery('logos', [
+  {
+    filename: 'logo-gienco-official-gold.webp',
+    url: `${cdnUrl}/images/logos/logo-gienco-official-gold.webp`
+  }
+])
+
+const logoImage = computed(() => logoGallery.items[0] || null)
 
 // Obtener las instancias de los stores
 const almacenAutenticacion = useAuthStore()

@@ -2,32 +2,17 @@
   <main class="flex-grow flex flex-col items-center justify-center relative min-h-[calc(100vh-80px)]">
     <!-- Background Elements -->
     <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-      <!-- Fondo responsivo con art direction -->
-      <picture aria-hidden="true">
-        <source
-          media="(max-width: 768px)"
-          :srcset="`${cdnUrl}/images/backgrounds/login/gienco-bateria-login.webp`"
-          type="image/webp"
-          width="768"
-          height="1024"
-        />
-        <source
-          :srcset="`${cdnUrl}/images/backgrounds/login/gienco-fondo-acceso-fans.webp`"
-          type="image/webp"
-          width="1920"
-          height="1080"
-        />
-        <!-- Fallback JPG si WebP no es soportado -->
-        <img
-          :src="`${cdnUrl}/images/backgrounds/login/gienco-fondo-acceso-fans.jpg`"
-          alt=""
-          class="absolute inset-0 w-full h-full object-cover opacity-60 z-0"
-          loading="eager"
-          fetchpriority="high"
-          width="1920"
-          height="1080"
-        />
-      </picture>
+      <!-- Fondo gestionado dinámicamente desde el panel admin -->
+      <img
+        v-if="heroImage"
+        :src="heroImage.url"
+        :alt="filenameToAlt(heroImage.filename)"
+        class="absolute inset-0 w-full h-full object-cover opacity-60 z-0"
+        loading="eager"
+        fetchpriority="high"
+        width="1920"
+        height="1080"
+      />
       <div class="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]"></div>
       <div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px]"></div>
     </div>
@@ -208,12 +193,39 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
 import { cdnUrl } from '../utils/cdn'
 import { useContent } from '../composables/useContent'
+import { useGallery } from '../composables/useGallery'
+
+/**
+ * Imagen de fondo del hero — gestionada dinámicamente desde el panel admin.
+ * Si la API se cae o aún no cargó, se muestra la imagen original como fallback.
+ * Si hay varias en la sección, se usa la primera por orden alfabético.
+ */
+const gallery = useGallery('login', [
+  {
+    filename: 'gienco-fondo-acceso-fans.webp',
+    url: `${cdnUrl}/images/backgrounds/login/gienco-fondo-acceso-fans.webp`
+  }
+])
+
+const heroImage = computed(() => gallery.items[0] || null)
+
+/**
+ * Genera un alt text legible a partir del nombre de archivo.
+ * @param {string} filename
+ * @returns {string}
+ */
+function filenameToAlt(filename) {
+  if (!filename || typeof filename !== 'string') return 'Imagen de Gienco'
+  const base = filename.replace(/\.(webp|jpe?g|png)$/i, '')
+  const cleaned = base.replace(/[-_]+/g, ' ').trim()
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
+}
 
 const router = useRouter()
 const route = useRoute()
