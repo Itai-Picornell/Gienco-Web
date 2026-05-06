@@ -20,7 +20,7 @@
           </p>
           <div class="flex items-center gap-2 mt-6 text-xs text-gray-500">
             <span class="material-symbols-outlined text-[14px]" aria-hidden="true">calendar_today</span>
-            <span>Última actualización: 14 de abril de 2026</span>
+            <span>Última actualización: 6 de mayo de 2026</span>
           </div>
         </div>
 
@@ -142,18 +142,24 @@ const sections = ref([
     content: `
       <p>En cumplimiento de los artículos 13 y 14 del <strong class="text-gray-300">Reglamento (UE) 2016/679</strong> (RGPD), te informamos de que el responsable del tratamiento de tus datos personales es:</p>
       <ul class="list-disc list-inside mt-3 space-y-1 text-gray-400">
-        <li><strong class="text-gray-300">Responsable:</strong> Gienco</li>
+        <li><strong class="text-gray-300">Titular:</strong> Gienco (proyecto musical)</li>
+        <li><strong class="text-gray-300">Responsable legal:</strong> [Nombre completo del titular]</li>
+        <li><strong class="text-gray-300">NIF/DNI:</strong> [Número de identificación fiscal]</li>
+        <li><strong class="text-gray-300">Domicilio:</strong> [Dirección postal]</li>
         <li><strong class="text-gray-300">Email de contacto:</strong> giencoband@gmail.com</li>
-        <li><strong class="text-gray-300">Sitio web:</strong> gienco.com</li>
+        <li><strong class="text-gray-300">Sitio web:</strong> giencoband.com</li>
       </ul>
+      <p class="mt-3 text-xs text-gray-500">[Datos pendientes de completar por el titular antes de la publicación oficial.]</p>
     `
   },
   {
     id: 'datos-recogidos',
     title: 'Datos Personales que Recogemos',
     content: `
-      <p>Recogemos los siguientes datos personales cuando te registras en nuestro Sitio Web:</p>
-      <div class="overflow-x-auto mt-3">
+      <p>Recogemos los siguientes datos personales en función de la actividad que realices en el Sitio Web:</p>
+
+      <h3 class="text-gray-300 font-semibold mt-4 mb-2">Al registrarte</h3>
+      <div class="overflow-x-auto">
         <table class="w-full text-sm border-collapse">
           <thead>
             <tr class="border-b border-border-dark">
@@ -170,18 +176,56 @@ const sections = ref([
             </tr>
             <tr class="border-b border-border-dark/50">
               <td class="py-2 pr-4">Correo electrónico</td>
-              <td class="py-2 pr-4">Identif. de cuenta, comunicaciones</td>
+              <td class="py-2 pr-4">Identificación de cuenta y comunicaciones transaccionales</td>
               <td class="py-2">Sí</td>
             </tr>
             <tr>
               <td class="py-2 pr-4">Contraseña</td>
-              <td class="py-2 pr-4">Seguridad de la cuenta</td>
+              <td class="py-2 pr-4">Seguridad de la cuenta (almacenada cifrada en AWS Cognito)</td>
               <td class="py-2">Sí</td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p class="mt-4">La contraseña se almacena de forma cifrada y nunca es accesible en texto plano, ni siquiera para los administradores del Sitio Web.</p>
+
+      <h3 class="text-gray-300 font-semibold mt-5 mb-2">Al realizar un pedido</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-border-dark">
+              <th class="text-left py-2 pr-4 text-gray-300 font-semibold">Dato</th>
+              <th class="text-left py-2 pr-4 text-gray-300 font-semibold">Finalidad</th>
+              <th class="text-left py-2 text-gray-300 font-semibold">Obligatorio</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-border-dark/50">
+              <td class="py-2 pr-4">Teléfono móvil</td>
+              <td class="py-2 pr-4">Coordinar la recogida en mano del pedido vía WhatsApp</td>
+              <td class="py-2">Sí</td>
+            </tr>
+            <tr class="border-b border-border-dark/50">
+              <td class="py-2 pr-4">Notas del pedido</td>
+              <td class="py-2 pr-4">Recoger preferencias o indicaciones del comprador</td>
+              <td class="py-2">No</td>
+            </tr>
+            <tr class="border-b border-border-dark/50">
+              <td class="py-2 pr-4">Datos de la transacción</td>
+              <td class="py-2 pr-4">Productos, tallas, cantidades, importe, fecha y estado del pedido</td>
+              <td class="py-2">Sí</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-4">Identificador del pago</td>
+              <td class="py-2 pr-4">Cotejar el Bizum recibido con tu pedido (concepto y remitente del pago)</td>
+              <td class="py-2">Sí</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="mt-4">La contraseña se almacena de forma cifrada en AWS Cognito y <strong class="text-gray-300">nunca es accesible en texto plano</strong>, ni siquiera por los administradores del Sitio Web. Los datos de la transacción se conservan conforme a la legislación mercantil y fiscal vigente (5 años).</p>
+
+      <p class="mt-3">Aplicamos el principio de minimización: <strong class="text-gray-300">los pedidos no completados se eliminan automáticamente a las 48 horas</strong> mediante un mecanismo de expiración (TTL) de la base de datos.</p>
     `
   },
   {
@@ -191,11 +235,15 @@ const sections = ref([
       <p>Tus datos personales serán tratados con las siguientes finalidades:</p>
       <ul class="list-disc list-inside mt-3 space-y-2 text-gray-400">
         <li><strong class="text-gray-300">Gestión de la cuenta de usuario:</strong> Crear y administrar tu cuenta personal en el Sitio Web.</li>
-        <li><strong class="text-gray-300">Procesamiento de pedidos:</strong> Gestionar las compras de merchandising, incluyendo el envío y la facturación.</li>
-        <li><strong class="text-gray-300">Comunicaciones transaccionales:</strong> Enviarte confirmaciones de registro, verificación de cuenta, confirmaciones de pedido y otros avisos esenciales del servicio.</li>
-        <li><strong class="text-gray-300">Seguridad:</strong> Proteger la integridad de tu cuenta y prevenir usos fraudulentos.</li>
+        <li><strong class="text-gray-300">Procesamiento de pedidos:</strong> Recibir, validar, producir y entregar el merchandising adquirido. Incluye la conservación de los datos fiscales y contables del pedido.</li>
+        <li><strong class="text-gray-300">Verificación del pago por Bizum:</strong> Cotejar manualmente la recepción del Bizum con el pedido correspondiente y confirmar el cobro al comprador.</li>
+        <li><strong class="text-gray-300">Coordinación de la recogida en mano:</strong> Contactar contigo por WhatsApp en el número facilitado para acordar el lugar y momento de la entrega del pedido.</li>
+        <li><strong class="text-gray-300">Comunicaciones transaccionales:</strong> Enviarte confirmaciones de registro, verificación de cuenta, confirmaciones de pedido, cambios de estado del pedido (pagado, listo, entregado, cancelado) y otros avisos esenciales del servicio.</li>
+        <li><strong class="text-gray-300">Seguridad y prevención del fraude:</strong> Proteger la integridad de las cuentas, los pedidos y la propia plataforma.</li>
+        <li><strong class="text-gray-300">Cumplimiento de obligaciones legales:</strong> Conservación de información de facturación durante el plazo legalmente exigido.</li>
       </ul>
-      <p class="mt-3"><strong class="text-gray-300">No realizamos perfiles automatizados ni tomamos decisiones automatizadas</strong> basadas en tus datos personales.</p>
+      <p class="mt-3"><strong class="text-gray-300">No realizamos perfiles automatizados ni tomamos decisiones automatizadas con efectos jurídicos</strong> basadas en tus datos personales. Todas las confirmaciones de pago y cambios de estado son revisadas manualmente por un administrador.</p>
+      <p class="mt-3"><strong class="text-gray-300">No utilizamos tus datos para enviar publicidad, newsletters ni comunicaciones comerciales</strong> de ningún tipo.</p>
     `
   },
   {
@@ -214,12 +262,46 @@ const sections = ref([
     id: 'destinatarios',
     title: 'Destinatarios y Encargados del Tratamiento',
     content: `
-      <p>Tus datos personales pueden ser comunicados o accedidos por los siguientes terceros, exclusivamente para las finalidades indicadas:</p>
-      <ul class="list-disc list-inside mt-3 space-y-2 text-gray-400">
-        <li><strong class="text-gray-300">Amazon Web Services (AWS):</strong> Proveedor de servicios de infraestructura cloud y autenticación (Cognito). Los datos se almacenan en servidores de la UE. AWS actúa como <strong class="text-gray-300">encargado del tratamiento</strong> conforme al artículo 28 del RGPD.</li>
-        <li><strong class="text-gray-300">Fuerzas y cuerpos de seguridad:</strong> En caso de que así lo exija la normativa aplicable o una resolución judicial.</li>
-      </ul>
-      <p class="mt-3"><strong class="text-gray-300">No vendemos ni cedemos tus datos personales a terceros</strong> con fines comerciales o publicitarios.</p>
+      <p>Tus datos personales pueden ser comunicados o accedidos por los siguientes terceros, exclusivamente para las finalidades indicadas. Todos ellos actúan como <strong class="text-gray-300">encargados del tratamiento</strong> conforme al artículo 28 del RGPD o reciben los datos por necesidad operativa del servicio:</p>
+      <div class="overflow-x-auto mt-3">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-border-dark">
+              <th class="text-left py-2 pr-4 text-gray-300 font-semibold">Tercero</th>
+              <th class="text-left py-2 pr-4 text-gray-300 font-semibold">Finalidad</th>
+              <th class="text-left py-2 text-gray-300 font-semibold">Ubicación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-border-dark/50">
+              <td class="py-2 pr-4 align-top"><strong class="text-gray-300">Amazon Web Services EMEA SARL</strong> (AWS Cognito, DynamoDB, Lambda, API Gateway)</td>
+              <td class="py-2 pr-4 align-top">Autenticación, almacenamiento y procesamiento de datos.</td>
+              <td class="py-2 align-top">eu-south-2 (España)</td>
+            </tr>
+            <tr class="border-b border-border-dark/50">
+              <td class="py-2 pr-4 align-top"><strong class="text-gray-300">Amazon Web Services EMEA SARL</strong> (AWS SES — envío de emails)</td>
+              <td class="py-2 pr-4 align-top">Envío de correos transaccionales (confirmaciones, cambios de estado, cancelaciones).</td>
+              <td class="py-2 align-top">eu-west-3 (Francia)</td>
+            </tr>
+            <tr class="border-b border-border-dark/50">
+              <td class="py-2 pr-4 align-top"><strong class="text-gray-300">Sociedad de Procedimientos de Pago, S.L.</strong> (Bizum) y entidades bancarias del comprador y del vendedor</td>
+              <td class="py-2 pr-4 align-top">Tramitación del pago. Gienco no recibe ni almacena datos bancarios — solo el concepto del Bizum, el remitente y el importe que muestre la app del banco.</td>
+              <td class="py-2 align-top">España (UE)</td>
+            </tr>
+            <tr class="border-b border-border-dark/50">
+              <td class="py-2 pr-4 align-top"><strong class="text-gray-300">WhatsApp Ireland Limited</strong> (Meta Platforms)</td>
+              <td class="py-2 pr-4 align-top">Coordinación de la recogida del pedido. Cuando el administrador inicia un chat de WhatsApp con el comprador, el número de teléfono y el mensaje quedan en los servidores de Meta conforme a la política de WhatsApp.</td>
+              <td class="py-2 align-top">Irlanda (UE) y eventualmente fuera del EEE</td>
+            </tr>
+            <tr>
+              <td class="py-2 pr-4 align-top"><strong class="text-gray-300">Fuerzas y cuerpos de seguridad y autoridades fiscales</strong></td>
+              <td class="py-2 pr-4 align-top">Cuando una norma o una resolución judicial nos obligue a facilitar la información.</td>
+              <td class="py-2 align-top">España</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4"><strong class="text-gray-300">No vendemos ni cedemos tus datos personales a terceros</strong> con fines comerciales o publicitarios.</p>
     `
   },
   {
@@ -327,8 +409,13 @@ const sections = ref([
     id: 'transferencias',
     title: 'Transferencias Internacionales',
     content: `
-      <p>Los datos se alojan en servidores de <strong class="text-gray-300">Amazon Web Services</strong> ubicados en la <strong class="text-gray-300">Unión Europea</strong> (región eu-west-1, Irlanda).</p>
-      <p class="mt-3">En caso de que fuese necesaria una transferencia internacional de datos fuera del Espacio Económico Europeo (EEE), esta se realizará únicamente bajo las garantías adecuadas establecidas en el RGPD, como:</p>
+      <p>Tus datos se alojan principalmente en servidores de <strong class="text-gray-300">Amazon Web Services</strong> dentro de la <strong class="text-gray-300">Unión Europea</strong>:</p>
+      <ul class="list-disc list-inside mt-3 space-y-1 text-gray-400">
+        <li><strong class="text-gray-300">eu-south-2 (España):</strong> base de datos de pedidos, autenticación, lógica de negocio.</li>
+        <li><strong class="text-gray-300">eu-west-3 (Francia):</strong> servicio de envío de emails transaccionales (AWS SES).</li>
+      </ul>
+      <p class="mt-3">El servicio de WhatsApp (operado por Meta Platforms) puede implicar transferencias de datos fuera del Espacio Económico Europeo. Meta declara basarse en cláusulas contractuales tipo aprobadas por la Comisión Europea para legitimar dichas transferencias.</p>
+      <p class="mt-3">Cualquier transferencia internacional de datos fuera del EEE se realiza únicamente bajo las garantías adecuadas establecidas en el RGPD:</p>
       <ul class="list-disc list-inside mt-3 space-y-1 text-gray-400">
         <li>Decisión de adecuación de la Comisión Europea.</li>
         <li>Cláusulas contractuales tipo aprobadas por la Comisión Europea.</li>

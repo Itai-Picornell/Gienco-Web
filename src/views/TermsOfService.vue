@@ -20,7 +20,7 @@
           </p>
           <div class="flex items-center gap-2 mt-6 text-xs text-gray-500">
             <span class="material-symbols-outlined text-[14px]" aria-hidden="true">calendar_today</span>
-            <span>Última actualización: 14 de abril de 2026</span>
+            <span>Última actualización: 6 de mayo de 2026</span>
           </div>
         </div>
 
@@ -126,10 +126,14 @@ const sections = ref([
     content: `
       <p>En cumplimiento del deber de información recogido en el artículo 10 de la Ley 34/2002, de 11 de julio, de Servicios de la Sociedad de la Información y del Comercio Electrónico (LSSI-CE), le informamos que el presente sitio web es titularidad de:</p>
       <ul class="list-disc list-inside mt-3 space-y-1 text-gray-400">
-        <li><strong class="text-gray-300">Responsable:</strong> Gienco</li>
+        <li><strong class="text-gray-300">Titular:</strong> Gienco (proyecto musical)</li>
+        <li><strong class="text-gray-300">Responsable legal:</strong> [Nombre completo del titular]</li>
+        <li><strong class="text-gray-300">NIF/DNI:</strong> [Número de identificación fiscal]</li>
+        <li><strong class="text-gray-300">Domicilio a efectos de notificaciones:</strong> [Dirección postal]</li>
         <li><strong class="text-gray-300">Email de contacto:</strong> giencoband@gmail.com</li>
-        <li><strong class="text-gray-300">Sitio web:</strong> gienco.com</li>
+        <li><strong class="text-gray-300">Sitio web:</strong> giencoband.com</li>
       </ul>
+      <p class="mt-3 text-xs text-gray-500">[Datos pendientes de completar por el titular antes de la publicación oficial.]</p>
     `
   },
   {
@@ -190,14 +194,36 @@ const sections = ref([
     id: 'compras',
     title: 'Compras y Merchandising',
     content: `
-      <p>El Sitio Web puede ofrecer la venta de productos de merchandising oficial de Gienco. En relación con dichas compras:</p>
-      <ul class="list-disc list-inside mt-3 space-y-1 text-gray-400">
-        <li>Los precios mostrados incluyen los impuestos aplicables, salvo que se indique lo contrario.</li>
-        <li>Gienco se reserva el derecho a modificar precios sin previo aviso, aunque los pedidos confirmados se mantendrán al precio vigente en el momento de la compra.</li>
-        <li>El usuario tiene derecho a desistir de la compra en un plazo de 14 días naturales desde la recepción del producto, conforme a la normativa vigente sobre el derecho de desistimiento.</li>
-        <li>Los productos deberán devolverse en su estado original, sin usar y con el embalaje intacto.</li>
+      <p>El Sitio Web ofrece la venta de productos de merchandising oficial de Gienco bajo un modelo de <strong class="text-gray-300">producción bajo demanda (print-on-demand)</strong>: cada pedido se confecciona expresamente para el comprador una vez confirmado el pago. No se mantiene stock previo.</p>
+
+      <h3 class="text-gray-300 font-semibold mt-4 mb-2">Precios y disponibilidad</h3>
+      <ul class="list-disc list-inside space-y-1 text-gray-400">
+        <li>Los precios mostrados están expresados en euros (€) e incluyen los impuestos aplicables.</li>
+        <li>Gienco se reserva el derecho a modificar precios sin previo aviso; los pedidos ya confirmados se respetarán al precio vigente en el momento de la compra.</li>
+        <li>La validación final de precio y disponibilidad de tallas se realiza en el servidor en el momento de tramitar el pedido.</li>
       </ul>
-      <p class="mt-3">Para cualquier incidencia con tu pedido, puedes contactarnos en <strong class="text-gray-300">giencoband@gmail.com</strong>.</p>
+
+      <h3 class="text-gray-300 font-semibold mt-4 mb-2">Medio de pago: Bizum</h3>
+      <p>El pago se realiza mediante <strong class="text-gray-300">Bizum</strong> al número y nombre indicados en el correo electrónico de confirmación del pedido. Es <strong class="text-gray-300">imprescindible incluir el número de pedido en el concepto del Bizum</strong> para que podamos identificarlo.</p>
+      <ul class="list-disc list-inside mt-2 space-y-1 text-gray-400">
+        <li>El plazo máximo para completar el pago es de <strong class="text-gray-300">48 horas</strong> desde la confirmación del pedido.</li>
+        <li>Transcurrido ese plazo sin recibir el Bizum, el pedido se cancelará automáticamente y deberá iniciarse de nuevo el proceso.</li>
+        <li>La confirmación del pago es <strong class="text-gray-300">manual</strong>: tras verificar la recepción del Bizum, recibirás un correo confirmando que el pedido se ha enviado a producción.</li>
+      </ul>
+
+      <h3 class="text-gray-300 font-semibold mt-4 mb-2">Entrega: recogida en mano</h3>
+      <p>Por tratarse de un proyecto musical de cercanía, <strong class="text-gray-300">Gienco no realiza envíos postales</strong>. La entrega se efectúa siempre <strong class="text-gray-300">en persona</strong>, en un lugar y horario coordinado entre las partes:</p>
+      <ul class="list-disc list-inside mt-2 space-y-1 text-gray-400">
+        <li>Una vez el pedido esté listo, Gienco contactará por <strong class="text-gray-300">WhatsApp</strong> al número de teléfono facilitado por el comprador para acordar la recogida.</li>
+        <li>El comprador deberá recoger el pedido en un plazo razonable desde la notificación. Si no fuera posible la entrega tras varios intentos, Gienco se reserva el derecho a cancelar la operación previa comunicación al comprador.</li>
+      </ul>
+
+      <h3 class="text-gray-300 font-semibold mt-4 mb-2">Derecho de desistimiento</h3>
+      <p>Conforme al artículo 102 del Real Decreto Legislativo 1/2007 (LGDCU), el comprador dispone, con carácter general, de <strong class="text-gray-300">14 días naturales</strong> desde la recepción del producto para desistir de la compra sin necesidad de justificar la decisión.</p>
+      <p class="mt-2"><strong class="text-gray-300">Excepción aplicable:</strong> al tratarse de productos confeccionados conforme a las especificaciones del consumidor o claramente personalizados (talla y diseño elegidos), <strong class="text-gray-300">el derecho de desistimiento NO resulta de aplicación</strong>, según el artículo 103.c de la misma norma. No se admitirán por tanto devoluciones por arrepentimiento del comprador.</p>
+      <p class="mt-2">Lo anterior no afecta a las garantías legales sobre productos defectuosos: si el artículo recibido presenta un defecto de fabricación o no se corresponde con lo pedido, contacta con nosotros y procederemos a su sustitución o reembolso conforme a la normativa vigente.</p>
+
+      <p class="mt-4">Para cualquier incidencia con tu pedido, puedes contactarnos en <strong class="text-gray-300">giencoband@gmail.com</strong>.</p>
     `
   },
   {
@@ -231,8 +257,24 @@ const sections = ref([
         <li><strong class="text-gray-300">Reglamento (UE) 2016/679</strong> (RGPD) — Reglamento General de Protección de Datos.</li>
         <li><strong class="text-gray-300">Ley Orgánica 3/2018</strong> (LOPDGDD) — Ley de Protección de Datos Personales y garantía de los derechos digitales.</li>
         <li><strong class="text-gray-300">Ley 34/2002</strong> (LSSI-CE) — Ley de Servicios de la Sociedad de la Información y del Comercio Electrónico.</li>
+        <li><strong class="text-gray-300">Real Decreto Legislativo 1/2007</strong> (LGDCU) — Texto refundido de la Ley General para la Defensa de los Consumidores y Usuarios.</li>
+        <li><strong class="text-gray-300">Reglamento (UE) 524/2013</strong> sobre resolución de litigios en línea en materia de consumo.</li>
       </ul>
       <p class="mt-3">Para la resolución de cualquier controversia, las partes se someterán a la jurisdicción y competencia de los juzgados y tribunales del domicilio del usuario, conforme a la legislación vigente en materia de consumidores y usuarios.</p>
+    `
+  },
+  {
+    id: 'resolucion-litigios',
+    title: 'Resolución Online de Litigios',
+    content: `
+      <p>De conformidad con el <strong class="text-gray-300">Reglamento (UE) 524/2013</strong>, la Comisión Europea pone a disposición de los consumidores una plataforma de resolución de litigios en línea, accesible desde:</p>
+      <p class="mt-2">
+        <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer" class="text-white hover:bg-white hover:text-black px-1 rounded transition-colors font-medium break-all">
+          https://ec.europa.eu/consumers/odr/
+        </a>
+      </p>
+      <p class="mt-3">Si tienes una reclamación que no hayamos podido resolver de forma amistosa por correo electrónico, puedes acudir a esta plataforma para iniciar un procedimiento extrajudicial de resolución del conflicto.</p>
+      <p class="mt-3">Adicionalmente, puedes presentar reclamaciones en los organismos de consumo de tu Comunidad Autónoma o ante la Junta Arbitral de Consumo correspondiente.</p>
     `
   },
   {
