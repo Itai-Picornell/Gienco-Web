@@ -162,12 +162,12 @@ import { useRouter } from 'vue-router'
 import { useCartStore } from '../stores/cart'
 import { useAuthStore } from '../stores/auth'
 import { useNotificationStore } from '../stores/notification'
-import { post } from '../services/api'
 import { useContent } from '../composables/useContent'
 
 const router = useRouter()
 const cartStore = useCartStore()
 const authStore = useAuthStore()
+const notificationStore = useNotificationStore()
 
 /** Textos editables desde el panel admin (sección "cart"). */
 const content = useContent('cart', {
@@ -176,14 +176,13 @@ const content = useContent('cart', {
   empty_body: '¡Añade merchandising increíble para comenzar!',
   empty_cta: 'Ver Productos'
 })
-const notificationStore = useNotificationStore()
 
-/** Estado de procesamiento para prevenir doble-click en checkout */
+/** Estado para prevenir doble-click mientras se navega al checkout. */
 const isProcessingCheckout = ref(false)
 
 /**
  * Formatea un precio numérico en formato EUR español.
- * 
+ *
  * @param {number} value - Valor numérico del precio.
  * @returns {string} Precio formateado (ej: "50,00 €").
  */
@@ -193,119 +192,65 @@ const formatPrice = (value) => {
   return n.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })
 }
 
-/**
- * Aumenta la cantidad de un item en el carrito en 1 unidad.
- * 
- * @param {Object} item - El objeto producto a modificar.
- */
 const increaseQuantity = (item) => {
   cartStore.updateQuantity(item.id, item.size, item.quantity + 1)
 }
 
-/**
- * Disminuye la cantidad de un item en el carrito en 1 unidad.
- * No reduce por debajo de 1.
- * 
- * @param {Object} item - El objeto producto a modificar.
- */
 const decreaseQuantity = (item) => {
   if (item.quantity > 1) {
     cartStore.updateQuantity(item.id, item.size, item.quantity - 1)
   }
 }
 
-/**
- * Elimina completamente un producto del carrito.
- * 
- * @param {Object} item - El objeto producto a eliminar.
- */
 const removeItem = (item) => {
   cartStore.removeFromCart(item.id, item.size)
 }
 
-/**
- * Solicita confirmación al usuario y vacía todo el carrito.
- * 
- * @async
- * @returns {Promise<void>}
- */
 const clearCart = async () => {
-  const confirmed = await notificationStore.confirm('¿Estás seguro de que quieres vaciar tu carrito?', 'Vaciar Carrito')
-  if (confirmed) {
-    cartStore.clearCart()
-  }
+  const confirmed = await notificationStore.confirm(
+    '¿Estás seguro de que quieres vaciar tu carrito?',
+    'Vaciar Carrito'
+  )
+  if (confirmed) cartStore.clearCart()
 }
 
 /**
- * Inicia el proceso de checkout.
- * Verifica autenticación con AWS Cognito, valida el carrito y envía el pedido a la API Gateway.
- * Incluye protección contra doble-click y validación de datos antes del envío.
- * 
+ * Lleva al usuario a la pantalla de checkout.
+ *
+ * El flujo de creación del pedido (validación, envío al backend, confirmación)
+ * vive ahora en /checkout — esta vista solo verifica precondiciones básicas
+ * (autenticación y carrito no vacío) y redirige.
+ *
  * @async
  * @returns {Promise<void>}
  */
 const handleCheckout = async () => {
-    // Prevenir doble-click
-    if (isProcessingCheckout.value) return
-    isProcessingCheckout.value = true
+  if (isProcessingCheckout.value) return
+  isProcessingCheckout.value = true
 
-    try {
-        // Verificar estado de autenticación actualizado
-        await authStore.checkAuth()
-        
-        if (!authStore.isAuthenticated) {
-            await notificationStore.alert('Debes iniciar sesión para procesar el pago.', 'Autenticación Requerida')
-            router.push({ path: '/login', query: { redirect: '/cart' } })
-            return
-        }
-
-        if (cartStore.items.length === 0) {
-            await notificationStore.alert('El carrito está vacío')
-            return
-        }
-
-        // Validar que el email del usuario existe — no enviar pedidos con email ficticio
-        const userEmail = authStore.userAttributes?.email || authStore.user?.signInDetails?.loginId
-        if (!userEmail) {
-            await notificationStore.alert('No se pudo verificar tu email. Cierra sesión e inicia sesión de nuevo.', 'Error de Verificación')
-            return
-        }
-
-        // Validar que la URL de la API de pedidos está configurada
-        const ORDERS_API_URL = import.meta.env.VITE_API_ORDERS_URL
-        if (!ORDERS_API_URL) {
-            await notificationStore.alert('El servicio de pedidos no está disponible en este momento. Inténtalo más tarde.', 'Servicio No Disponible')
-            return
-        }
-
-        const confirmPurchase = await notificationStore.confirm(`¿Confirmar pedido por ${formatPrice(cartStore.totalPrice)}?`, 'Confirmar Pedido')
-        if (!confirmPurchase) return
-
-        // Preparar datos para el backend — el backend DEBE recalcular el precio real
-        const orderData = {
-            userId: authStore.user?.userId || authStore.user?.username,
-            items: cartStore.items.map(item => ({
-                id: item.id,
-                name: item.name,
-                price: item.price,
-                quantity: item.quantity,
-                size: item.size
-            })),
-            userInfo: {
-                email: userEmail
-            }
-        }
-
-        const result = await post(ORDERS_API_URL, orderData)
-
-        await notificationStore.alert(`¡Pedido realizado con éxito!\nID de pedido: ${result.orderId || 'Procesando'}`, 'Pedido Confirmado')
-        cartStore.clearCart()
-
-    } catch (error) {
-        if (import.meta.env.DEV) console.error('Error al procesar el pedido:', error)
-        await notificationStore.alert('Hubo un error al procesar tu pedido. Por favor intenta de nuevo.', 'Error')
-    } finally {
-        isProcessingCheckout.value = false
+  try {
+    if (cartStore.items.length === 0) {
+      await notificationStore.alert('Tu carrito está vacío.', 'Carrito Vacío')
+      return
     }
+
+    // Comprobamos sesión activa antes de redirigir — si no, vamos a login
+    // con redirect=/checkout para que vuelva al sitio correcto al iniciar sesión.
+    await authStore.checkAuth()
+    if (!authStore.isAuthenticated) {
+      router.push({ path: '/login', query: { redirect: '/checkout' } })
+      return
+    }
+
+    router.push('/checkout')
+  } catch (error) {
+    if (import.meta.env.DEV) console.error('[Cart] Error iniciando checkout:', error)
+    await notificationStore.alert(
+      'No se pudo iniciar el proceso de pedido. Inténtalo de nuevo.',
+      'Error'
+    )
+  } finally {
+    isProcessingCheckout.value = false
+  }
 }
 </script>
