@@ -1,9 +1,14 @@
 <template>
-  <!-- Barra de navegación transparente con efecto glassmorphism -->
-  <header class="fixed top-0 z-50 w-full bg-black/30 backdrop-blur-lg border-b border-white/10">
-    <div class="px-4 md:px-10 lg:px-40 py-4 flex items-center">
-      <!-- Logo de la banda (a la izquierda, gestionado dinámicamente) -->
-      <div class="flex items-center text-white mr-8">
+  <!--
+    Cabecera fija con efecto de transparencia. La barra principal es discreta
+    en desktop (logo izquierda, nav centro, acciones derecha). En mobile se
+    abre como menú fullscreen — wordmark grande y tipografía declarativa.
+  -->
+  <header class="fixed top-0 z-50 w-full bg-black/40 backdrop-blur-xl border-b border-white/[0.08]">
+    <div class="px-4 md:px-10 lg:px-20 py-4 flex items-center">
+
+      <!-- ─── Logo ─────────────────────────────────────────────────────── -->
+      <router-link to="/" class="flex items-center text-white mr-8" aria-label="Inicio">
         <div class="h-10 flex items-center justify-center">
           <img
             v-if="logoImage"
@@ -15,250 +20,392 @@
             class="h-full w-auto"
           />
         </div>
-      </div>
-      
-      <!-- Enlaces de navegación principales (centrados) -->
-      <nav class="hidden lg:flex flex-1 items-center justify-center gap-8">
-        <router-link 
-          to="/" 
-          class="text-white text-sm font-semibold hover:text-red-600 transition-colors uppercase tracking-wider px-3 py-2 rounded"
-          :class="{ 'text-primary': $route.path === '/' }"
+      </router-link>
+
+      <!-- ─── Navegación desktop ──────────────────────────────────────── -->
+      <nav class="hidden lg:flex flex-1 items-center justify-center gap-1" aria-label="Navegación principal">
+        <router-link
+          v-for="item in navItems"
+          :key="item.to"
+          :to="item.to"
+          class="relative text-white text-[13px] font-medium hover:text-gold transition-colors px-4 py-2"
+          :class="{ 'text-gold': $route.path === item.to }"
         >
-          INICIO
-        </router-link>
-        <router-link 
-          to="/about" 
-          class="text-white text-sm font-semibold hover:text-red-600 transition-colors uppercase tracking-wider px-3 py-2 rounded"
-          :class="{ 'text-primary': $route.path === '/about' }"
-        >
-          BANDA
-        </router-link>
-        <router-link 
-          to="/products" 
-          class="text-white text-sm font-semibold hover:text-red-600 transition-colors uppercase tracking-wider px-3 py-2 rounded"
-          :class="{ 'text-primary': $route.path === '/products' }"
-        >
-          TIENDA
+          {{ item.label }}
+          <span
+            v-if="$route.path === item.to"
+            class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-5 h-px bg-gold"
+            aria-hidden="true"
+          ></span>
         </router-link>
       </nav>
-      
-      <!-- Botones de acción a la derecha (carrito a la izquierda, usuario a la derecha) -->
-      <div class="hidden lg:flex gap-6 items-center">
-        <!-- Icono del carrito con indicador -->
-        <router-link to="/cart" class="relative">
-          <button class="text-white hover:text-red-600 transition-colors">
-            <span class="material-symbols-outlined text-3xl">shopping_cart</span>
-          </button>
-          <!-- Indicador con el contador -->
-          <div v-if="cantidadArticulosCarrito > 0" class="absolute -top-2 -right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-            <span class="text-white text-xs font-bold">{{ cantidadArticulosCarrito }}</span>
-          </div>
+
+      <!-- ─── Acciones desktop ────────────────────────────────────────── -->
+      <div class="hidden lg:flex items-center gap-1">
+        <!-- Carrito -->
+        <router-link
+          to="/cart"
+          class="relative w-10 h-10 flex items-center justify-center text-white hover:text-gold transition-colors rounded-lg"
+          aria-label="Carrito"
+        >
+          <span class="material-symbols-outlined text-2xl" aria-hidden="true">shopping_cart</span>
+          <span
+            v-if="cantidadArticulosCarrito > 0"
+            class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 bg-primary rounded-full flex items-center justify-center"
+          >
+            <span class="text-white text-[10px] font-bold tabular-nums">{{ cantidadArticulosCarrito }}</span>
+          </span>
         </router-link>
-        
-        <!-- Icono de usuario/login con dropdown -->
-        <div class="relative">
-          <button 
+
+        <!-- Cuenta / Login -->
+        <div class="relative" v-click-outside="closeUserMenu">
+          <button
             v-if="almacenAutenticacion.isAuthenticated"
             @click="toggleUserMenu"
-            class="text-white hover:text-red-600 transition-colors"
+            class="w-10 h-10 flex items-center justify-center text-white hover:text-gold transition-colors rounded-lg"
+            aria-label="Cuenta"
+            :aria-expanded="isUserMenuOpen"
           >
-            <span class="material-symbols-outlined text-3xl">person</span>
+            <span class="material-symbols-outlined text-2xl" aria-hidden="true">person</span>
           </button>
-          <router-link v-else to="/login">
-            <button class="text-white hover:text-red-600 transition-colors">
-              <span class="material-symbols-outlined text-3xl">person</span>
-            </button>
+          <router-link
+            v-else
+            to="/login"
+            class="w-10 h-10 flex items-center justify-center text-white hover:text-gold transition-colors rounded-lg"
+            aria-label="Iniciar sesión"
+          >
+            <span class="material-symbols-outlined text-2xl" aria-hidden="true">person</span>
           </router-link>
 
-          <!-- User Dropdown Menu -->
-          <div 
-            v-if="isUserMenuOpen && almacenAutenticacion.isAuthenticated"
-            class="absolute right-0 top-12 w-72 bg-surface-dark border border-[#392829] rounded-xl shadow-2xl overflow-hidden z-50 animate-fade-in"
+          <!-- Menú usuario (desktop) -->
+          <transition
+            enter-active-class="transition-all duration-200 ease-out"
+            enter-from-class="opacity-0 -translate-y-1"
+            enter-to-class="opacity-100 translate-y-0"
+            leave-active-class="transition-all duration-150 ease-in"
+            leave-from-class="opacity-100 translate-y-0"
+            leave-to-class="opacity-0 -translate-y-1"
           >
-            <!-- User Info Header -->
-            <div class="p-4 bg-gradient-to-br from-primary/10 to-transparent border-b border-[#392829]">
-              <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                  <span class="material-symbols-outlined text-white text-2xl">person</span>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <p class="text-white font-bold text-sm truncate">
-                    {{ almacenAutenticacion.userAttributes?.given_name || almacenAutenticacion.userAttributes?.name || 'Usuario' }} {{ almacenAutenticacion.userAttributes?.family_name || '' }}
-                  </p>
-                  <p class="text-gray-400 text-xs truncate">
-                    {{ almacenAutenticacion.userAttributes?.email || almacenAutenticacion.user?.signInDetails?.loginId || 'email@ejemplo.com' }}
-                  </p>
+            <div
+              v-if="isUserMenuOpen && almacenAutenticacion.isAuthenticated"
+              class="absolute right-0 top-12 w-72 bg-card-dark border border-[#392829] rounded-xl shadow-2xl overflow-hidden"
+            >
+              <div class="p-4 bg-gradient-to-br from-gold/[0.06] to-transparent border-b border-[#392829]">
+                <div class="flex items-center gap-3">
+                  <div class="w-11 h-11 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center flex-shrink-0">
+                    <span class="material-symbols-outlined text-gold text-xl" aria-hidden="true">person</span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-white font-semibold text-sm truncate">{{ userDisplayName }}</p>
+                    <p class="text-text-muted text-xs truncate">{{ userEmail }}</p>
+                  </div>
                 </div>
               </div>
+              <div class="p-2">
+                <button
+                  @click="handleLogout"
+                  class="w-full flex items-center gap-3 px-4 py-2.5 text-white hover:bg-primary/10 hover:text-primary rounded-lg transition-colors"
+                >
+                  <span class="material-symbols-outlined text-lg" aria-hidden="true">logout</span>
+                  <span class="text-[13px] font-medium">Cerrar sesión</span>
+                </button>
+              </div>
             </div>
-
-            <!-- Logout Button -->
-            <div class="p-2">
-              <button 
-                @click="handleLogout"
-                class="w-full flex items-center gap-3 px-4 py-3 text-white hover:bg-red-600/20 rounded-lg transition-colors group"
-              >
-                <span class="material-symbols-outlined text-xl group-hover:text-red-600">logout</span>
-                <span class="font-medium text-sm">Cerrar Sesión</span>
-              </button>
-            </div>
-          </div>
+          </transition>
         </div>
       </div>
-      
-      <!-- Icono de menú móvil (visible solo en pantallas pequeñas) -->
-    <div class="lg:hidden text-white ml-auto cursor-pointer" @click="toggleMobileMenu">
-        <span class="material-symbols-outlined">menu</span>
-      </div>
-    </div>
 
-    <!-- Menú Móvil (Desplegable) con Glassmorphism mejorado -->
-    <div 
-      v-if="isMobileMenuOpen" 
-      @click="isMobileMenuOpen = false" 
-      class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm w-screen h-screen lg:hidden"
-    ></div>
-    <transition
-      enter-active-class="transition-all duration-300 ease-out"
-      enter-from-class="opacity-0 -translate-y-4"
-      enter-to-class="opacity-100 translate-y-0"
-      leave-active-class="transition-all duration-200 ease-in"
-      leave-from-class="opacity-100 translate-y-0"
-      leave-to-class="opacity-0 -translate-y-4"
-    >
-      <div 
-        v-if="isMobileMenuOpen" 
-        class="lg:hidden absolute top-full left-0 w-full bg-black/60 backdrop-blur-xl border-t border-white/20 shadow-2xl z-50"
+      <!-- ─── Botón menú mobile ────────────────────────────────────────── -->
+      <button
+        class="lg:hidden ml-auto w-10 h-10 flex items-center justify-center text-white hover:text-gold transition-colors rounded-lg"
+        @click="openMobileMenu"
+        aria-label="Abrir menú"
+        :aria-expanded="isMobileMenuOpen"
       >
-        <!-- Contenido del menú -->
-        <div class="px-6 py-8 flex flex-col gap-4">
-          <!-- Enlaces principales -->
-          <nav class="flex flex-col gap-2">
-            <router-link 
-              to="/" 
-              class="group flex items-center gap-3 px-4 py-3 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-all duration-200 uppercase tracking-wider"
-              :class="{ 'bg-red-600/20 text-primary border-l-4 border-primary': $route.path === '/' }"
-              @click="isMobileMenuOpen = false"
-            >
-              <span class="material-symbols-outlined text-xl">home</span>
-              <span>Inicio</span>
-            </router-link>
-            
-            <router-link 
-              to="/about" 
-              class="group flex items-center gap-3 px-4 py-3 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-all duration-200 uppercase tracking-wider"
-              :class="{ 'bg-red-600/20 text-primary border-l-4 border-primary': $route.path === '/about' }"
-              @click="isMobileMenuOpen = false"
-            >
-              <span class="material-symbols-outlined text-xl">group</span>
-              <span>Banda</span>
-            </router-link>
-            
-            <router-link 
-              to="/products" 
-              class="group flex items-center gap-3 px-4 py-3 text-white text-base font-semibold hover:bg-white/10 rounded-lg transition-all duration-200 uppercase tracking-wider"
-              :class="{ 'bg-red-600/20 text-primary border-l-4 border-primary': $route.path === '/products' }"
-              @click="isMobileMenuOpen = false"
-            >
-              <span class="material-symbols-outlined text-xl">shopping_bag</span>
-              <span>Tienda</span>
-            </router-link>
-          </nav>
+        <span class="material-symbols-outlined text-2xl" aria-hidden="true">menu</span>
+      </button>
+    </div>
+  </header>
 
-          <!-- Divisor -->
-          <div class="h-px bg-white/10 my-2"></div>
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!--  Menú mobile fullscreen — takeover                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <teleport to="body">
+    <transition
+      enter-active-class="transition-opacity duration-300 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition-opacity duration-200 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="isMobileMenuOpen"
+        class="lg:hidden fixed inset-0 z-[60] bg-black flex flex-col overflow-y-auto"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menú principal"
+      >
+        <!-- Glow decorativo -->
+        <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <div class="absolute top-[-20%] right-[-15%] w-[500px] h-[500px] bg-gold/[0.04] rounded-full blur-[120px]"></div>
+          <div class="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-primary/[0.05] rounded-full blur-[100px]"></div>
+        </div>
 
-          <!-- Acciones rápidas -->
+        <!-- Top bar — solo el wordmark "GIENCO" mantiene Cinzel Decorative -->
+        <header class="relative z-10 flex items-center justify-between px-5 py-5 border-b border-[#392829]">
+          <span class="font-display font-black text-xl tracking-[0.32em] text-white uppercase leading-none">
+            Gienco
+          </span>
+          <button
+            @click="closeMobileMenu"
+            class="w-10 h-10 flex items-center justify-center text-white hover:text-gold transition-colors"
+            aria-label="Cerrar menú"
+          >
+            <span class="material-symbols-outlined text-2xl" aria-hidden="true">close</span>
+          </button>
+        </header>
+
+        <!-- Navegación principal — sentence case, peso medio, tamaño contenido -->
+        <nav class="relative z-10 flex-1 flex flex-col justify-center px-6 py-8" aria-label="Navegación principal">
+          <p class="text-[11px] text-gold/80 mb-6 font-semibold">Navegación</p>
+          <ul class="space-y-0.5">
+            <li v-for="(item, idx) in navItems" :key="item.to">
+              <router-link
+                :to="item.to"
+                class="group flex items-center gap-4 py-3.5 border-b border-[#1f1515] active:bg-white/[0.02]"
+                @click="closeMobileMenu"
+              >
+                <span
+                  class="text-[11px] font-mono text-gold/60 tabular-nums w-7"
+                >{{ String(idx + 1).padStart(2, '0') }}</span>
+                <span
+                  class="flex-1 text-xl font-medium tracking-tight leading-none transition-colors"
+                  :class="$route.path === item.to ? 'text-gold' : 'text-white group-active:text-gold'"
+                >
+                  {{ item.label }}
+                </span>
+                <span
+                  v-if="$route.path === item.to"
+                  class="material-symbols-outlined text-gold text-lg"
+                  aria-hidden="true"
+                >arrow_forward</span>
+              </router-link>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Acciones inferiores -->
+        <footer class="relative z-10 px-6 py-6 border-t border-[#392829] space-y-5">
+          <!-- Información de cuenta si autenticado -->
+          <div
+            v-if="almacenAutenticacion.isAuthenticated"
+            class="flex items-center gap-3 p-4 rounded-xl bg-card-dark border border-[#392829]"
+          >
+            <div class="w-11 h-11 rounded-full bg-gold/10 border border-gold/30 flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-gold text-xl" aria-hidden="true">person</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-white font-semibold text-sm truncate">{{ userDisplayName }}</p>
+              <p class="text-text-muted text-xs truncate">{{ userEmail }}</p>
+            </div>
+          </div>
+
+          <!-- Acciones grid 2 columnas — sentence case, etiquetas pequeñas -->
           <div class="grid grid-cols-2 gap-3">
-            <router-link 
-              to="/cart" 
-              class="relative flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all duration-200" 
-              @click="isMobileMenuOpen = false"
+            <router-link
+              to="/cart"
+              class="relative flex items-center justify-center gap-2 h-14 rounded-lg bg-card-dark border border-[#392829] hover:border-gold hover:bg-gold/[0.04] transition-colors"
+              @click="closeMobileMenu"
             >
-              <span class="material-symbols-outlined text-2xl text-white">shopping_cart</span>
-              <span class="text-white text-xs font-medium">Carrito</span>
-              <div v-if="cantidadArticulosCarrito > 0" class="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-                <span class="text-white text-xs font-bold">{{ cantidadArticulosCarrito }}</span>
-              </div>
+              <span class="material-symbols-outlined text-xl text-white" aria-hidden="true">shopping_cart</span>
+              <span class="text-[13px] font-semibold text-white">Carrito</span>
+              <span
+                v-if="cantidadArticulosCarrito > 0"
+                class="absolute top-2 right-2 min-w-[18px] h-[18px] px-1 bg-primary rounded-full flex items-center justify-center"
+              >
+                <span class="text-white text-[10px] font-bold tabular-nums">{{ cantidadArticulosCarrito }}</span>
+              </span>
             </router-link>
-            
-            <router-link 
-              to="/login" 
-              class="flex flex-col items-center gap-2 p-4 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all duration-200" 
-              @click="isMobileMenuOpen = false"
+
+            <button
+              v-if="almacenAutenticacion.isAuthenticated"
+              @click="handleLogoutMobile"
+              class="flex items-center justify-center gap-2 h-14 rounded-lg bg-primary/10 border border-primary/30 hover:bg-primary/20 hover:border-primary/50 transition-colors"
             >
-              <span class="material-symbols-outlined text-2xl text-white">person</span>
-              <span class="text-white text-xs font-medium">Cuenta</span>
+              <span class="material-symbols-outlined text-xl text-primary-bright" aria-hidden="true">logout</span>
+              <span class="text-[13px] font-semibold text-primary-bright">Cerrar sesión</span>
+            </button>
+            <router-link
+              v-else
+              to="/login"
+              class="flex items-center justify-center gap-2 h-14 rounded-lg bg-primary border border-primary hover:bg-primary-bright transition-colors"
+              @click="closeMobileMenu"
+            >
+              <span class="material-symbols-outlined text-xl text-white" aria-hidden="true">login</span>
+              <span class="text-[13px] font-semibold text-white">Iniciar sesión</span>
             </router-link>
           </div>
-        </div>
+
+          <!-- Pie -->
+          <p class="text-center text-text-faint text-[11px] pt-2">
+            Gienco &copy; {{ new Date().getFullYear() }} · Rock n' Roll auténtico
+          </p>
+        </footer>
       </div>
     </transition>
-  </header>
+  </teleport>
 </template>
 
 <script setup>
-// Importar computed de Vue para crear propiedades reactivas computadas y ref para estado local
-import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
-// Importar los stores necesarios
+/**
+ * @file Navbar.vue
+ * @description Cabecera de navegación con dos modos:
+ *
+ *   · Desktop (≥lg): barra delgada glassmorphism. Logo izquierda, nav central,
+ *     acciones (carrito, cuenta) a la derecha. Hover dorado, indicador inferior
+ *     en la ruta activa.
+ *
+ *   · Mobile (<lg): botón hamburguesa que abre un menú FULLSCREEN takeover.
+ *     Wordmark "GIENCO" en Cinzel Decorative, items grandes con numeración
+ *     dorada, acciones (carrito + login/logout) en grid inferior.
+ *
+ * El logo se carga dinámicamente desde la galería del admin (sección "logos");
+ * si la API tarda o falla, se usa el fallback hardcoded.
+ */
+import { computed, ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
 import { useAuthStore } from '../stores/auth'
 import { useCartStore } from '../stores/cart'
-
 import { cdnUrl } from '../utils/cdn'
 import { useGallery } from '../composables/useGallery'
 
-/**
- * Logo de la banda — gestionado dinámicamente desde el panel admin
- * (sección "logos"). Si la API se cae o aún no cargó, se muestra el
- * logo original como fallback.
- */
+// ─── Stores ──────────────────────────────────────────────────────────────────
+
+const almacenAutenticacion = useAuthStore()
+const almacenCarrito = useCartStore()
+const router = useRouter()
+const route = useRoute()
+
+// ─── Logo dinámico ───────────────────────────────────────────────────────────
+
 const logoGallery = useGallery('logos', [
   {
     filename: 'logo-gienco-official-gold.webp',
     url: `${cdnUrl}/images/logos/logo-gienco-official-gold.webp`
   }
 ])
-
 const logoImage = computed(() => logoGallery.items[0] || null)
 
-// Obtener las instancias de los stores
-const almacenAutenticacion = useAuthStore()
-const almacenCarrito = useCartStore()
-const router = useRouter()
+// ─── Items de navegación (single source) ────────────────────────────────────
 
-// Estado para el menú móvil
+const navItems = [
+  { to: '/',         label: 'Inicio' },
+  { to: '/about',    label: 'Banda' },
+  { to: '/products', label: 'Tienda' }
+]
+
+// ─── Estado UI ───────────────────────────────────────────────────────────────
+
 const isMobileMenuOpen = ref(false)
-
-// Estado para el menú de usuario
 const isUserMenuOpen = ref(false)
 
-// Alterna la visibilidad del menú móvil
-const toggleMobileMenu = () => {
-  isMobileMenuOpen.value = !isMobileMenuOpen.value
+// ─── Derivados ───────────────────────────────────────────────────────────────
+
+const cantidadArticulosCarrito = computed(() => almacenCarrito.totalItems)
+
+const userDisplayName = computed(() => {
+  const a = almacenAutenticacion.userAttributes
+  if (!a) return 'Usuario'
+  const first = a.given_name || a.name || ''
+  const last  = a.family_name || ''
+  return `${first} ${last}`.trim() || a.email || 'Usuario'
+})
+
+const userEmail = computed(() => {
+  return (
+    almacenAutenticacion.userAttributes?.email ||
+    almacenAutenticacion.user?.signInDetails?.loginId ||
+    ''
+  )
+})
+
+// ─── Handlers ────────────────────────────────────────────────────────────────
+
+function openMobileMenu() {
+  isMobileMenuOpen.value = true
+  document.body.style.overflow = 'hidden'
 }
 
-// Alterna la visibilidad del menú desplegable de usuario
-const toggleUserMenu = () => {
+function closeMobileMenu() {
+  isMobileMenuOpen.value = false
+  document.body.style.overflow = ''
+}
+
+function toggleUserMenu() {
   isUserMenuOpen.value = !isUserMenuOpen.value
 }
 
-/**
- * Cierra la sesión del usuario actual mediante el auth store (Cognito)
- * y redirige a la página de inicio.
- * 
- * @async
- * @returns {Promise<void>}
- */
-const handleLogout = async () => {
+function closeUserMenu() {
+  isUserMenuOpen.value = false
+}
+
+async function handleLogout() {
   await almacenAutenticacion.logout()
   isUserMenuOpen.value = false
   router.push('/')
 }
 
+async function handleLogoutMobile() {
+  await almacenAutenticacion.logout()
+  closeMobileMenu()
+  router.push('/')
+}
 
+// ─── Cierre al cambiar de ruta ───────────────────────────────────────────────
 
-// Propiedad computada que se recalcula automáticamente cuando cambia el carrito
-// Usa el getter totalItems del store de carrito
-const cantidadArticulosCarrito = computed(() => almacenCarrito.totalItems)
+watch(() => route.path, () => {
+  closeMobileMenu()
+  closeUserMenu()
+})
+
+// ─── Tecla Escape cierra menús ───────────────────────────────────────────────
+
+function onKey(e) {
+  if (e.key === 'Escape') {
+    if (isMobileMenuOpen.value) closeMobileMenu()
+    if (isUserMenuOpen.value)   closeUserMenu()
+  }
+}
+
+onMounted(() => window.addEventListener('keydown', onKey))
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onKey)
+  document.body.style.overflow = ''
+})
+</script>
+
+<script>
+/**
+ * Directiva v-click-outside — cierra el dropdown del usuario al clicar fuera.
+ * Definida como directiva del componente porque solo se usa aquí.
+ */
+export default {
+  directives: {
+    clickOutside: {
+      mounted(el, binding) {
+        el.__clickOutsideHandler__ = (event) => {
+          if (!(el === event.target || el.contains(event.target))) {
+            binding.value(event)
+          }
+        }
+        document.addEventListener('click', el.__clickOutsideHandler__)
+      },
+      unmounted(el) {
+        document.removeEventListener('click', el.__clickOutsideHandler__)
+      }
+    }
+  }
+}
 </script>

@@ -1,45 +1,68 @@
-/* 
- * Importa las directivas base de Tailwind CSS.
- * Esto habilita las clases utilitarias y la configuración del tema.
+/*
+ * Gienco — Sistema de diseño global.
+ *
+ *   Tipografía:
+ *     · Cinzel Decorative → wordmark "GIENCO" y headings de hero (display).
+ *     · Bricolage Grotesque → toda la UI (body, navegación, botones, cards).
+ *
+ *   Paleta:
+ *     · Fondos negros puros.
+ *     · Detalles dorados (#d4af37) en outlines, focus, eyebrows e iconos clave.
+ *     · Rojo brand (#dc2626) protagonista en CTAs principales.
+ *     · Bordes warm reddish (#392829) para cards (rock'n'roll heredado).
+ *
+ * Las directivas @theme inyectan los tokens como variables CSS y como
+ * utilidades de Tailwind (--color-primary → bg-primary, text-primary, etc.).
  */
 @import "tailwindcss";
 
-/* 
- * Definición del Tema Personalizado
- * Sobrescribe y extiende las variables CSS por defecto de Tailwind.
- * Incluye paleta de colores oscuros y tipografías.
- */
 @theme {
-  --color-primary: #000000;
-  --color-background-light: #f8f6f6;
-  --color-background-dark: #000000;
-  --color-surface-dark: #000000;
-  --color-card-dark: #1a1a1a;
-  --color-border-dark: #333333;
-  --color-text-muted: #cccccc;
+  /* ─── Marca ────────────────────────────────────────────────────────────── */
+  --color-primary:           #dc2626;   /* rojo brand — CTAs */
+  --color-primary-soft:      #b91c1c;
+  --color-primary-bright:    #ef4444;
 
-  --font-display: "Space Grotesk", sans-serif;
+  --color-gold:              #d4af37;   /* dorado clásico — acento */
+  --color-gold-soft:         #c9a961;
+  --color-gold-bright:       #f0c75e;
+  --color-gold-dim:          #8a7028;
 
-  --radius-default: 0.25rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-full: 9999px;
+  /* ─── Superficies ──────────────────────────────────────────────────────── */
+  --color-background-light:  #f8f6f6;
+  --color-background-dark:   #000000;
+  --color-surface-dark:      #000000;
+  --color-card-dark:         #0a0a0a;
+  --color-card-elevated:     #111111;
+  --color-border-dark:       #392829;   /* heredado — warm reddish */
+  --color-border-warm:       #392829;
+  --color-border-warm-hi:    #5a3a3b;
+  --color-border-gold:       #3a2e1a;   /* warm gold-tinted */
+
+  /* ─── Texto ────────────────────────────────────────────────────────────── */
+  --color-text:              #ffffff;
+  --color-text-muted:        #cccccc;
+  --color-text-dim:          #888888;
+  --color-text-faint:        #666666;
+
+  /* ─── Tipografía ───────────────────────────────────────────────────────── */
+  --font-display:            "Cinzel Decorative", serif;
+  --font-sans:               "Manrope", "Inter", system-ui, sans-serif;
+
+  /* ─── Radio ────────────────────────────────────────────────────────────── */
+  --radius-default:          0.25rem;
+  --radius-lg:               0.5rem;
+  --radius-xl:               0.75rem;
+  --radius-2xl:              1rem;
+  --radius-full:             9999px;
 }
 
-/* 
- * Estilos Personalizados 
- * Configuraciones específicas que no se manejan vía utilidades.
- */
-
-/* Configuración para iconos de Google Material Symbols */
+/* ─── Material Symbols ────────────────────────────────────────────────────── */
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  user-select: none;
 }
 
-/* 
- * Personalización de la Barra de Desplazamiento (Scrollbar)
- * Estilo oscuro y minimalista para navegadores WebKit (Chrome, Safari).
- */
+/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -49,16 +72,31 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333333;
+  background: #392829;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555555;
+  background: #5a3a3b;
 }
 
-/* Estilos base globales del cuerpo */
+/* ─── Cuerpo ──────────────────────────────────────────────────────────────── */
 body {
   background-color: #000000;
   color: #ffffff;
+  font-family: "Manrope", "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Selección de texto coherente con la marca. */
+::selection {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+/* Transiciones suaves en links y botones por defecto. */
+a,
+button {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
 }
