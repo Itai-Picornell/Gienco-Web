@@ -10,10 +10,10 @@
         <div class="flex items-center gap-4 mb-6">
 
           <div>
-            <h1 class="text-5xl md:text-6xl lg:text-7xl font-black leading-none tracking-tighter text-white">
+            <h1 class="text-h1-hero font-display leading-none text-white">
               {{ content.fields.page_title }}
             </h1>
-            <p class="text-text-muted text-sm mt-2">{{ cartStore.totalItems }} artículos en tu carrito</p>
+            <p class="text-body-small text-text-muted mt-2">{{ cartStore.totalItems }} artículos en tu carrito</p>
           </div>
         </div>
       </div>
@@ -26,10 +26,10 @@
           <div class="w-24 h-24 rounded-full bg-card-dark flex items-center justify-center mx-auto mb-6">
             <span class="material-symbols-outlined text-text-muted text-5xl">shopping_cart</span>
           </div>
-          <h2 class="text-white text-2xl font-bold mb-3">{{ content.fields.empty_heading }}</h2>
-          <p class="text-text-muted mb-8 whitespace-pre-line">{{ content.fields.empty_body }}</p>
+          <h2 class="text-h2 font-display text-white mb-3">{{ content.fields.empty_heading }}</h2>
+          <p class="text-body text-text-muted mb-8 whitespace-pre-line">{{ content.fields.empty_body }}</p>
           <router-link to="/products">
-            <button class="flex items-center justify-center gap-2 rounded-lg h-12 px-8 bg-black border border-white hover:bg-white hover:text-black transition-colors text-white text-sm font-bold uppercase tracking-wider mx-auto">
+            <button class="flex items-center justify-center gap-2 rounded-lg h-12 px-8 bg-black border border-white hover:bg-white hover:text-black transition-colors text-white text-caption font-bold uppercase tracking-wider mx-auto">
               <span class="material-symbols-outlined">storefront</span>
               {{ content.fields.empty_cta }}
             </button>
@@ -62,8 +62,8 @@
               <div class="flex-1 flex flex-col gap-3">
                 <!-- Info -->
                 <div>
-                  <h3 class="text-white text-base md:text-lg font-bold mb-1">{{ item.name }}</h3>
-                  <p class="text-text-muted text-sm mb-2">Talla: {{ item.size }}</p>
+                  <h3 class="text-h4 font-display text-white mb-1">{{ item.name }}</h3>
+                  <p class="text-body-small text-text-muted mb-2">Talla: {{ item.size }}</p>
                   <p class="text-primary text-lg md:text-xl font-bold">{{ formatPrice(item.price) }}</p>
                 </div>
                 

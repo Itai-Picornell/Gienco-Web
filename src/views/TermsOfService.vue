@@ -12,10 +12,10 @@
           <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 border border-border-dark mb-6">
             <span class="material-symbols-outlined text-white text-3xl" aria-hidden="true">gavel</span>
           </div>
-          <h1 class="text-4xl md:text-5xl font-black leading-none tracking-tighter text-white mb-4">
+          <h1 class="text-h1 font-display leading-none text-white mb-4">
             TÉRMINOS Y CONDICIONES
           </h1>
-          <p class="text-text-muted text-base md:text-lg max-w-lg mx-auto leading-relaxed">
+          <p class="text-body text-text-muted max-w-lg mx-auto leading-relaxed">
             Condiciones de uso del sitio web de Gienco
           </p>
           <div class="flex items-center gap-2 mt-6 text-xs text-gray-500">

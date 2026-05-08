@@ -1,14 +1,17 @@
 <template>
   <!-- Footer de la página con fondo oscuro -->
-  <footer class="bg-[#110e0e] border-t border-[#392829] py-12 w-full">
+  <footer class="bg-[#110e0e] border-t border-[#392829] py-12 w-full font-sans-body">
     <div class="w-full px-4 md:px-10 lg:px-20">
       <!-- Contenedor flexible que se adapta a móvil (columna) y desktop (fila) -->
       <div class="flex flex-col md:flex-row justify-between items-center gap-8">
         <!-- Información de la banda -->
-        <div class="flex flex-col items-center md:items-start gap-2">
-          <h2 class="text-white text-2xl font-bold uppercase tracking-tight">Gienco</h2>
-          <p class="text-gray-400 text-sm">© 2026 Gienco. Todos los derechos reservados.</p>
-          <div class="flex items-center gap-2 text-xs text-gray-500">
+        <div class="flex flex-col items-center md:items-start gap-3">
+          <!-- Nombre brand: Bebas Neue -->
+          <h2 class="text-h4 font-display text-white uppercase tracking-wider">Gienco</h2>
+          <!-- Copyright: Roboto body-small -->
+          <p class="text-body-small text-gray-400">© 2026 Gienco. Todos los derechos reservados.</p>
+          <!-- Enlaces legales: Roboto caption -->
+          <div class="flex items-center gap-2 text-caption text-gray-500">
             <router-link to="/terminos" class="hover:text-gray-300 transition-colors">Términos y Condiciones</router-link>
             <span aria-hidden="true">·</span>
             <router-link to="/privacidad" class="hover:text-gray-300 transition-colors">Política de Privacidad</router-link>

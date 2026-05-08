@@ -23,7 +23,7 @@
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6">
           <span class="material-symbols-outlined text-white text-4xl" aria-hidden="true">lock_reset</span>
         </div>
-        <h1 class="text-4xl md:text-5xl font-black leading-none tracking-tighter text-white mb-4">
+        <h1 class="text-h1 font-display leading-none text-white mb-4">
           RESTABLECER CONTRASEÑA
         </h1>
       </div>

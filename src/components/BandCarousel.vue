@@ -4,7 +4,7 @@
 
       <h2
         id="carousel-heading"
-        class="text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white mb-6"
+        class="text-h1 font-display text-white mb-6"
       >
         {{ content.fields.section_heading }}
       </h2>

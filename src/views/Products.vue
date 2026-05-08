@@ -19,20 +19,20 @@
     </transition>
 
     <!-- Hero — sin cambios -->
-    <section class="relative w-full bg-gradient-to-b from-background-dark to-surface-dark pb-10 pt-16 font-sans">
+    <section class="relative w-full bg-gradient-to-b from-background-dark to-surface-dark pb-10 pt-16 font-sans-body">
       <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]"></div>
       </div>
       <div class="container mx-auto px-4 md:px-8 lg:px-20 relative z-10 text-center max-w-2xl mx-auto">
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black leading-none tracking-tight text-white mb-4">
+        <h1 class="text-h1-hero font-display leading-none text-white mb-4">
           {{ content.fields.hero_title }}
         </h1>
-        <p class="text-neutral-400 text-lg font-light tracking-wide">{{ content.fields.hero_subtitle }}</p>
+        <p class="text-body-large font-sans-body text-neutral-400 tracking-wide">{{ content.fields.hero_subtitle }}</p>
       </div>
     </section>
 
     <!-- Productos -->
-    <section class="py-12 bg-black font-sans relative z-10 min-h-screen">
+    <section class="py-12 bg-black font-sans-body relative z-10 min-h-screen">
       <div class="container mx-auto px-4">
 
         <!-- Skeleton -->
@@ -85,10 +85,10 @@
 
             <!-- Nombre + Precio -->
             <div class="px-4 pt-4 pb-2">
-              <h3 class="uppercase tracking-widest font-serif text-xs sm:text-sm font-bold text-center leading-tight break-words text-white mb-2">
+              <h3 class="text-h4 font-display uppercase tracking-wider font-bold text-center leading-tight break-words text-white mb-2">
                 {{ producto.name }}
               </h3>
-              <p class="text-center text-white font-bold text-base sm:text-lg">
+              <p class="text-body font-sans-body text-center text-white font-bold">
                 {{ formatPriceSafe(producto.price * (orderSelections[producto.id]?.quantity || 1)) }}
               </p>
             </div>

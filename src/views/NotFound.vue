@@ -15,10 +15,10 @@
     </h1>
 
     <!-- Subtitle -->
-    <p class="mt-4 max-w-md text-lg text-text-muted sm:text-xl">
+    <p class="mt-4 max-w-md text-body text-text-muted">
       Parece que te has salido del setlist&hellip;
     </p>
-    <p class="mt-2 max-w-sm text-sm text-text-muted/60">
+    <p class="mt-2 max-w-sm text-caption text-text-muted/60">
       La página que buscas no existe o ha sido movida.
     </p>
 

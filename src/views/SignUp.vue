@@ -23,10 +23,10 @@
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6 mt-2">
           <span class="material-symbols-outlined text-white text-4xl" aria-hidden="true">person_add</span>
         </div>
-        <h1 class="text-4xl md:text-5xl font-black leading-none tracking-tighter text-white mb-4">
+        <h1 class="text-h1 font-display leading-none text-white mb-4">
           {{ content.fields.page_title }}
         </h1>
-        <p class="text-text-muted text-base md:text-lg font-normal max-w-md mx-auto leading-relaxed whitespace-pre-line">
+        <p class="text-body font-sans-body text-text-muted max-w-md mx-auto leading-relaxed whitespace-pre-line">
           {{ content.fields.page_subtitle }}
         </p>
       </div>

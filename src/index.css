@@ -1,9 +1,14 @@
 /*
- * Gienco — Sistema de diseño global.
+ * Gienco — Sistema de diseño global (v2).
  *
- *   Tipografía:
- *     · Cinzel Decorative → wordmark "GIENCO" y headings de hero (display).
- *     · Bricolage Grotesque → toda la UI (body, navegación, botones, cards).
+ *   Tipografía (Reestructuración Integral):
+ *     · Bebas Neue → headings, subtítulos, labels de alto impacto (display).
+ *     · Roboto → body, navegación, información detallada (sans-serif).
+ *
+ *   Jerarquía Visual:
+ *     · Escala modular (1.125 — Major Second)
+ *     · Pesos Roboto: Light (300), Regular (400), Medium (500), Bold (700)
+ *     · Letter-spacing (tracking) ajustado para Bebas Neue
  *
  *   Paleta:
  *     · Fondos negros puros.
@@ -14,6 +19,10 @@
  * Las directivas @theme inyectan los tokens como variables CSS y como
  * utilidades de Tailwind (--color-primary → bg-primary, text-primary, etc.).
  */
+
+/* ─── Importación de Fuentes Google ─────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@300;400;500;700&display=swap');
+
 @import "tailwindcss";
 
 @theme {
@@ -44,9 +53,35 @@
   --color-text-dim:          #888888;
   --color-text-faint:        #666666;
 
-  /* ─── Tipografía ───────────────────────────────────────────────────────── */
-  --font-display:            "Cinzel Decorative", serif;
-  --font-sans:               "Manrope", "Inter", system-ui, sans-serif;
+  /* ─── Tipografía: Familias ─────────────────────────────────────────────── */
+  --font-display:            "Bebas Neue", "Cinzel Decorative", serif;
+  --font-sans:               "Roboto", "Manrope", "Inter", system-ui, sans-serif;
+
+  /* ─── Tipografía: Escala Modular (Bebas Neue — Titulares) ──────────────── */
+  --font-size-h1-hero:       72px;
+  --font-size-h1:            56px;
+  --font-size-h2:            44px;
+  --font-size-h3:            34px;
+  --font-size-h4:            28px;
+
+  /* ─── Tipografía: Escala Modular (Roboto — Body & Lectura) ──────────────── */
+  --font-size-body-large:    18px;
+  --font-size-body:          16px;
+  --font-size-body-small:    14px;
+  --font-size-caption:       12px;
+  --font-size-caption-tiny:  11px;
+
+  /* ─── Tipografía: Line Heights ───────────────────────────────────────── */
+  --line-height-tight:       1.0;
+  --line-height-heading:     1.15;
+  --line-height-normal:      1.25;
+  --line-height-relaxed:     1.6;
+
+  /* ─── Tipografía: Letter Spacing (Tracking) ───────────────────────────── */
+  --tracking-normal:         0px;
+  --tracking-wide:           0.5px;
+  --tracking-wider:          1px;
+  --tracking-widest:         2px;
 
   /* ─── Radio ────────────────────────────────────────────────────────────── */
   --radius-default:          0.25rem;
@@ -84,10 +119,74 @@
 body {
   background-color: #000000;
   color: #ffffff;
-  font-family: "Manrope", "Inter", system-ui, sans-serif;
+  font-family: "Roboto", "Manrope", "Inter", system-ui, sans-serif;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ─── Headings — Escala Tipográfica (Bebas Neue) ────────────────────────── */
+h1 {
+  font-family: "Bebas Neue", serif;
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 1px;
+}
+
+h2 {
+  font-family: "Bebas Neue", serif;
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.5px;
+}
+
+h3 {
+  font-family: "Bebas Neue", serif;
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.5px;
+}
+
+h4 {
+  font-family: "Bebas Neue", serif;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: 0.25px;
+}
+
+/* ─── Párrafos — Escala Roboto ────────────────────────────────────────────── */
+p {
+  font-family: "Roboto", system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0px;
+}
+
+/* ─── Utilidades de Tipografía ─────────────────────────────────────────────── */
+.text-h1 { font-size: 56px; font-weight: 700; font-family: "Bebas Neue", serif; line-height: 1.1; }
+.text-h1-hero { font-size: 72px; font-weight: 700; font-family: "Bebas Neue", serif; line-height: 1.0; }
+.text-h2 { font-size: 44px; font-weight: 700; font-family: "Bebas Neue", serif; line-height: 1.15; }
+.text-h3 { font-size: 34px; font-weight: 600; font-family: "Bebas Neue", serif; line-height: 1.2; }
+.text-h4 { font-size: 28px; font-weight: 600; font-family: "Bebas Neue", serif; line-height: 1.25; }
+.text-body-large { font-size: 18px; font-weight: 400; font-family: "Roboto", system-ui, sans-serif; line-height: 1.6; }
+.text-body { font-size: 16px; font-weight: 400; font-family: "Roboto", system-ui, sans-serif; line-height: 1.6; }
+.text-body-small { font-size: 14px; font-weight: 400; font-family: "Roboto", system-ui, sans-serif; line-height: 1.5; }
+.text-caption { font-size: 12px; font-weight: 500; font-family: "Roboto", system-ui, sans-serif; line-height: 1.4; }
+.text-caption-tiny { font-size: 11px; font-weight: 400; font-family: "Roboto", system-ui, sans-serif; line-height: 1.3; }
+
+.font-display { font-family: "Bebas Neue", serif; }
+.font-sans-body { font-family: "Roboto", system-ui, sans-serif; }
+
+.tracking-display-normal { letter-spacing: 0.25px; }
+.tracking-display-wide { letter-spacing: 1px; }
+.tracking-display-wider { letter-spacing: 1.5px; }
+.tracking-display-widest { letter-spacing: 2px; }
+
 
 /* Selección de texto coherente con la marca. */
 ::selection {

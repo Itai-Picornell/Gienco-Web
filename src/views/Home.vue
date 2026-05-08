@@ -78,11 +78,14 @@
         <div class="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-20 items-center">
           <div class="flex-1 flex flex-col gap-8 text-center lg:text-left">
             <div class="flex flex-col gap-4">
-              <span class="text-white font-bold tracking-widest text-sm uppercase">{{ content.fields.releases_kicker }}</span>
-              <h2 class="text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white">
+              <!-- Kicker: Bebas Neue, uppercase, tracking widest -->
+              <span class="text-h4 font-display text-gold font-semibold tracking-widest uppercase text-xs md:text-sm">{{ content.fields.releases_kicker }}</span>
+              <!-- Heading: Bebas Neue H2 -->
+              <h2 class="text-h1 font-display text-white">
                 {{ content.fields.releases_heading }}<br/>
               </h2>
-              <p class="text-gray-400 text-base md:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0 whitespace-pre-line">
+              <!-- Body: Roboto, relaxed -->
+              <p class="text-body font-sans-body text-gray-400 leading-relaxed max-w-xl mx-auto lg:mx-0 whitespace-pre-line">
                 {{ content.fields.releases_body }}
               </p>
             </div>
@@ -94,7 +97,7 @@
         </div>
 
         <section class="w-full max-w-5xl mx-auto mt-20 mb-12 px-4">
-          <h2 class="text-4xl lg:text-5xl font-black leading-tight tracking-tight text-white mb-8 text-center lg:text-left">
+          <h2 class="text-h1 font-display text-white mb-8 text-center lg:text-left">
             {{ content.fields.events_heading }}
           </h2>
           <EventsCalendar />

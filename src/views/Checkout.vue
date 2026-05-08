@@ -6,10 +6,10 @@
         <div class="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]"></div>
       </div>
       <div class="container mx-auto px-4 md:px-10 lg:px-40 relative z-10">
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-none tracking-tighter text-white">
+        <h1 class="text-h1-hero font-display leading-none text-white">
           Finalizar pedido
         </h1>
-        <p class="text-text-muted text-sm mt-3">
+        <p class="text-body-small font-sans-body text-text-muted mt-3">
           Confirma tus datos y completa el pago por Bizum una vez recibido el email de confirmación.
         </p>
       </div>
@@ -26,7 +26,7 @@
               novalidate
               class="bg-background-dark border border-[#392829] rounded-xl p-6 md:p-8"
             >
-              <h2 class="text-white text-xl font-bold mb-6 uppercase tracking-tight">
+              <h2 class="text-h3 font-display text-white mb-6">
                 Datos de contacto
               </h2>
 

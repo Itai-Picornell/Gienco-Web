@@ -23,18 +23,18 @@
       </router-link>
 
       <!-- ─── Navegación desktop ──────────────────────────────────────── -->
-      <nav class="hidden lg:flex flex-1 items-center justify-center gap-1" aria-label="Navegación principal">
+      <nav class="hidden lg:flex flex-1 items-center justify-center gap-8" aria-label="Navegación principal">
         <router-link
           v-for="item in navItems"
           :key="item.to"
           :to="item.to"
-          class="relative text-white text-[13px] font-medium hover:text-gold transition-colors px-4 py-2"
+          class="relative text-white text-xl font-display font-bold hover:text-gold transition-colors uppercase tracking-wide"
           :class="{ 'text-gold': $route.path === item.to }"
         >
           {{ item.label }}
           <span
             v-if="$route.path === item.to"
-            class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-5 h-px bg-gold"
+            class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-px bg-gold"
             aria-hidden="true"
           ></span>
         </router-link>

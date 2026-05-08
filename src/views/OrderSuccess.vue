@@ -10,10 +10,10 @@
         <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/30 mb-6">
           <span class="material-symbols-outlined text-emerald-400 text-5xl" aria-hidden="true">check_circle</span>
         </div>
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-none tracking-tighter text-white mb-4">
+        <h1 class="text-h1-hero font-display leading-none text-white mb-4">
           ¡Pedido recibido!
         </h1>
-        <p class="text-text-muted text-base max-w-xl mx-auto">
+        <p class="text-body font-sans-body text-text-muted max-w-xl mx-auto">
           Hemos registrado tu pedido. Para confirmarlo, completa el pago por <strong class="text-white">Bizum</strong> siguiendo las instrucciones que te hemos enviado por email.
         </p>
       </div>
@@ -24,8 +24,8 @@
       <div class="container mx-auto px-4 md:px-10 lg:px-40 max-w-2xl">
         <div class="bg-background-dark border border-[#392829] rounded-xl p-8 text-center">
           <span class="material-symbols-outlined text-text-muted text-5xl block mb-4" aria-hidden="true">inbox</span>
-          <h2 class="text-white text-xl font-bold mb-2">No hay información reciente del pedido</h2>
-          <p class="text-text-muted text-sm mb-6">
+          <h2 class="text-h3 font-display text-white mb-2">No hay información reciente del pedido</h2>
+          <p class="text-body-small text-text-muted mb-6">
             Si acabas de hacer un pedido, revisa tu correo electrónico — te hemos enviado todos los detalles.
           </p>
           <router-link to="/products">
