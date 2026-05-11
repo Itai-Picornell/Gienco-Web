@@ -24,7 +24,7 @@
         <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]"></div>
       </div>
       <div class="container mx-auto px-4 md:px-8 lg:px-20 relative z-10 text-center max-w-2xl mx-auto">
-        <h1 class="text-h1-hero font-display leading-none text-white mb-4">
+        <h1 class="text-h1-hero font-display text-white mb-4 break-words">
           {{ content.fields.hero_title }}
         </h1>
         <p class="text-body-large font-sans-body text-neutral-400 tracking-wide">{{ content.fields.hero_subtitle }}</p>

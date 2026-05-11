@@ -169,7 +169,18 @@ p {
 
 /* ─── Utilidades de Tipografía ─────────────────────────────────────────────── */
 .text-h1 { font-size: 56px; font-weight: 700; font-family: "Bebas Neue", serif; line-height: 1.1; }
-.text-h1-hero { font-size: 72px; font-weight: 700; font-family: "Bebas Neue", serif; line-height: 1.0; }
+.text-h1-hero { 
+  font-size: 36px; 
+  font-weight: 700; 
+  font-family: "Bebas Neue", serif; 
+  line-height: 1.2;
+}
+@media (min-width: 640px) {
+  .text-h1-hero { font-size: 48px; line-height: 1.1; }
+}
+@media (min-width: 1024px) {
+  .text-h1-hero { font-size: 72px; line-height: 1.0; }
+}
 .text-h2 { font-size: 44px; font-weight: 700; font-family: "Bebas Neue", serif; line-height: 1.15; }
 .text-h3 { font-size: 34px; font-weight: 600; font-family: "Bebas Neue", serif; line-height: 1.2; }
 .text-h4 { font-size: 28px; font-weight: 600; font-family: "Bebas Neue", serif; line-height: 1.25; }
