@@ -170,13 +170,13 @@ p {
 /* ─── Utilidades de Tipografía ─────────────────────────────────────────────── */
 .text-h1 { font-size: 56px; font-weight: 700; font-family: "Bebas Neue", serif; line-height: 1.1; }
 .text-h1-hero { 
-  font-size: 36px; 
+  font-size: 62px; 
   font-weight: 700; 
   font-family: "Bebas Neue", serif; 
-  line-height: 1.2;
+  line-height: 1.1;
 }
 @media (min-width: 640px) {
-  .text-h1-hero { font-size: 48px; line-height: 1.1; }
+  .text-h1-hero { font-size: 68px; line-height: 1.05; }
 }
 @media (min-width: 1024px) {
   .text-h1-hero { font-size: 72px; line-height: 1.0; }
