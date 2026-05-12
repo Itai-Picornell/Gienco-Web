@@ -1,6 +1,6 @@
-# GIENCO — Plataforma Oficial de la Banda
+# GIENCO — Official Band Platform
 
-> Single Page Application (SPA) serverless construida sobre AWS, diseñada como una arquitectura cloud moderna con principio de mínimo privilegio, defensa en profundidad y observabilidad centralizada.
+> Serverless Single Page Application (SPA) built on AWS, designed as a modern cloud architecture with least-privilege principles, defense in depth and centralized observability.
 
 [![Vue.js](https://img.shields.io/badge/Vue.js-3-4FC08D?logo=vue.js&logoColor=white)](https://vuejs.org/)
 [![AWS](https://img.shields.io/badge/AWS-Serverless-FF9900?logo=amazon-aws&logoColor=white)](https://aws.amazon.com/)
@@ -11,65 +11,65 @@
 
 ---
 
-## Tabla de Contenidos
+## Table of Contents
 
-- [Visión General](#visión-general)
-- [Arquitectura](#arquitectura)
-  - [Vista de pájaro](#vista-de-pájaro)
-  - [Capa de presentación](#capa-de-presentación)
-  - [Capa de entrega de contenido](#capa-de-entrega-de-contenido)
-  - [Capa de API](#capa-de-api)
-  - [Capa de cómputo serverless](#capa-de-cómputo-serverless)
-  - [Capa de datos](#capa-de-datos)
-  - [Capa de autenticación](#capa-de-autenticación)
-  - [Capa de observabilidad](#capa-de-observabilidad)
-  - [CMS administrativo](#cms-administrativo)
-- [Seguridad](#seguridad)
+- [Overview](#overview)
+- [Architecture](#architecture)
+  - [Bird's-eye view](#birds-eye-view)
+  - [Presentation layer](#presentation-layer)
+  - [Content delivery layer](#content-delivery-layer)
+  - [API layer](#api-layer)
+  - [Serverless compute layer](#serverless-compute-layer)
+  - [Data layer](#data-layer)
+  - [Authentication layer](#authentication-layer)
+  - [Observability layer](#observability-layer)
+  - [Admin CMS](#admin-cms)
+- [Security](#security)
 - [CI/CD](#cicd)
-- [Stack Tecnológico](#stack-tecnológico)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Acceso](#acceso)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Access](#access)
 
 ---
 
-## Visión General
+## Overview
 
-**GIENCO** es la plataforma oficial de la banda musical: web pública con catálogo de merchandising, información del grupo, eventos en directo, integración con Spotify y proceso completo de pedido. Detrás de la web pública existe un CMS propio (alojado en un repositorio privado) que permite a personas sin conocimientos técnicos gestionar todo el contenido visual, los productos y los pedidos en tiempo real.
+**GIENCO** is the official platform of the band: a public website with a merchandising catalog, band information, live events, Spotify integration and a full ordering process. Behind the public website there is a custom CMS (hosted in a private repository) that allows people without technical knowledge to manage all the visual content, products and orders in real time.
 
-La plataforma se ha diseñado como una **arquitectura 100% serverless en AWS**, sin servidores que mantener, con escalado automático y aislamiento por componente. Cada decisión —desde la elección de servicios hasta la separación de APIs— está pensada en clave de arquitectura, seguridad y mantenibilidad.
+The platform is designed as a **100% serverless architecture on AWS**, with no servers to maintain, automatic scaling and component-level isolation. Every decision — from the choice of services to the API segregation — is made with architecture, security and maintainability in mind.
 
-### Características principales
+### Key features
 
-- SPA reactiva basada en Vue 3 + Composition API
-- Arquitectura serverless con escalado automático
-- Doble API segregada: una pública para usuarios y otra exclusiva del CMS
-- Autenticación federada mediante AWS Cognito con segregación de roles
-- CMS propio para gestión visual, de productos y de pedidos
-- Panel de logs centralizado en tiempo real
-- Protección multicapa: AWS Shield (L3/L4) + Cloudflare WAF (L7)
-- Despliegue continuo automatizado mediante GitHub Actions
+- Reactive SPA built on Vue 3 + Composition API
+- Serverless architecture with automatic scaling
+- Two segregated APIs: one public for users and one exclusive to the CMS
+- Federated authentication with AWS Cognito and role segregation
+- Custom CMS for managing visuals, products and orders
+- Centralized real-time log panel
+- Multi-layer protection: AWS Shield (L3/L4) + Cloudflare WAF (L7)
+- Automated continuous deployment with GitHub Actions
 
 ---
 
-## Arquitectura
+## Architecture
 
-### Vista de pájaro
+### Bird's-eye view
 
-La plataforma sigue una arquitectura serverless de tipo *event-driven* organizada en capas independientes. Cada capa tiene una responsabilidad acotada y se comunica con el resto a través de interfaces bien definidas (HTTPS, API REST, SDK de AWS). Esta separación permite escalar, securizar y observar cada componente de forma aislada.
+The platform follows an *event-driven* serverless architecture organized in independent layers. Each layer has a clear responsibility and communicates with the others through well-defined interfaces (HTTPS, REST API, AWS SDK). This separation makes it possible to scale, secure and observe every component in isolation.
 
 ```mermaid
 graph TB
     subgraph "Internet"
-        U[Usuarios públicos]
-        A[Administradores]
+        U[Public users]
+        A[Administrators]
     end
 
-    subgraph "Capa perimetral"
+    subgraph "Edge layer"
         CF[Cloudflare<br/>WAF L7 + DNS + TLS]
     end
 
-    subgraph "Capa de entrega"
-        CFRONT_WEB[CloudFront<br/>Web pública]
+    subgraph "Delivery layer"
+        CFRONT_WEB[CloudFront<br/>Public web]
         CFRONT_ADMIN[CloudFront<br/>CMS]
         CFRONT_ASSETS[CloudFront<br/>Assets]
         S3_WEB[(S3 Web)]
@@ -77,28 +77,28 @@ graph TB
         S3_ASSETS[(S3 Assets)]
     end
 
-    subgraph "Capa de autenticación"
+    subgraph "Authentication layer"
         COG[Cognito<br/>User Pools]
     end
 
-    subgraph "Capa de API"
-        API_USERS[API Gateway<br/>Usuarios]
+    subgraph "API layer"
+        API_USERS[API Gateway<br/>Users]
         API_ADMIN[API Gateway<br/>Admins]
     end
 
-    subgraph "Capa de cómputo"
-        L_USERS[Lambdas<br/>Usuarios]
+    subgraph "Compute layer"
+        L_USERS[Lambdas<br/>Users]
         L_ADMIN[Lambdas<br/>Admins]
         L_LOGS[Lambda<br/>Logs Aggregator]
     end
 
-    subgraph "Capa de datos"
+    subgraph "Data layer"
         D_PROD[(DynamoDB<br/>Products)]
         D_ORD[(DynamoDB<br/>Orders)]
         D_CONT[(DynamoDB<br/>Content)]
     end
 
-    subgraph "Servicios auxiliares"
+    subgraph "Auxiliary services"
         SES[Amazon SES]
         CW[CloudWatch Logs]
     end
@@ -137,230 +137,230 @@ graph TB
 
 ---
 
-### Capa de presentación
+### Presentation layer
 
-La capa de presentación es una **SPA en Vue 3** compilada como un bundle estático. La elección de SPA permite una experiencia de usuario fluida, sin recargas completas entre páginas, y desacopla por completo el frontend del backend.
+The presentation layer is a **Vue 3 SPA** compiled as a static bundle. Choosing an SPA gives a smooth user experience, with no full page reloads between views, and it fully decouples the frontend from the backend.
 
-- **Vue 3 con Composition API**: composición por funciones reutilizables (`composables/`) en lugar de mixins, lo que mejora la trazabilidad del estado y el tipado.
-- **Vue Router** con *navigation guards* para proteger rutas privadas (carrito autenticado, perfil, checkout).
-- **Pinia** como store centralizado de estado: sesión, carrito, notificaciones globales.
-- **Tailwind CSS** como sistema de diseño *utility-first*, con tokens consistentes y diseño *mobile-first*.
-- **Vite** como bundler: build optimizado con *tree-shaking*, *code-splitting* por ruta y minificación con Terser (incluyendo eliminación de `console` y `debugger` en producción).
+- **Vue 3 with Composition API**: logic is reused through composables (`composables/`) instead of mixins, which improves state traceability and typing.
+- **Vue Router** with *navigation guards* to protect private routes (authenticated cart, profile, checkout).
+- **Pinia** as the central state store: session, cart, global notifications.
+- **Tailwind CSS** as a *utility-first* design system, with consistent tokens and a *mobile-first* approach.
+- **Vite** as the bundler: build optimized with *tree-shaking*, route-based *code-splitting* and minification through Terser (removing `console` and `debugger` statements in production).
 
-El resultado del build es estático: HTML, CSS, JS e imágenes. Cero servidor de aplicación.
-
----
-
-### Capa de entrega de contenido
-
-La distribución del contenido estático se hace a través de **Amazon CloudFront**, la CDN global de AWS:
-
-- Cacheo en *edge locations* para latencia mínima desde cualquier parte del mundo.
-- Terminación TLS gestionada con **AWS Certificate Manager (ACM)**, forzando HTTPS de extremo a extremo.
-- Origen privado en un bucket de **Amazon S3** sin acceso público directo: el bucket solo es alcanzable a través de CloudFront mediante *Origin Access*, lo que evita el acceso directo por URL al bucket.
-- Distribuciones independientes para la web pública, el CMS y los assets, lo que permite políticas de caché y cabeceras de seguridad diferenciadas.
-
-**Cloudflare** actúa como capa adicional delante de CloudFront, gestionando DNS, TLS y reglas WAF en capa 7.
+The build output is static: HTML, CSS, JS and images. Zero application server.
 
 ---
 
-### Capa de API
+### Content delivery layer
 
-Existen **dos API Gateways segregadas**, cada una con su propio dominio, autorizadores y conjunto de rutas:
+Static content is distributed through **Amazon CloudFront**, the AWS global CDN:
 
-| API | Audiencia | Métodos típicos | Autenticación |
-|-----|-----------|------------------|----------------|
-| **API Usuarios** | Tráfico público | `GET` de productos, contenido, assets y `POST` de pedidos | Mixta (rutas públicas + protegidas) |
-| **API Admins** | CMS interno | CRUD completo sobre productos, contenido, pedidos, logs | Cognito con grupo de admin |
+- Caching at *edge locations* for minimal latency from anywhere in the world.
+- TLS termination managed with **AWS Certificate Manager (ACM)**, enforcing HTTPS end to end.
+- Private origin in an **Amazon S3** bucket with no direct public access: the bucket is only reachable through CloudFront via *Origin Access*, which prevents direct URL access to the bucket.
+- Independent distributions for the public website, the CMS and the assets, allowing different caching policies and security headers per distribution.
 
-Esta segregación es una **decisión arquitectónica deliberada**: separar el plano público del plano administrativo reduce la superficie de ataque del lado del CMS, permite políticas distintas de *throttling*, CORS y WAF, y evita que un fallo en una API afecte a la otra.
-
-Cada API Gateway aplica:
-
-- **Validación de esquema** en las peticiones entrantes (rechazo en el borde antes de invocar Lambda).
-- **CORS estrictamente acotado** a los orígenes legítimos.
-- **Autorizadores Cognito** para las rutas protegidas, que validan el JWT y los *claims* antes de delegar en la lógica de negocio.
-- **Throttling** y cuotas configurados para mitigar abuso y picos descontrolados.
+**Cloudflare** sits in front of CloudFront as an additional edge layer, handling DNS, TLS and WAF rules at layer 7.
 
 ---
 
-### Capa de cómputo serverless
+### API layer
 
-Toda la lógica de negocio se ejecuta en **AWS Lambda**. Las funciones están agrupadas por dominio funcional (productos, pedidos, contenido, assets, logs) y, dentro de cada dominio, separadas por audiencia (usuario público vs. administrador).
+There are **two segregated API Gateways**, each one with its own domain, authorizers and set of routes:
 
-Principios aplicados:
+| API | Audience | Typical methods | Authentication |
+|-----|----------|------------------|----------------|
+| **Users API** | Public traffic | `GET` for products, content, assets and `POST` for orders | Mixed (public + protected routes) |
+| **Admins API** | Internal CMS | Full CRUD over products, content, orders, logs | Cognito with admin group |
 
-- **Una función, una responsabilidad**: cada Lambda hace una cosa concreta, lo que facilita su testeo y su política de permisos.
-- **Mínimo privilegio**: cada Lambda asume un rol IAM con acceso únicamente a los recursos que necesita (una tabla concreta, un prefijo de S3 concreto, una acción concreta).
-- **Stateless**: ninguna función depende de estado en memoria entre invocaciones. El estado vive en DynamoDB y S3.
-- **Cold start mitigation**: paquetes ligeros, runtime moderno y dependencias acotadas.
+This segregation is a **deliberate architectural decision**: separating the public plane from the administrative plane reduces the attack surface on the CMS side, allows different *throttling*, CORS and WAF policies, and makes sure that a failure in one API does not affect the other.
 
-Funciones representativas (sin desvelar nombres internos):
+Each API Gateway applies:
 
-- Lectura de catálogo, contenido y assets para la web pública.
-- Procesamiento de pedidos con persistencia en DynamoDB y notificación por email vía **Amazon SES**.
-- Operaciones del CMS sobre productos, contenido y pedidos.
-- **Agregador de logs**: una Lambda dedicada consulta CloudWatch, normaliza y clasifica las entradas de todas las funciones, y expone un endpoint para que el panel de logs del CMS las consuma en tiempo real.
-
----
-
-### Capa de datos
-
-La persistencia se reparte entre dos servicios:
-
-- **Amazon DynamoDB** para datos estructurados:
-  - `Products` — catálogo de merchandising.
-  - `Orders` — pedidos realizados por los fans.
-  - `Content` — bloques editables de la web (textos, secciones, configuración de portada, etc.).
-
-  Se eligió DynamoDB por su modelo serverless, su escalado automático y su latencia consistente bajo carga variable.
-
-- **Amazon S3** para objetos binarios (imágenes de productos, fotos de banda, recursos multimedia). El bucket de assets está expuesto exclusivamente vía CloudFront, nunca de forma directa.
+- **Schema validation** on incoming requests (rejection at the edge before invoking Lambda).
+- **Strictly scoped CORS** limited to legitimate origins.
+- **Cognito authorizers** on protected routes, which validate the JWT signature and *claims* before delegating to the business logic.
+- **Throttling** and quotas configured to mitigate abuse and uncontrolled spikes.
 
 ---
 
-### Capa de autenticación
+### Serverless compute layer
 
-**Amazon Cognito** gestiona la identidad de los usuarios mediante User Pools, con **grupos diferenciados** para usuario estándar y administrador. El flujo es estándar OAuth2 / OpenID Connect:
+All business logic runs on **AWS Lambda**. Functions are grouped by functional domain (products, orders, content, assets, logs) and, within each domain, separated by audience (public user vs. administrator).
 
-1. El usuario se registra o inicia sesión a través del SDK de Amplify integrado en el frontend.
-2. Cognito devuelve un par de tokens (ID Token + Access Token) firmados criptográficamente.
-3. El frontend adjunta el token en las peticiones a API Gateway.
-4. El autorizador Cognito de API Gateway valida la firma, la expiración y los *claims* del token antes de invocar la Lambda correspondiente.
-5. La Lambda toma decisiones de autorización fina (por ejemplo, "solo el dueño puede ver su pedido") usando los *claims* del token.
+Principles applied:
 
-El acceso al CMS está restringido al grupo `admin` de Cognito. Un usuario estándar, aunque obtenga un token válido, no puede invocar las rutas administrativas: el rechazo ocurre en el borde, antes incluso de tocar la lógica.
+- **One function, one responsibility**: every Lambda does one specific thing, which makes testing and permissions easier.
+- **Least privilege**: every Lambda assumes an IAM role with access only to the resources it really needs (one specific table, one specific S3 prefix, one specific action).
+- **Stateless**: no function depends on in-memory state between invocations. State lives in DynamoDB and S3.
+- **Cold start mitigation**: lightweight packages, modern runtime and limited dependencies.
 
----
+Representative functions (without exposing internal names):
 
-### Capa de observabilidad
-
-Todas las funciones Lambda emiten logs a **Amazon CloudWatch Logs**. Para hacer estos logs útiles y consumibles desde el CMS se ha implementado un **agregador propio**:
-
-- Una Lambda dedicada (*Logs Aggregator*) consulta los *log groups* de todas las funciones.
-- Clasifica las entradas por nivel (`INFO`, `WARN`, `ERROR`) y por función origen.
-- Expone los datos normalizados a través de la API administrativa.
-- El CMS los muestra en un **panel de logs en tiempo real**, lo que permite detectar y diagnosticar incidencias sin tener que entrar a la consola de AWS.
-
-Esto convierte a CloudWatch en la fuente de verdad y al CMS en un punto único de operación, manteniendo el principio de "una sola pantalla de cristal" para el equipo no técnico que gestiona la web.
+- Read operations on the catalog, content and assets for the public website.
+- Order processing with persistence in DynamoDB and email notification through **Amazon SES**.
+- CMS operations on products, content and orders.
+- **Logs aggregator**: a dedicated Lambda queries CloudWatch, normalizes and classifies the entries from every function, and exposes an endpoint so the CMS log panel can consume them in real time.
 
 ---
 
-### CMS administrativo
+### Data layer
 
-El CMS es una **SPA independiente alojada en una distribución de CloudFront propia**, en un dominio distinto al de la web pública, y con su propio bucket S3 de origen. Su código fuente está en un **repositorio privado** por motivos de seguridad.
+Persistence is split between two services:
 
-Desde el CMS se gestiona:
+- **Amazon DynamoDB** for structured data:
+  - `Products` — merchandising catalog.
+  - `Orders` — orders placed by fans.
+  - `Content` — editable blocks of the website (texts, sections, homepage configuration, etc.).
 
-- Productos del catálogo (creación, edición, retirada).
-- Pedidos (consulta, cambio de estado, gestión).
-- Contenido visual de la web pública (bloques editables, imágenes, configuración).
-- Logs operativos en tiempo real.
+  DynamoDB was chosen for its serverless model, automatic scaling and consistent latency under variable load.
 
-El CMS solo es accesible para usuarios autenticados en Cognito y pertenecientes al grupo de administradores. Cualquier petición a la API administrativa que no porte un token con la pertenencia correcta es rechazada en el borde por API Gateway.
+- **Amazon S3** for binary objects (product images, band photos, multimedia resources). The assets bucket is only exposed through CloudFront, never directly.
 
 ---
 
-## Seguridad
+### Authentication layer
 
-La plataforma aplica **defensa en profundidad**: la seguridad no es una capa, sino una propiedad presente en todos los niveles.
+**Amazon Cognito** manages user identity through User Pools, with **separate groups** for standard users and administrators. The flow follows the standard OAuth2 / OpenID Connect pattern:
 
-### Protección perimetral
+1. The user signs up or logs in through the Amplify SDK integrated in the frontend.
+2. Cognito returns a pair of cryptographically signed tokens (ID Token + Access Token).
+3. The frontend attaches the token to every request sent to API Gateway.
+4. The Cognito authorizer in API Gateway validates the signature, the expiration and the *claims* of the token before invoking the corresponding Lambda.
+5. The Lambda makes fine-grained authorization decisions (for example, "only the owner can see their order") using the *claims* from the token.
 
-- **Cloudflare** delante de CloudFront actúa como WAF en capa 7 (HTTP/HTTPS), filtrando tráfico malicioso, bots conocidos y patrones de ataque antes de que toquen la infraestructura de AWS.
-- **AWS Shield Standard** mitiga ataques volumétricos en capa 3 y 4 (red y transporte) de forma automática y transparente.
+Access to the CMS is restricted to the `admin` group in Cognito. A standard user, even with a valid token, cannot invoke the administrative routes: the rejection happens at the edge, before reaching the business logic.
 
-### Transporte
+---
 
-- **HTTPS forzado** en todos los dominios mediante certificados gestionados por ACM y renovación automática.
-- Políticas TLS modernas (versiones obsoletas desactivadas).
+### Observability layer
 
-### Identidad y acceso
+Every Lambda function emits logs to **Amazon CloudWatch Logs**. To make these logs useful and consumable from the CMS, a **custom aggregator** has been implemented:
 
-- **Amazon Cognito** como proveedor único de identidad.
-- **Tokens JWT** firmados y de corta duración.
-- **Segregación por grupos** para diferenciar usuario público de administrador.
-- **Mínimo privilegio en IAM**: cada Lambda con su rol, cada rol con permisos acotados a los recursos estrictamente necesarios.
+- A dedicated Lambda (*Logs Aggregator*) queries the *log groups* of every function.
+- It classifies the entries by level (`INFO`, `WARN`, `ERROR`) and by source function.
+- It exposes the normalized data through the administrative API.
+- The CMS displays it on a **real-time log panel**, which allows detecting and diagnosing incidents without having to open the AWS console.
 
-### Acceso a datos
+This turns CloudWatch into the source of truth and the CMS into a single point of operation, keeping the "single pane of glass" principle for the non-technical team that manages the website.
 
-- Buckets S3 **sin acceso público**: el acceso solo es posible a través de CloudFront mediante *Origin Access*.
-- Tablas DynamoDB accedidas únicamente desde las Lambdas con permisos explícitos.
-- Validación de entrada en todas las funciones para prevenir inyecciones y abusos.
+---
 
-### Auditoría
+### Admin CMS
 
-- Toda invocación Lambda queda registrada en CloudWatch Logs.
-- El agregador centraliza estos eventos, lo que facilita el rastreo en caso de incidencia.
+The CMS is a **separate SPA hosted on its own CloudFront distribution**, on a domain different from the public website, and with its own S3 origin bucket. Its source code lives in a **private repository** for security reasons.
+
+From the CMS, the following can be managed:
+
+- Catalog products (creation, edition, removal).
+- Orders (consultation, status changes, management).
+- Visual content of the public website (editable blocks, images, configuration).
+- Operational logs in real time.
+
+The CMS is only accessible to users authenticated in Cognito and belonging to the administrators group. Any request to the administrative API that does not carry a token with the correct group membership is rejected at the edge by API Gateway.
+
+---
+
+## Security
+
+The platform applies **defense in depth**: security is not a single layer, but a property present at every level.
+
+### Edge protection
+
+- **Cloudflare** in front of CloudFront acts as a WAF at layer 7 (HTTP/HTTPS), filtering malicious traffic, known bots and attack patterns before they ever reach the AWS infrastructure.
+- **AWS Shield Standard** mitigates volumetric attacks at layers 3 and 4 (network and transport) automatically and transparently.
+
+### Transport
+
+- **HTTPS enforced** on every domain through ACM-managed certificates with automatic renewal.
+- Modern TLS policies (legacy versions disabled).
+
+### Identity and access
+
+- **Amazon Cognito** as the single identity provider.
+- **Signed, short-lived JWT tokens**.
+- **Group-based segregation** to differentiate public users from administrators.
+- **IAM least privilege**: one role per Lambda, each role limited strictly to the resources it really needs.
+
+### Data access
+
+- **Private S3 buckets**: access is only possible through CloudFront via *Origin Access*.
+- DynamoDB tables only accessed from Lambdas with explicit permissions.
+- Input validation in every function to prevent injections and abuse.
+
+### Audit
+
+- Every Lambda invocation is recorded in CloudWatch Logs.
+- The aggregator centralizes these events, which makes tracing easier in case of an incident.
 
 ---
 
 ## CI/CD
 
-El despliegue está completamente automatizado mediante **GitHub Actions**:
+Deployment is fully automated through **GitHub Actions**:
 
-1. *Push* a la rama de producción dispara el workflow.
-2. Se instalan dependencias y se construye el bundle con Vite.
-3. Los artefactos se suben al bucket S3 de origen.
-4. Se invalida la caché de CloudFront para que los cambios se propaguen de inmediato.
+1. A *push* to the production branch triggers the workflow.
+2. Dependencies are installed and the bundle is built with Vite.
+3. The artifacts are uploaded to the origin S3 bucket.
+4. The CloudFront cache is invalidated so changes propagate immediately.
 
-Las credenciales para el despliegue se gestionan mediante **GitHub Secrets** y se asumen a través de un rol IAM con permisos estrictamente acotados a las operaciones de despliegue (no admin general).
+Authentication between GitHub Actions and AWS is handled through **OpenID Connect (OIDC)**: the workflow directly assumes a dedicated IAM role for deployment, with no need to store long-lived *access keys* as GitHub secrets. This removes the risk associated with long-lived credentials and allows every deployment to use temporary credentials signed by AWS STS. The assumed role has permissions strictly limited to deployment operations (uploading to S3 and invalidating CloudFront), never general administrative permissions.
 
 ---
 
-## Stack Tecnológico
+## Tech Stack
 
 ### Frontend
 
-- **Vue.js 3** — Framework progresivo con Composition API
-- **Vue Router 4** — Enrutamiento SPA con guards de navegación
-- **Pinia 2** — Gestión de estado reactiva y modular
-- **Tailwind CSS 4** — Sistema de diseño utility-first
-- **Vite 6** — Bundler de nueva generación
-- **Terser** — Minificación y eliminación de logs en producción
+- **Vue.js 3** — Progressive framework with Composition API
+- **Vue Router 4** — SPA routing with navigation guards
+- **Pinia 2** — Reactive and modular state management
+- **Tailwind CSS 4** — Utility-first design system
+- **Vite 6** — Next-generation bundler
+- **Terser** — Minification and log stripping in production
 
-### Integración Cloud
+### Cloud Integration
 
-- **AWS Amplify** — SDK de cliente para Cognito y API Gateway
+- **AWS Amplify** — Client SDK for Cognito and API Gateway
 
-### Infraestructura AWS
+### AWS Infrastructure
 
-- **CloudFront** — CDN y entrega segura de contenido
-- **S3** — Almacenamiento de bundle estático y assets
-- **API Gateway** — Gestión de APIs REST
-- **Lambda** — Cómputo serverless
-- **DynamoDB** — Base de datos NoSQL serverless
-- **Cognito** — Identidad y control de acceso
-- **SES** — Envío transaccional de emails
-- **CloudWatch** — Logs y observabilidad
-- **ACM** — Certificados TLS
-- **IAM** — Roles y políticas de mínimo privilegio
-- **Route 53** — Resolución DNS
-- **AWS Shield Standard** — Mitigación DDoS en L3/L4
+- **CloudFront** — CDN and secure content delivery
+- **S3** — Storage for static bundle and assets
+- **API Gateway** — REST API management
+- **Lambda** — Serverless compute
+- **DynamoDB** — Serverless NoSQL database
+- **Cognito** — Identity and access control
+- **SES** — Transactional email delivery
+- **CloudWatch** — Logs and observability
+- **ACM** — TLS certificates
+- **IAM** — Roles and least-privilege policies
+- **Route 53** — DNS resolution
+- **AWS Shield Standard** — DDoS mitigation at L3/L4
 
-### Capa perimetral
+### Edge Layer
 
-- **Cloudflare** — DNS, TLS y WAF en capa 7
+- **Cloudflare** — DNS, TLS and WAF at layer 7
 
 ### CI/CD
 
-- **GitHub Actions** — Pipeline de build y despliegue automatizado
+- **GitHub Actions** — Automated build and deployment pipeline
 
 ---
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 Gienco_Web/
 │
-├── .github/workflows/      Pipelines de GitHub Actions
-├── public/                 Assets estáticos servidos tal cual
-│   ├── audio/              Audio (intro, efectos)
-│   ├── images/             Imágenes de fallback y favicon
+├── .github/workflows/      GitHub Actions pipelines
+├── public/                 Static assets served as-is
+│   ├── audio/              Audio (intro, effects)
+│   ├── images/             Fallback images and favicon
 │   └── robots.txt
 │
 ├── src/
-│   ├── components/         Componentes Vue reutilizables
+│   ├── components/         Reusable Vue components
 │   │   ├── Navbar.vue
 │   │   ├── Footer.vue
 │   │   ├── BandCarousel.vue
@@ -368,7 +368,7 @@ Gienco_Web/
 │   │   ├── SpotifyPlayer.vue
 │   │   └── NotificationModal.vue
 │   │
-│   ├── views/              Vistas (páginas) ligadas a rutas
+│   ├── views/              Views (pages) bound to routes
 │   │   ├── Home.vue
 │   │   ├── About.vue
 │   │   ├── Products.vue
@@ -382,36 +382,36 @@ Gienco_Web/
 │   │   ├── TermsOfService.vue
 │   │   └── NotFound.vue
 │   │
-│   ├── composables/        Composition functions reutilizables
-│   │   ├── useContent.js   Hidratación de contenido dinámico desde API
-│   │   └── useGallery.js   Carga de galerías de imágenes
+│   ├── composables/        Reusable composition functions
+│   │   ├── useContent.js   Hydration of dynamic content from API
+│   │   └── useGallery.js   Image gallery loading
 │   │
-│   ├── services/           Clientes y abstracciones de servicio
-│   │   └── api.js          Cliente HTTP hacia la API pública
+│   ├── services/           Service clients and abstractions
+│   │   └── api.js          HTTP client for the public API
 │   │
-│   ├── stores/             Stores Pinia
-│   │   ├── auth.js         Estado de sesión (Cognito)
-│   │   ├── cart.js         Estado del carrito
-│   │   └── notification.js Notificaciones globales
+│   ├── stores/             Pinia stores
+│   │   ├── auth.js         Session state (Cognito)
+│   │   ├── cart.js         Cart state
+│   │   └── notification.js Global notifications
 │   │
-│   ├── router/             Configuración de rutas y guards
+│   ├── router/             Routing config and guards
 │   ├── utils/              Helpers
 │   ├── App.vue             Root component
-│   ├── main.js             Bootstrap de la app
-│   └── index.css           Estilos globales y Tailwind
+│   ├── main.js             App bootstrap
+│   └── index.css           Global styles and Tailwind
 │
-├── index.html              HTML de entrada con SEO y meta tags
-├── vite.config.js          Configuración de Vite
+├── index.html              Entry HTML with SEO and meta tags
+├── vite.config.js          Vite configuration
 ├── package.json
 └── README.md
 ```
 
 ---
 
-## Acceso
+## Access
 
-**Web pública:** [https://giencoband.com](https://giencoband.com)
+**Public website:** [https://giencoband.com](https://giencoband.com)
 
 ---
 
-**Construido con dedicación para la GIENCO**
+**Built with dedication for GIENCO**
