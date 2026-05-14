@@ -1,4 +1,20 @@
+# ─────────────────────────────────────────────────────────────
+# robots.txt — Gienco
+#
+# Permite la indexación de las páginas públicas y bloquea
+# expresamente las rutas privadas (carrito, checkout, login,
+# registro y confirmación de pedido) para que Google no las
+# rastree ni gaste presupuesto de crawl en ellas.
+# ─────────────────────────────────────────────────────────────
+
 User-agent: *
 Allow: /
 
-Sitemap: https://d1hyl9nx0vzqlt.cloudfront.net/sitemap.xml
+# Rutas privadas / de usuario — no deben indexarse
+Disallow: /cart
+Disallow: /checkout
+Disallow: /pedido/
+Disallow: /login
+Disallow: /signup
+
+Sitemap: https://giencoband.com/sitemap.xml
