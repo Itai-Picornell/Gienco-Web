@@ -371,10 +371,10 @@ const sections = ref([
     id: 'cookies',
     title: 'Cookies y Tecnologías Similares',
     content: `
-      <p>El Sitio Web puede utilizar cookies técnicas estrictamente necesarias para el funcionamiento del servicio. No utilizamos cookies de seguimiento ni publicitarias propias.</p>
-      <p class="mt-3">El Sitio Web integra contenido de terceros que pueden establecer sus propias cookies:</p>
+      <p>El Sitio Web utiliza únicamente cookies técnicas estrictamente necesarias para el funcionamiento del servicio. No utilizamos cookies de seguimiento ni publicitarias propias, por lo que no se requiere un banner de consentimiento para ellas.</p>
+      <p class="mt-3">El Sitio Web integra contenido de terceros que puede establecer sus propias cookies. Para cumplir con el artículo 22.2 de la LSSI, <strong class="text-gray-300">este contenido no se carga automáticamente</strong>: solo se activa (y solo entonces puede instalar cookies) cuando pulsas expresamente para cargarlo.</p>
       <ul class="list-disc list-inside mt-3 space-y-1 text-gray-400">
-        <li><strong class="text-gray-300">Spotify:</strong> Reproductor embebido. Consulta la <a href="https://www.spotify.com/legal/privacy-policy/" target="_blank" rel="noopener noreferrer" class="text-white hover:bg-white hover:text-black px-1 rounded transition-colors font-medium">política de Spotify</a>.</li>
+        <li><strong class="text-gray-300">Spotify:</strong> Reproductor embebido, cargado únicamente tras tu consentimiento explícito (click-to-load). Consulta la <a href="https://www.spotify.com/legal/privacy-policy/" target="_blank" rel="noopener noreferrer" class="text-white hover:bg-white hover:text-black px-1 rounded transition-colors font-medium">política de Spotify</a>.</li>
       </ul>
       <p class="mt-3">Tu navegador te permite configurar las cookies y eliminarlas en cualquier momento desde la configuración del mismo.</p>
     `

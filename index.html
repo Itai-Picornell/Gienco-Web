@@ -7,12 +7,57 @@
   <meta http-equiv="Permissions-Policy" content="geolocation=()">
   <meta name="color-scheme" content="dark">
 
-  <title>Gienco</title>
+  <!--
+    Title y meta (description, canonical, og, twitter) son actualizados por
+    ruta desde src/utils/seo.js cuando la app hidrata. Los valores de aquí son
+    el fallback estático que leen los crawlers que NO ejecutan JS (WhatsApp,
+    Facebook, etc.) y describen la home / la marca.
+  -->
+  <title>Gienco — Rock n' Roll | Web oficial</title>
   <meta name="description"
-    content="Gienco - Rock n' Roll auténtico. Descubre nuestra historia, próximos eventos y merchandising oficial.">
+    content="Web oficial de Gienco, banda de rock n' roll. Escucha nuestro álbum «Manifiesto», descubre próximos conciertos y consigue el merchandising oficial.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://giencoband.com/">
 
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
+  <link rel="apple-touch-icon" href="/favicon-192x192.png">
+
+  <!-- Open Graph (WhatsApp, Facebook, LinkedIn...) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Gienco">
+  <meta property="og:title" content="Gienco — Rock n' Roll | Web oficial">
+  <meta property="og:description" content="Web oficial de Gienco, banda de rock n' roll. Escucha nuestro álbum «Manifiesto» y consigue el merchandising oficial.">
+  <meta property="og:url" content="https://giencoband.com/">
+  <meta property="og:image" content="https://giencoband.com/favicon-192x192.png">
+  <meta property="og:locale" content="es_ES">
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Gienco — Rock n' Roll | Web oficial">
+  <meta name="twitter:description" content="Web oficial de Gienco, banda de rock n' roll. Escucha nuestro álbum «Manifiesto» y consigue el merchandising oficial.">
+  <meta name="twitter:image" content="https://giencoband.com/favicon-192x192.png">
+
+  <!-- Structured data: MusicGroup (describe la banda como entidad) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MusicGroup",
+    "name": "Gienco",
+    "genre": "Rock n' Roll",
+    "url": "https://giencoband.com/",
+    "image": "https://giencoband.com/favicon-192x192.png",
+    "sameAs": [
+      "https://open.spotify.com/artist/2SuZxiVemUNCCrzzXZVJg3",
+      "https://www.instagram.com/gienco_band/",
+      "https://www.youtube.com/@gienco_band"
+    ],
+    "album": {
+      "@type": "MusicAlbum",
+      "name": "Manifiesto"
+    }
+  }
+  </script>
 
   <link rel="dns-prefetch" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -258,23 +258,17 @@ const sections = ref([
         <li><strong class="text-gray-300">Ley Orgánica 3/2018</strong> (LOPDGDD) — Ley de Protección de Datos Personales y garantía de los derechos digitales.</li>
         <li><strong class="text-gray-300">Ley 34/2002</strong> (LSSI-CE) — Ley de Servicios de la Sociedad de la Información y del Comercio Electrónico.</li>
         <li><strong class="text-gray-300">Real Decreto Legislativo 1/2007</strong> (LGDCU) — Texto refundido de la Ley General para la Defensa de los Consumidores y Usuarios.</li>
-        <li><strong class="text-gray-300">Reglamento (UE) 524/2013</strong> sobre resolución de litigios en línea en materia de consumo.</li>
       </ul>
       <p class="mt-3">Para la resolución de cualquier controversia, las partes se someterán a la jurisdicción y competencia de los juzgados y tribunales del domicilio del usuario, conforme a la legislación vigente en materia de consumidores y usuarios.</p>
     `
   },
   {
     id: 'resolucion-litigios',
-    title: 'Resolución Online de Litigios',
+    title: 'Resolución de Litigios',
     content: `
-      <p>De conformidad con el <strong class="text-gray-300">Reglamento (UE) 524/2013</strong>, la Comisión Europea pone a disposición de los consumidores una plataforma de resolución de litigios en línea, accesible desde:</p>
-      <p class="mt-2">
-        <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer" class="text-white hover:bg-white hover:text-black px-1 rounded transition-colors font-medium break-all">
-          https://ec.europa.eu/consumers/odr/
-        </a>
-      </p>
-      <p class="mt-3">Si tienes una reclamación que no hayamos podido resolver de forma amistosa por correo electrónico, puedes acudir a esta plataforma para iniciar un procedimiento extrajudicial de resolución del conflicto.</p>
-      <p class="mt-3">Adicionalmente, puedes presentar reclamaciones en los organismos de consumo de tu Comunidad Autónoma o ante la Junta Arbitral de Consumo correspondiente.</p>
+      <p>Si tienes una reclamación, te pedimos que primero contactes con nosotros en <strong class="text-gray-300">giencoband@gmail.com</strong> para intentar resolverla de forma amistosa.</p>
+      <p class="mt-3">La antigua plataforma europea de resolución de litigios en línea (ODR), prevista en el Reglamento (UE) 524/2013, <strong class="text-gray-300">dejó de estar operativa el 20 de julio de 2025</strong>, por lo que ya no es posible acudir a ella.</p>
+      <p class="mt-3">Como vía extrajudicial, puedes presentar tu reclamación ante los <strong class="text-gray-300">organismos de consumo de tu Comunidad Autónoma</strong> o ante la <strong class="text-gray-300">Junta Arbitral de Consumo</strong> correspondiente. Ello sin perjuicio de tu derecho a acudir a los tribunales competentes.</p>
     `
   },
   {
