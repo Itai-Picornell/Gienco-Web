@@ -1,12 +1,12 @@
 <template>
   <div v-if="spotifyId" class="w-full mt-4 flex items-center justify-center">
     <!--
-      Reproductor real de Spotify. Solo se monta tras el consentimiento explícito
-      del usuario (click-to-load), porque el embed de Spotify instala cookies de
-      terceros y el art. 22.2 de la LSSI exige consentimiento previo para ellas.
+      El iframe de Spotify instala cookies de terceros, así que solo se carga
+      cuando el usuario ha aceptado las cookies en el banner global
+      (art. 22.2 LSSI). Tras aceptar, se monta automáticamente.
     -->
     <iframe
-      v-if="loaded"
+      v-if="consent === 'accepted'"
       title="Reproductor de Spotify oficial de Gienco"
       style="border-radius:12px"
       :src="`https://open.spotify.com/embed/${type}/${spotifyId}?utm_source=generator&theme=0`"
@@ -20,28 +20,33 @@
     ></iframe>
 
     <!--
-      Fachada previa al consentimiento: no carga nada de Spotify, no pone cookies.
-      Al pulsar, el usuario consiente cargar el reproductor (y sus cookies).
+      Fallback cuando el usuario aún no ha aceptado (o ha rechazado) las cookies.
+      La mayoría acepta en el banner y nunca ve esto; aquí ofrecemos aceptar
+      puntualmente para cargar el reproductor.
     -->
-    <button
+    <div
       v-else
-      type="button"
-      @click="loaded = true"
-      class="w-full flex flex-col items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors px-4 text-center shadow-xl"
+      class="w-full flex flex-col items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 text-center shadow-xl"
       :style="{ height: iframeHeight + 'px' }"
-      :aria-label="'Cargar el reproductor de Spotify de Gienco'"
     >
-      <span class="material-symbols-outlined text-4xl text-gray-200" aria-hidden="true">play_circle</span>
-      <span class="text-sm font-semibold text-gray-200">Cargar reproductor de Spotify</span>
+      <span class="material-symbols-outlined text-3xl text-gray-300" aria-hidden="true">music_note</span>
       <span class="text-xs text-gray-400 max-w-xs">
-        Al pulsar aceptas cargar contenido de Spotify, que puede instalar cookies de terceros.
+        Acepta las cookies para cargar el reproductor de Spotify.
       </span>
-    </button>
+      <button
+        type="button"
+        @click="accept"
+        class="px-4 py-1.5 rounded-lg text-xs font-semibold bg-white text-black hover:bg-gray-200 transition-colors"
+      >
+        Aceptar cookies
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
+import { useCookieConsent } from '../composables/useCookieConsent'
 
 const props = defineProps({
   spotifyId: {
@@ -56,8 +61,7 @@ const props = defineProps({
   }
 })
 
-// El iframe (y sus cookies) solo se cargan tras el consentimiento explícito del usuario.
-const loaded = ref(false)
+const { consent, accept } = useCookieConsent()
 
 const iframeHeight = computed(() => {
   return props.type === 'track' ? '80' : '352'

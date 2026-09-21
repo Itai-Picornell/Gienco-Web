@@ -18,6 +18,9 @@
     
     <!-- Modal global para notificaciones -->
     <NotificationModal />
+
+    <!-- Banner de consentimiento de cookies (contenido de terceros) -->
+    <CookieBanner />
   </div>
 </template>
 
@@ -26,6 +29,7 @@
 import Navbar from './components/Navbar.vue'
 import Footer from './components/Footer.vue'
 import NotificationModal from './components/NotificationModal.vue'
+import CookieBanner from './components/CookieBanner.vue'
 import { onMounted } from 'vue'
 import { useAuthStore } from './stores/auth'
 
