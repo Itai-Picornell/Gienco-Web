@@ -9,40 +9,32 @@ import ResetPassword from '../views/ResetPassword.vue'
 import NotFound from '../views/NotFound.vue'
 import { useAuthStore } from '../stores/auth'
 import { applyRouteHead } from '../utils/seo'
+import { ROUTE_META, NOT_FOUND_META } from './routeMeta'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
     component: Home,
-    meta: {
-      title: "Gienco — Rock n' Roll | Web oficial",
-      description: "Web oficial de Gienco, banda de rock n' roll. Escucha nuestro álbum «Manifiesto», descubre próximos conciertos y consigue el merchandising oficial.",
-    }
+    meta: { ...ROUTE_META['/'] }
   },
   {
     path: '/about',
     name: 'About',
     component: About,
-    meta: {
-      title: 'Sobre Gienco — La banda',
-      description: "Conoce a Gienco: la historia, la música y el directo de la banda detrás del álbum «Manifiesto». Rock n' roll auténtico.",
-    }
+    meta: { ...ROUTE_META['/about'] }
   },
   {
     path: '/products',
     name: 'Products',
     component: Products,
-    meta: {
-      title: 'Merch oficial — Tienda de Gienco',
-      description: 'Merchandising oficial de Gienco: camisetas, vinilos y más. Compra segura y envíos desde la web oficial de la banda.',
-    }
+    meta: { ...ROUTE_META['/products'] }
   },
   {
     path: '/cart',
     name: 'Cart',
     component: Cart,
-    meta: { title: 'Carrito — Gienco', noindex: true }
+    meta: { ...ROUTE_META['/cart'] }
   },
   // ──────────────────────────────────────────────
   // Flujo de pedidos (requiere sesión iniciada)
@@ -51,31 +43,31 @@ const routes = [
     path: '/checkout',
     name: 'Checkout',
     component: () => import('../views/Checkout.vue'),
-    meta: { requiresAuth: true, title: 'Checkout — Gienco', noindex: true }
+    meta: { requiresAuth: true, ...ROUTE_META['/checkout'] }
   },
   {
     path: '/pedido/exito',
     name: 'OrderSuccess',
     component: () => import('../views/OrderSuccess.vue'),
-    meta: { title: 'Pedido confirmado — Gienco', noindex: true }
+    meta: { ...ROUTE_META['/pedido/exito'] }
   },
   {
     path: '/login',
     name: 'Login',
     component: Login,
-    meta: { title: 'Iniciar sesión — Gienco', noindex: true }
+    meta: { ...ROUTE_META['/login'] }
   },
   {
     path: '/signup',
     name: 'SignUp',
     component: SignUp,
-    meta: { title: 'Crear cuenta — Gienco', noindex: true }
+    meta: { ...ROUTE_META['/signup'] }
   },
   {
     path: '/login/reset',
     name: 'ResetPassword',
     component: ResetPassword,
-    meta: { title: 'Restablecer contraseña — Gienco', noindex: true }
+    meta: { ...ROUTE_META['/login/reset'] }
   },
   // ──────────────────────────────────────────────
   // Páginas Legales (RGPD)
@@ -84,19 +76,13 @@ const routes = [
     path: '/terminos',
     name: 'TermsOfService',
     component: () => import('../views/TermsOfService.vue'),
-    meta: {
-      title: 'Términos y condiciones — Gienco',
-      description: 'Términos y condiciones de uso de la web oficial de Gienco.',
-    }
+    meta: { ...ROUTE_META['/terminos'] }
   },
   {
     path: '/privacidad',
     name: 'PrivacyPolicy',
     component: () => import('../views/PrivacyPolicy.vue'),
-    meta: {
-      title: 'Política de privacidad — Gienco',
-      description: 'Política de privacidad y tratamiento de datos (RGPD) de la web oficial de Gienco.',
-    }
+    meta: { ...ROUTE_META['/privacidad'] }
   },
   // ──────────────────────────────────────────────
   // Catch-All 404 — DEBE ser la ÚLTIMA ruta
@@ -105,7 +91,7 @@ const routes = [
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: NotFound,
-    meta: { title: 'Página no encontrada — Gienco', noindex: true }
+    meta: NOT_FOUND_META
   }
 ]
 

@@ -60,6 +60,9 @@ jobs:
           # Entry point (index.html) sin caché para forzar la actualización en el cliente
           aws s3 sync dist/ s3://${{ secrets.AWS_S3_BUCKET }} --delete --exclude "assets/*" --cache-control "no-cache, no-store, must-revalidate"
 
+          # La CLI no conoce la extensión .webmanifest: se sube con su MIME correcto
+          aws s3 cp dist/site.webmanifest s3://${{ secrets.AWS_S3_BUCKET }}/site.webmanifest --content-type "application/manifest+json" --cache-control "no-cache, no-store, must-revalidate"
+
       - name: Invalidate CloudFront
         # Purga global de Edge Locations para aplicar los cambios inmediatamente
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_ID }} --paths "/*"
