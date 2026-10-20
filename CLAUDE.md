@@ -12,7 +12,12 @@ Cada push a `main` despliega la tienda en producción.
   `no-cache`; solo los assets con hash. La zona de Route 53 `giencoband.com` NO es
   la activa (copia en `infra/dns/route53-giencoband.com-backup.json`).
 - En Cloudflare deben existir siempre el CNAME de validación de ACM (renovación
-  del certificado) y los 6 CNAME DKIM de SES (eu-west-3).
+  del certificado) y los 6 CNAME DKIM de SES (eu-west-3), todos "DNS only".
+- Correo: SES (eu-west-3) envía como `soporte@giencoband.com`; Cloudflare Email
+  Routing recibe y reenvía `soporte@` a Gmail (MX + SPF + DKIM `cf2024-1`
+  gestionados por Cloudflare; el resto de direcciones se descarta).
+- Cloudflare: SSL Full (strict), TLS mínimo 1.2, Always Use HTTPS, Browser Cache
+  TTL "Respect Existing Headers", Rocket Loader desactivado (rompe el SPA).
 - CloudFront `E1EL5105A0D5C` en el plan de tarifa plana **Free** (incluye el WAF
   `CreatedByCloudFront-3e4531ee`: IpReputation y KnownBadInputs en Block,
   CommonRuleSet en Count). Cabeceras: `Managed-SecurityHeadersPolicy`.
