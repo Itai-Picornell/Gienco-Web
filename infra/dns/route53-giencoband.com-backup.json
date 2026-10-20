@@ -1,0 +1,16 @@
+{
+  "_comment": "Copia de la zona de Route 53 Z09024404HEVLDI45ELI (2026-10-20). NO es la zona activa: el DNS de giencoband.com está en Cloudflare desde 2026-05-07. Todos estos registros existen también en Cloudflare.",
+  "records": [
+    { "name": "giencoband.com.", "type": "A", "alias": "d33kjtzxmbw87t.cloudfront.net." },
+    { "name": "www.giencoband.com.", "type": "CNAME", "value": "d33kjtzxmbw87t.cloudfront.net" },
+    { "name": "backstage.giencoband.com.", "type": "A", "alias": "d1sagb8tsjzgm3.cloudfront.net." },
+    { "name": "_909e295bf65346370c7e966e8a69a2a3.giencoband.com.", "type": "CNAME", "value": "_1c27ce37676590c7fca284317a51a1c1.jkddzztszm.acm-validations.aws.", "purpose": "Validación y renovación del certificado ACM (giencoband.com y *.giencoband.com)" },
+    { "name": "_dmarc.giencoband.com.", "type": "TXT", "value": "\"v=DMARC1; p=none;\"" },
+    { "name": "6ruk3b2fjylhsbqexelf6b3a4ky2kzvz._domainkey.giencoband.com.", "type": "CNAME", "value": "6ruk3b2fjylhsbqexelf6b3a4ky2kzvz.dkim.amazonses.com", "purpose": "DKIM de SES (eu-west-3)" },
+    { "name": "d5exttzoyls7kbjx3tuhwqz7rm3qpkuk._domainkey.giencoband.com.", "type": "CNAME", "value": "d5exttzoyls7kbjx3tuhwqz7rm3qpkuk.dkim.amazonses.com", "purpose": "DKIM de SES (eu-west-3)" },
+    { "name": "hrr74mvjng43zmeeql3ihj5oletimnt7._domainkey.giencoband.com.", "type": "CNAME", "value": "hrr74mvjng43zmeeql3ihj5oletimnt7.dkim.amazonses.com", "purpose": "DKIM de SES (eu-west-3)" },
+    { "name": "qyapkqww6b7exsoyjoddfnfcs6suhf5x._domainkey.giencoband.com.", "type": "CNAME", "value": "qyapkqww6b7exsoyjoddfnfcs6suhf5x.dkim.amazonses.com", "purpose": "DKIM de SES (eu-west-3)" },
+    { "name": "tjjbgkmfkdctcyodpyq5dtf4txl4iqkj._domainkey.giencoband.com.", "type": "CNAME", "value": "tjjbgkmfkdctcyodpyq5dtf4txl4iqkj.dkim.amazonses.com", "purpose": "DKIM de SES (eu-west-3)" },
+    { "name": "wyebkwzuaqicl5iowlmyl3zfgwzfs5tj._domainkey.giencoband.com.", "type": "CNAME", "value": "wyebkwzuaqicl5iowlmyl3zfgwzfs5tj.dkim.amazonses.com", "purpose": "DKIM de SES (eu-west-3)" }
+  ]
+}
